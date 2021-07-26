@@ -1,0 +1,1 @@
+export { setupIssuanceExtension } from './query';
