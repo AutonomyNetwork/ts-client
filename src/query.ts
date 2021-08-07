@@ -1,8 +1,7 @@
 import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 import Long from 'long';
-import { QueryClientImpl, QueryGetTokenResponse, QueryAllTokenResponse } from './codec/issuance/v1beta1/query';
+import { QueryClientImpl } from './codec/issuance/v1beta1/query';
 import { Token } from './codec/issuance/v1beta1/token';
-import { Any } from './codec/google/protobuf/any';
 
 export interface IssuanceExtension {
   readonly issuance: {
