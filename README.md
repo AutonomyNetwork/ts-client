@@ -9,7 +9,7 @@ Client has two different functions for both transactions & queries
 
 ### To query
 ```ts
-import { setupIssuanceExtension } from "@autonomy/ts-client"
+import { setupIssuanceExtension } from "@autonomysdk/ts-client"
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { QueryClient } from "@cosmjs/stargate"
 import Long from 'long'
@@ -30,7 +30,7 @@ import Long from 'long'
 
 ```ts
 
-import { AutonomyClient, autonomyRegistry } from '@autonomy/ts-client;
+import { AutonomyClient, autonomyRegistry } from '@autonomysdk/ts-client;
 import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
 import { StdFee } from '@cosmjs/amino';
 import Long from 'long';

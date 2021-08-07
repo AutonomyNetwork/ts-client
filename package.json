@@ -1,6 +1,6 @@
 {
-  "name": "@autonomy/ts-client",
-  "version": "1.0.0",
+  "name": "@autonomysdk/ts-client",
+  "version": "0.1.0",
   "description": "Autonomy Network client SDK",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -31,5 +31,16 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutonomyNetwork/ts-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AutonomyNetwork/ts-client/issues"
+  },
+  "homepage": "https://github.com/AutonomyNetwork/ts-client#readme"
 }
