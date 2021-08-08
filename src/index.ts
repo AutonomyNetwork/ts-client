@@ -1,2 +1,2 @@
 export { setupIssuanceExtension } from './query';
-export { AutonomyClient } from './txs';
+export { AutonomyClient,autonomyRegistry } from './txs';
