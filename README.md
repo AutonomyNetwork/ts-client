@@ -5,38 +5,37 @@ Client has two different functions for both transactions & queries
 - `setupIssuanceExtension`
 - `AutonomyClient`
 
-## Usage 
+## Usage
 
 ### To query
 ```ts
-import { setupIssuanceExtension } from "@autonomysdk/ts-client"
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { QueryClient } from "@cosmjs/stargate"
-import Long from 'long'
-(async ()=>{
+import { setupIssuanceExtension } from '@autonomysdk/ts-client';
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
+import { QueryClient, setupBankExtension } from '@cosmjs/stargate';
+import Long from 'long';
+(async () => {
+  const tendermintClient = await Tendermint34Client.connect('localhost:26657');
 
-  const tendermintClient = await Tendermint34Client.connect("localhost:26657");
-
-
-  const queryClient = QueryClient.withExtensions(
-  tendermintClient, setupIssuanceExtension );
-  const res = await queryClient.issuance.tokenAll()
-  console.log(res)
-  const res1 = await queryClient.issuance.token(Long.fromNumber(1))
-  console.log(res1)
+  const queryClient = QueryClient.withExtensions(tendermintClient, setupIssuanceExtension, setupBankExtension);
+  const res = await queryClient.issuance.tokenAll();
+  console.log(res);
+  let res1 = await queryClient.issuance.token(Long.fromNumber(1));
+  console.log(res1);
+  const res2 = await queryClient.bank.allBalances(res1!.creator);
+  console.log(res2);
 })();
+
 ```
 ### To transactions
 
 ```ts
 
-import { AutonomyClient, autonomyRegistry } from '@autonomysdk/ts-client;
+import { AutonomyClient, autonomyRegistry } from './txs';
 import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
 import { StdFee } from '@cosmjs/amino';
 import Long from 'long';
 import { coins } from '@cosmjs/amino';
-import { GasPrice, GasLimits } from '@cosmjs/stargate';
-import { defaultRegistryTypes } from '@cosmjs/stargate';
+import { GasPrice } from '@cosmjs/stargate';
 const sender = {
   menmonic:
     'kind surge maximum rapid rocket smart cycle slab infant flock alone suffer grit element indicate cricket benefit cricket sausage venture talk rib exact hair',
@@ -66,7 +65,7 @@ const fee: StdFee = {
   const [addres] = await wallet.getAccounts();
   console.log(addres.address);
 
-  const autonomyClient = await AutonomyClient.autoSigner('localhost:26657', wallet, options);
+  const autonomyClient = await AutonomyClient.autonomySigner('localhost:26657', wallet, options);
 
   const resSend = await autonomyClient.sendTokens(sender.address, sender.recipient, coins(12, 'atn'));
   console.log(resSend);
@@ -81,7 +80,5 @@ const fee: StdFee = {
   );
   console.log(res);
 })();
-
-
 
 ```

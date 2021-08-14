@@ -1,13 +1,14 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = 'issuance.v1beta1';
+export const protobufPackage = "issuance.v1beta1";
 
 export interface Token {
   creator: string;
   id: Long;
   denom: string;
+  decimals: Long;
   displayName: string;
   initialSupply: Long;
   holders: Long;
@@ -18,33 +19,37 @@ export interface TokenDenoms {
 }
 
 const baseToken: object = {
-  creator: '',
+  creator: "",
   id: Long.UZERO,
-  denom: '',
-  displayName: '',
+  denom: "",
+  decimals: Long.UZERO,
+  displayName: "",
   initialSupply: Long.UZERO,
   holders: Long.UZERO,
 };
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== '') {
+    if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
     if (!message.id.isZero()) {
       writer.uint32(16).uint64(message.id);
     }
-    if (message.denom !== '') {
+    if (message.denom !== "") {
       writer.uint32(26).string(message.denom);
     }
-    if (message.displayName !== '') {
-      writer.uint32(34).string(message.displayName);
+    if (!message.decimals.isZero()) {
+      writer.uint32(32).uint64(message.decimals);
+    }
+    if (message.displayName !== "") {
+      writer.uint32(42).string(message.displayName);
     }
     if (!message.initialSupply.isZero()) {
-      writer.uint32(40).uint64(message.initialSupply);
+      writer.uint32(48).uint64(message.initialSupply);
     }
     if (!message.holders.isZero()) {
-      writer.uint32(48).uint64(message.holders);
+      writer.uint32(56).uint64(message.holders);
     }
     return writer;
   },
@@ -66,12 +71,15 @@ export const Token = {
           message.denom = reader.string();
           break;
         case 4:
-          message.displayName = reader.string();
+          message.decimals = reader.uint64() as Long;
           break;
         case 5:
-          message.initialSupply = reader.uint64() as Long;
+          message.displayName = reader.string();
           break;
         case 6:
+          message.initialSupply = reader.uint64() as Long;
+          break;
+        case 7:
           message.holders = reader.uint64() as Long;
           break;
         default:
@@ -87,7 +95,7 @@ export const Token = {
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
-      message.creator = '';
+      message.creator = "";
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = Long.fromString(object.id);
@@ -97,12 +105,17 @@ export const Token = {
     if (object.denom !== undefined && object.denom !== null) {
       message.denom = String(object.denom);
     } else {
-      message.denom = '';
+      message.denom = "";
+    }
+    if (object.decimals !== undefined && object.decimals !== null) {
+      message.decimals = Long.fromString(object.decimals);
+    } else {
+      message.decimals = Long.UZERO;
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.initialSupply !== undefined && object.initialSupply !== null) {
       message.initialSupply = Long.fromString(object.initialSupply);
@@ -120,11 +133,17 @@ export const Token = {
   toJSON(message: Token): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
-    message.displayName !== undefined && (obj.displayName = message.displayName);
-    message.initialSupply !== undefined && (obj.initialSupply = (message.initialSupply || Long.UZERO).toString());
-    message.holders !== undefined && (obj.holders = (message.holders || Long.UZERO).toString());
+    message.decimals !== undefined &&
+      (obj.decimals = (message.decimals || Long.UZERO).toString());
+    message.displayName !== undefined &&
+      (obj.displayName = message.displayName);
+    message.initialSupply !== undefined &&
+      (obj.initialSupply = (message.initialSupply || Long.UZERO).toString());
+    message.holders !== undefined &&
+      (obj.holders = (message.holders || Long.UZERO).toString());
     return obj;
   },
 
@@ -133,7 +152,7 @@ export const Token = {
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
-      message.creator = '';
+      message.creator = "";
     }
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id as Long;
@@ -143,12 +162,17 @@ export const Token = {
     if (object.denom !== undefined && object.denom !== null) {
       message.denom = object.denom;
     } else {
-      message.denom = '';
+      message.denom = "";
+    }
+    if (object.decimals !== undefined && object.decimals !== null) {
+      message.decimals = object.decimals as Long;
+    } else {
+      message.decimals = Long.UZERO;
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.initialSupply !== undefined && object.initialSupply !== null) {
       message.initialSupply = object.initialSupply as Long;
@@ -164,10 +188,13 @@ export const Token = {
   },
 };
 
-const baseTokenDenoms: object = { denoms: '' };
+const baseTokenDenoms: object = { denoms: "" };
 
 export const TokenDenoms = {
-  encode(message: TokenDenoms, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: TokenDenoms,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.denoms) {
       writer.uint32(10).string(v!);
     }
@@ -226,7 +253,15 @@ export const TokenDenoms = {
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined
+  | Long;
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer U>

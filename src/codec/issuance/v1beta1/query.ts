@@ -1,10 +1,13 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
-import { Token } from '../../issuance/v1beta1/token';
-import { PageRequest, PageResponse } from '../../cosmos/base/query/v1beta1/pagination';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
+import { Token } from "../../issuance/v1beta1/token";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = 'issuance.v1beta1';
+export const protobufPackage = "issuance.v1beta1";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetTokenRequest {
@@ -27,14 +30,20 @@ export interface QueryAllTokenResponse {
 const baseQueryGetTokenRequest: object = { id: Long.UZERO };
 
 export const QueryGetTokenRequest = {
-  encode(message: QueryGetTokenRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryGetTokenRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetTokenRequest {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetTokenRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryGetTokenRequest } as QueryGetTokenRequest;
@@ -64,7 +73,8 @@ export const QueryGetTokenRequest = {
 
   toJSON(message: QueryGetTokenRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
@@ -82,14 +92,20 @@ export const QueryGetTokenRequest = {
 const baseQueryGetTokenResponse: object = {};
 
 export const QueryGetTokenResponse = {
-  encode(message: QueryGetTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryGetTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.token !== undefined) {
       Token.encode(message.token, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetTokenResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetTokenResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryGetTokenResponse } as QueryGetTokenResponse;
@@ -119,11 +135,14 @@ export const QueryGetTokenResponse = {
 
   toJSON(message: QueryGetTokenResponse): unknown {
     const obj: any = {};
-    message.token !== undefined && (obj.token = message.token ? Token.toJSON(message.token) : undefined);
+    message.token !== undefined &&
+      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryGetTokenResponse>): QueryGetTokenResponse {
+  fromPartial(
+    object: DeepPartial<QueryGetTokenResponse>
+  ): QueryGetTokenResponse {
     const message = { ...baseQueryGetTokenResponse } as QueryGetTokenResponse;
     if (object.token !== undefined && object.token !== null) {
       message.token = Token.fromPartial(object.token);
@@ -137,14 +156,20 @@ export const QueryGetTokenResponse = {
 const baseQueryAllTokenRequest: object = {};
 
 export const QueryAllTokenRequest = {
-  encode(message: QueryAllTokenRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryAllTokenRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllTokenRequest {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllTokenRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllTokenRequest } as QueryAllTokenRequest;
@@ -175,7 +200,9 @@ export const QueryAllTokenRequest = {
   toJSON(message: QueryAllTokenRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -193,17 +220,26 @@ export const QueryAllTokenRequest = {
 const baseQueryAllTokenResponse: object = {};
 
 export const QueryAllTokenResponse = {
-  encode(message: QueryAllTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryAllTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.tokens) {
       Token.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllTokenResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllTokenResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
@@ -249,11 +285,15 @@ export const QueryAllTokenResponse = {
       obj.tokens = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllTokenResponse>): QueryAllTokenResponse {
+  fromPartial(
+    object: DeepPartial<QueryAllTokenResponse>
+  ): QueryAllTokenResponse {
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
     message.tokens = [];
     if (object.tokens !== undefined && object.tokens !== null) {
@@ -287,22 +327,42 @@ export class QueryClientImpl implements Query {
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
-    const promise = this.rpc.request('issuance.v1beta1.Query', 'Token', data);
-    return promise.then((data) => QueryGetTokenResponse.decode(new _m0.Reader(data)));
+    const promise = this.rpc.request("issuance.v1beta1.Query", "Token", data);
+    return promise.then((data) =>
+      QueryGetTokenResponse.decode(new _m0.Reader(data))
+    );
   }
 
   TokenAll(request: QueryAllTokenRequest): Promise<QueryAllTokenResponse> {
     const data = QueryAllTokenRequest.encode(request).finish();
-    const promise = this.rpc.request('issuance.v1beta1.Query', 'TokenAll', data);
-    return promise.then((data) => QueryAllTokenResponse.decode(new _m0.Reader(data)));
+    const promise = this.rpc.request(
+      "issuance.v1beta1.Query",
+      "TokenAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllTokenResponse.decode(new _m0.Reader(data))
+    );
   }
 }
 
 interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  request(
+    service: string,
+    method: string,
+    data: Uint8Array
+  ): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined
+  | Long;
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer U>

@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from 'long';
-import _m0 from 'protobufjs/minimal';
+import Long from "long";
+import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = 'issuance.v1beta1';
+export const protobufPackage = "issuance.v1beta1";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgIssueToken {
@@ -18,22 +18,25 @@ export interface MsgIssueTokenResponse {
 }
 
 const baseMsgIssueToken: object = {
-  creator: '',
-  denom: '',
-  displayName: '',
+  creator: "",
+  denom: "",
+  displayName: "",
   decimals: Long.UZERO,
   initialSupply: Long.UZERO,
 };
 
 export const MsgIssueToken = {
-  encode(message: MsgIssueToken, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== '') {
+  encode(
+    message: MsgIssueToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.denom !== '') {
+    if (message.denom !== "") {
       writer.uint32(18).string(message.denom);
     }
-    if (message.displayName !== '') {
+    if (message.displayName !== "") {
       writer.uint32(26).string(message.displayName);
     }
     if (!message.decimals.isZero()) {
@@ -80,17 +83,17 @@ export const MsgIssueToken = {
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
-      message.creator = '';
+      message.creator = "";
     }
     if (object.denom !== undefined && object.denom !== null) {
       message.denom = String(object.denom);
     } else {
-      message.denom = '';
+      message.denom = "";
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = String(object.displayName);
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.decimals !== undefined && object.decimals !== null) {
       message.decimals = Long.fromString(object.decimals);
@@ -109,9 +112,12 @@ export const MsgIssueToken = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.displayName !== undefined && (obj.displayName = message.displayName);
-    message.decimals !== undefined && (obj.decimals = (message.decimals || Long.UZERO).toString());
-    message.initialSupply !== undefined && (obj.initialSupply = (message.initialSupply || Long.UZERO).toString());
+    message.displayName !== undefined &&
+      (obj.displayName = message.displayName);
+    message.decimals !== undefined &&
+      (obj.decimals = (message.decimals || Long.UZERO).toString());
+    message.initialSupply !== undefined &&
+      (obj.initialSupply = (message.initialSupply || Long.UZERO).toString());
     return obj;
   },
 
@@ -120,17 +126,17 @@ export const MsgIssueToken = {
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
-      message.creator = '';
+      message.creator = "";
     }
     if (object.denom !== undefined && object.denom !== null) {
       message.denom = object.denom;
     } else {
-      message.denom = '';
+      message.denom = "";
     }
     if (object.displayName !== undefined && object.displayName !== null) {
       message.displayName = object.displayName;
     } else {
-      message.displayName = '';
+      message.displayName = "";
     }
     if (object.decimals !== undefined && object.decimals !== null) {
       message.decimals = object.decimals as Long;
@@ -149,14 +155,20 @@ export const MsgIssueToken = {
 const baseMsgIssueTokenResponse: object = { id: Long.UZERO };
 
 export const MsgIssueTokenResponse = {
-  encode(message: MsgIssueTokenResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgIssueTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgIssueTokenResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgIssueTokenResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgIssueTokenResponse } as MsgIssueTokenResponse;
@@ -186,11 +198,14 @@ export const MsgIssueTokenResponse = {
 
   toJSON(message: MsgIssueTokenResponse): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = (message.id || Long.UZERO).toString());
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgIssueTokenResponse>): MsgIssueTokenResponse {
+  fromPartial(
+    object: DeepPartial<MsgIssueTokenResponse>
+  ): MsgIssueTokenResponse {
     const message = { ...baseMsgIssueTokenResponse } as MsgIssueTokenResponse;
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id as Long;
@@ -215,16 +230,34 @@ export class MsgClientImpl implements Msg {
   }
   IssueToken(request: MsgIssueToken): Promise<MsgIssueTokenResponse> {
     const data = MsgIssueToken.encode(request).finish();
-    const promise = this.rpc.request('issuance.v1beta1.Msg', 'IssueToken', data);
-    return promise.then((data) => MsgIssueTokenResponse.decode(new _m0.Reader(data)));
+    const promise = this.rpc.request(
+      "issuance.v1beta1.Msg",
+      "IssueToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgIssueTokenResponse.decode(new _m0.Reader(data))
+    );
   }
 }
 
 interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  request(
+    service: string,
+    method: string,
+    data: Uint8Array
+  ): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined | Long;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined
+  | Long;
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer U>
