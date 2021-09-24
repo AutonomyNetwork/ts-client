@@ -8,6 +8,7 @@ import {
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { GeneratedType, OfflineSigner } from '@cosmjs/proto-signing';
 import Long from 'long';
+import { MsgSend } from './codec/cosmos/bank/v1beta1/tx';
 import { MsgIssueToken } from './codec/issuance/v1beta1/tx';
 
 export const autonomyRegistry: ReadonlyArray<[string, GeneratedType]> = [
@@ -52,5 +53,26 @@ export class AutonomyClient extends SigningStargateClient {
     };
 
     return this.signAndBroadcast(sender, [issueMsg], fee, memo);
+  }
+
+  public async buildMultiSendMsgAndBroadcast(
+    sends: MsgSend[],
+    fee: StdFee,
+    memo: string,
+  ): Promise<BroadcastTxResponse> {
+    const msgs = [];
+    for (let msg of sends) {
+      const data = {
+        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+        value: {
+          fromAddress: msg.fromAddress,
+          toAddress: msg.toAddress,
+          amount: [...msg.amount],
+        },
+      };
+      msgs.push(data);
+    }
+
+    return this.signAndBroadcast(sends[0].fromAddress, msgs, fee, memo);
   }
 }
