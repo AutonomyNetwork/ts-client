@@ -48,7 +48,7 @@ const fee: StdFee = {
   amount: [
     {
       denom: 'atn',
-      amount: '100',
+      amount: '200000',
     },
   ],
   gas: '200000',
@@ -67,6 +67,16 @@ const fee: StdFee = {
 
   const autonomyClient = await AutonomyClient.autonomySigner('localhost:26657', wallet, options);
 
+  const msgs = [];
+  for (let i = 0; i < 5; i++) {
+    const msg = {
+      fromAddress: 'autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu',
+      toAddress: 'autonomy1r9nfvcdctxyg5q48ae9kupwdh4jlr8kur4sc6q',
+      amount: coins(12, 'atn'),
+    };
+
+    msgs.push(msg);
+  }
   const resSend = await autonomyClient.sendTokens(sender.address, sender.recipient, coins(12, 'atn'));
   console.log(resSend);
   const res = await autonomyClient.issueTokens(
@@ -79,6 +89,9 @@ const fee: StdFee = {
     'test tx-1',
   );
   console.log(res);
+
+  const resMSend = await autonomyClient.buildMultiSendMsgAndBroadcast(msgs, fee, 'test multisend');
+  console.log(resMSend);
 })();
 
 ```
