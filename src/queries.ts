@@ -1,7 +1,9 @@
 import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 import Long from 'long';
-import { QueryClientImpl } from './codec/issuance/v1beta1/query';
+import { QueryClientImpl as QueryIssuanceClient } from './codec/issuance/v1beta1/query';
 import { Token } from './codec/issuance/v1beta1/token';
+
+import { QueryClientImpl as QueryLiquidityClient,QueryLiquidityPoolsResponse , QueryLiquidityPoolResponse} from './codec/tendermint/liquidity/v1beta1/query';
 
 export interface IssuanceExtension {
   readonly issuance: {
@@ -10,10 +12,18 @@ export interface IssuanceExtension {
   };
 }
 
+export interface LiquidityExtension {
+  readonly liquidity:{
+    readonly pools: (paginationKey?: Uint8Array) => Promise<QueryLiquidityPoolsResponse>;
+    readonly poolByDenom:(poolCoinDenom: string) => Promise<QueryLiquidityPoolResponse>;
+    readonly poolById:(poolId: Long) => Promise<QueryLiquidityPoolResponse>;
+  }
+}
+
 export function setupIssuanceExtension(base: QueryClient): IssuanceExtension {
   const rpc = createProtobufRpcClient(base);
 
-  const queryService = new QueryClientImpl(rpc);
+  const queryService = new QueryIssuanceClient(rpc);
 
   return {
     issuance: {
@@ -29,4 +39,32 @@ export function setupIssuanceExtension(base: QueryClient): IssuanceExtension {
       },
     },
   };
+}
+
+export function setupLiquidityExtension(base: QueryClient): LiquidityExtension{
+  const rpc = createProtobufRpcClient(base);
+
+  const queryService = new QueryLiquidityClient(rpc);
+
+  return {
+    liquidity:{
+      pools: async()=>{
+        const res = await queryService.LiquidityPools({});
+        return res;
+      },
+      poolByDenom: async(id: string) =>{
+          const res = await queryService.LiquidityPoolByPoolCoinDenom({ 
+             poolCoinDenom: id,
+          })
+          return res;
+      },
+      poolById: async(id: Long)=>{
+          const res = await queryService.LiquidityPool({
+            poolId: id,
+          })
+          return res;
+      } 
+    }
+  }
+
 }

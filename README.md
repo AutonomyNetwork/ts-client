@@ -9,22 +9,34 @@ Client has two different functions for both transactions & queries
 
 ### To query
 ```ts
-import { setupIssuanceExtension } from '@autonomysdk/ts-client';
+
+import { setupIssuanceExtension, setupLiquidityExtension } from './queries';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { QueryClient, setupBankExtension } from '@cosmjs/stargate';
 import Long from 'long';
 (async () => {
   const tendermintClient = await Tendermint34Client.connect('localhost:26657');
 
-  const queryClient = QueryClient.withExtensions(tendermintClient, setupIssuanceExtension, setupBankExtension);
+  const queryClient = QueryClient.withExtensions(tendermintClient, setupIssuanceExtension, setupBankExtension, setupLiquidityExtension);
   const res = await queryClient.issuance.tokenAll();
   console.log(res);
   let res1 = await queryClient.issuance.token(Long.fromNumber(1));
   console.log(res1);
   const res2 = await queryClient.bank.allBalances(res1!.creator);
   console.log(res2);
-})();
 
+  // Query Pools 
+  const pools = await queryClient.liquidity.pools();
+  console.log(pools);
+
+  // Query PoolById 
+  const poolById = await queryClient.liquidity.poolById(Long.fromNumber(1))
+  console.log(poolById)
+
+  //Query PoolByName
+    const poolByName = await queryClient.liquidity.poolByDenom("pool9040880A9D2FB7AB4CF2B87AF5454379D9602EEF16985ED997D9E38755BF9F63")
+  console.log(poolByName)
+})();
 ```
 ### To transactions
 
