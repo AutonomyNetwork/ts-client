@@ -18,18 +18,31 @@ import Long from 'long';
   const tendermintClient = await Tendermint34Client.connect('localhost:26657');
 
   const queryClient = QueryClient.withExtensions(tendermintClient, setupIssuanceExtension, setupBankExtension, setupLiquidityExtension);
+
+  // Query Token All
   const res = await queryClient.issuance.tokenAll();
   console.log(res);
-  let res1 = await queryClient.issuance.token(Long.fromNumber(1));
-  console.log(res1);
-  const res2 = await queryClient.bank.allBalances(res1!.creator);
-  console.log(res2);
 
-  // Query Pools 
+  // Query Token by Id
+  let tokenById = await queryClient.issuance.token(Long.fromNumber(1));
+  console.log(tokenById);
+
+  // Query Tokens By TokensByOwner
+  let tokensByOwner = await queryClient.issuance.tokensByOwner(tokenById!.creator);
+  console.log(tokensByOwner);
+
+  // Query Token By denom
+  let tokenByDenom = await queryClient.issuance.tokenByDenom(tokenById!.denom)
+  console.log(tokenByDenom);
+
+  const res3 = await queryClient.bank.allBalances(tokenById!.creator);
+  console.log(res3);
+
+  // Query Pools
   const pools = await queryClient.liquidity.pools();
   console.log(pools);
 
-  // Query PoolById 
+  // Query PoolById
   const poolById = await queryClient.liquidity.poolById(Long.fromNumber(1))
   console.log(poolById)
 

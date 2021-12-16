@@ -1,6 +1,6 @@
 import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 import Long from 'long';
-import { QueryClientImpl as QueryIssuanceClient } from './codec/issuance/v1beta1/query';
+import { QueryClientImpl as QueryIssuanceClient,QueryAllTokenResponse, QueryGetTokenResponse  } from './codec/issuance/v1beta1/query';
 import { Token } from './codec/issuance/v1beta1/token';
 
 import { QueryClientImpl as QueryLiquidityClient,QueryLiquidityPoolsResponse , QueryLiquidityPoolResponse} from './codec/tendermint/liquidity/v1beta1/query';
@@ -9,6 +9,8 @@ export interface IssuanceExtension {
   readonly issuance: {
     readonly token: (id: Long.Long) => Promise<Token | null>;
     readonly tokenAll: () => Promise<Token[] | null>;
+    readonly tokensByOwner: (address:string ) => Promise<QueryAllTokenResponse>
+    readonly tokenByDenom: (id: string) => Promise<QueryGetTokenResponse>
   };
 }
 
@@ -37,6 +39,18 @@ export function setupIssuanceExtension(base: QueryClient): IssuanceExtension {
         const { tokens } = await queryService.TokenAll({});
         return tokens ?? null;
       },
+      tokensByOwner: async(addr: string) =>{
+        const res = await queryService.TokensByOwner({
+          address: addr,
+        })
+        return res
+      },
+      tokenByDenom: async(denom: string)=>{
+        const res = await queryService.TokenByDenom({
+          denom,
+        })
+        return res
+      }
     },
   };
 }
@@ -53,7 +67,7 @@ export function setupLiquidityExtension(base: QueryClient): LiquidityExtension{
         return res;
       },
       poolByDenom: async(id: string) =>{
-          const res = await queryService.LiquidityPoolByPoolCoinDenom({ 
+          const res = await queryService.LiquidityPoolByPoolCoinDenom({
              poolCoinDenom: id,
           })
           return res;
@@ -63,7 +77,7 @@ export function setupLiquidityExtension(base: QueryClient): LiquidityExtension{
             poolId: id,
           })
           return res;
-      } 
+      }
     }
   }
 
