@@ -70,13 +70,18 @@ const fee: StdFee = {
   // console.log(res);
 
   // CREATE POOL MSG
+
+  //   let poolCoins = parseCoins('100000000000usri,200000000000usai')
+  // poolCoins.sort((a,b)=> a.denom <b.denom ? -1 : a.denom > b.denom ? 1  : 0)
+
+  // console.log("Sorted", poolCoins);
   // const resMSend = await autonomyClient.buildMultiSendMsgAndBroadcast(msgs, fee, 'test multisend');
   // console.log(resMSend);
 
   // const resPool = await autonomyClient.createpool(
   //   sender.address,
   //   1,
-  //   parseCoins('100000000000tokena,200000000000tokenb'),
+  //   poolCoins,
   //   fee,
   //   'test create pool',
   // );
