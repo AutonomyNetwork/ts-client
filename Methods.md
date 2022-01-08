@@ -137,6 +137,76 @@ const fee: StdFee = {
   // );
 
   // console.log(resWithdraw);
+
+
+  // import { v4 as uuidv4 } from 'uuid';
+
+   const nftPrefix = 'nft';
+  const denomPrefix = 'nftdenom';
+
+  const regex = /-/gi;
+  let denom = denomPrefix + uuidv4().toString().replace(regex, '');
+  console.log('denom', denom);
+
+  // CREATE DENOM
+  // let res = await autonomyClient.createdenom(
+  //   addres.address,
+  //   denom, // is alphanumeric with
+  //   'TwitterName', // need to be unique
+  //   'TWTSymbol', // is alphabets b/w 3 to 12 length
+  //   'test description',
+  //   'https://testpreview_url.com',
+  //   fee,
+  //   'test memo',
+  // );
+  // console.log(res);
+
+  // CREATE NFT
+  let nft_id = nftPrefix + uuidv4().toString().replace(regex, '');
+  console.log('nft_id', nft_id);
+
+  let resNFT = await autonomyClient.mintnft(
+    'nftdenomf42a77c08cc3448b937076e9e85d9489',
+    nft_id,
+    'nft_name_1',
+    'nft_description',
+    'nft_media_url',
+    'nft_preview_uri',
+    true,
+    addres.address,
+    '0.01',
+    fee,
+    'test memo',
+  );
+
+  console.log(resNFT);
+
+  // // TRANSFER NFT
+  // resNFT = await autonomyClient.transfernft(nft_id, denom, addres.address, sender.recipient, fee, 'test transfernft');
+  // console.log(resNFT);
+
+  // // Sell NFT
+  // resNFT = await autonomyClient.sellnft(
+  //   'nft946f832db5af46239f7995b2423b523a', //nft_id
+  //   'nftdenomf42a77c08cc3448b937076e9e85d9489', // nft_denom_id
+  //   '1000uaut',
+  //   addres.address,
+  //   fee,
+  //   'test sell nft',
+  // );
+
+  // console.log(resNFT);
+
+  // Buy NFT
+  resNFT = await autonomyClient.buynft(
+    'nft78e580d171834723805b726700ffd978',
+    'nftdenomf42a77c08cc3448b937076e9e85d9489',
+    addres.address,
+    fee,
+    'test buy nft',
+  );
+
+  console.log(resNFT);
 })();
 
 ```

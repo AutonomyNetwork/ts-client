@@ -20,11 +20,30 @@ import {
   MsgWithdrawWithinBatch,
   MsgWithdrawWithinBatchResponse,
 } from './codec/tendermint/liquidity/v1beta1/tx';
+
+import {
+  MsgCreateDenom,
+  MsgCreateDenomResponse,
+  MsgMintNFT,
+  MsgMintNFTResponse,
+  MsgTransferNFT,
+  MsgTransferNFTResponse,
+  MsgSellNFT,
+  MsgSellNFTResponse,
+  MsgBuyNFT,
+  MsgBuyNFTResponse,
+} from './codec/nft/v1beta1/tx';
 import { Coin } from './codec/cosmos_proto/coin';
 
 export const autonomyRegistry: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
   ['/issuance.v1beta1.MsgIssueToken', MsgIssueToken],
+  ['/nft.v1beta1.MsgCreateDenom', MsgCreateDenom],
+  ['/nft.v1beta1.MsgMintNFT', MsgMintNFT],
+  ['/nft.v1beta1.MsgTransferNFT', MsgTransferNFT],
+  ['/nft.v1beta1.MsgSellNFT', MsgSellNFT],
+  ['/nft.v1beta1.MsgBuyNFT', MsgBuyNFT],
+
   ['/tendermint.liquidity.v1beta1.MsgCreatePool', MsgCreatePool],
   ['/tendermint.liquidity.v1beta1.MsgDepositWithinBatch', MsgDepositWithinBatch],
   ['/tendermint.liquidity.v1beta1.MsgSwapWithinBatch', MsgSwapWithinBatch],
@@ -67,6 +86,123 @@ export class AutonomyClient extends SigningStargateClient {
       },
     };
     return this.signAndBroadcast(sender, [issueMsg], fee, memo);
+  }
+
+  public async createdenom(
+    sender: string,
+    id: string,
+    name: string,
+    symbol: string,
+    description: string,
+    preview_url: string,
+    fee: StdFee,
+    memo: string,
+  ): Promise<MsgCreateDenomResponse> {
+    const msg = {
+      typeUrl: '/nft.v1beta1.MsgCreateDenom',
+      value: {
+        id: id,
+        name: name,
+        symbol: symbol,
+        description: description,
+        previewUri: preview_url,
+        creator: sender,
+      },
+    };
+
+    return this.signAndBroadcast(sender, [msg], fee, memo);
+  }
+
+  public async mintnft(
+    denomId: string,
+    nft_id: string,
+    nft_name: string,
+    nft_description: string,
+    nft_media_uri: string,
+    nft_preview_uri: String,
+    transfer: boolean,
+    sender: string,
+    royalties: string,
+    fee: StdFee,
+    memo: string,
+  ): Promise<MsgMintNFTResponse> {
+    const msg = {
+      typeUrl: '/nft.v1beta1.MsgMintNFT',
+      value: {
+        id: nft_id,
+        denomId: denomId,
+        metadata: {
+          name: nft_name,
+          description: nft_description,
+          mediaUri: nft_media_uri,
+          previewUri: nft_preview_uri,
+        },
+        transferable: transfer,
+        creator: sender,
+        royalties: royalties,
+      },
+    };
+    return this.signAndBroadcast(sender, [msg], fee, memo);
+  }
+
+  public async transfernft(
+    nft_id: string,
+    denomId: string,
+    sender: string,
+    recipient: string,
+    fee: StdFee,
+    memo: string,
+  ): Promise<MsgTransferNFTResponse> {
+    const msg = {
+      typeUrl: '/nft.v1beta1.MsgTransferNFT',
+      value: {
+        id: nft_id,
+        denomId: denomId,
+        sender,
+        recipient,
+      },
+    };
+
+    return this.signAndBroadcast(sender, [msg], fee, memo);
+  }
+  public async sellnft(
+    nft_id: string,
+    denom_id: string,
+    price: string,
+    seller: string,
+    fee: StdFee,
+    memo: string,
+  ): Promise<MsgSellNFTResponse> {
+    const msg = {
+      typeUrl: '/nft.v1beta1.MsgSellNFT',
+      value: {
+        id: nft_id,
+        denomId: denom_id,
+        price,
+        seller,
+      },
+    };
+
+    return this.signAndBroadcast(seller, [msg], fee, memo);
+  }
+
+  public async buynft(
+    nft_id: string,
+    denom_id: string,
+    buyer: string,
+    fee: StdFee,
+    memo: string,
+  ): Promise<MsgBuyNFTResponse> {
+    const msg = {
+      typeUrl: '/nft.v1beta1.MsgBuyNFT',
+      value: {
+        id: nft_id,
+        denomId: denom_id,
+        buyer,
+      },
+    };
+
+    return this.signAndBroadcast(buyer, [msg], fee, memo);
   }
 
   public async buildMultiSendMsgAndBroadcast(
