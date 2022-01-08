@@ -10,14 +10,14 @@ Client has two different functions for both transactions & queries
 ### To query
 ```ts
 
-import { setupIssuanceExtension, setupLiquidityExtension } from './queries';
+import { setupIssuanceExtension, setupLiquidityExtension, setupNFTExtension } from './queries';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { QueryClient, setupBankExtension } from '@cosmjs/stargate';
 import Long from 'long';
 (async () => {
   const tendermintClient = await Tendermint34Client.connect('localhost:26657');
 
-  const queryClient = QueryClient.withExtensions(tendermintClient, setupIssuanceExtension, setupBankExtension, setupLiquidityExtension);
+  const queryClient = QueryClient.withExtensions(tendermintClient, setupIssuanceExtension, setupBankExtension, setupLiquidityExtension, setupNFTExtension);
 
   // Query Token All
   const res = await queryClient.issuance.tokenAll();
@@ -49,6 +49,15 @@ import Long from 'long';
   //Query PoolByName
     const poolByName = await queryClient.liquidity.poolByDenom("pool9040880A9D2FB7AB4CF2B87AF5454379D9602EEF16985ED997D9E38755BF9F63")
   console.log(poolByName)
+
+
+  // Query denoms
+  const res = await queryClient.nfts.denoms();
+  console.log(res);
+
+  // Query Owner Collcetions
+  let collection = await queryClient.nfts.ownerCollection('autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu')
+  console.log(collection);
 })();
 ```
 ### To transactions

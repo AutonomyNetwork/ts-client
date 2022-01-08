@@ -2,7 +2,7 @@ import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 import Long from 'long';
 import { QueryClientImpl as QueryIssuanceClient,QueryAllTokenResponse, QueryGetTokenResponse  } from './codec/issuance/v1beta1/query';
 import { Token } from './codec/issuance/v1beta1/token';
-
+import { QueryClientImpl as QueryNFTClient, QueryOwnerNFTsResponse, QueryDenomsResponse } from './codec/nft/v1beta1/query';
 import { QueryClientImpl as QueryLiquidityClient,QueryLiquidityPoolsResponse , QueryLiquidityPoolResponse} from './codec/tendermint/liquidity/v1beta1/query';
 
 export interface IssuanceExtension {
@@ -19,6 +19,13 @@ export interface LiquidityExtension {
     readonly pools: (paginationKey?: Uint8Array) => Promise<QueryLiquidityPoolsResponse>;
     readonly poolByDenom:(poolCoinDenom: string) => Promise<QueryLiquidityPoolResponse>;
     readonly poolById:(poolId: Long) => Promise<QueryLiquidityPoolResponse>;
+  }
+}
+
+export interface NFTExtension {
+  readonly nfts: {
+    readonly ownerCollection: (address: string) => Promise<QueryOwnerNFTsResponse>;
+    readonly denoms: () => Promise<QueryDenomsResponse>;
   }
 }
 
@@ -81,4 +88,26 @@ export function setupLiquidityExtension(base: QueryClient): LiquidityExtension{
     }
   }
 
+}
+
+export function setupNFTExtension(base: QueryClient):NFTExtension{
+  const rpc = createProtobufRpcClient(base);
+  const queryService = new QueryNFTClient(rpc);
+
+  return {
+    nfts: {
+      ownerCollection: async(address : string) =>{
+        const res = await queryService.OwnerNFTs({
+          owner: address,
+        })
+
+        return res;
+      },
+
+      denoms: async()=>{
+        const res = await queryService.Denoms({})
+        return res;
+      }
+    }
+  }
 }
