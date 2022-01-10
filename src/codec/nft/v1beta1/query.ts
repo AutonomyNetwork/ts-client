@@ -38,12 +38,10 @@ export interface QueryMarketPlaceNFTResponse {
   marketPlace?: MarketPlace;
 }
 
-export interface QueryMarketPlaceRequest {
-  denomId: string;
-}
+export interface QueryMarketPlaceRequest {}
 
 export interface QueryMarketPlaceResponse {
-  nfts: NFT[];
+  marketPlace: MarketPlace[];
 }
 
 export interface QueryOwnerNFTsRequest {
@@ -578,16 +576,13 @@ export const QueryMarketPlaceNFTResponse = {
   },
 };
 
-const baseQueryMarketPlaceRequest: object = { denomId: "" };
+const baseQueryMarketPlaceRequest: object = {};
 
 export const QueryMarketPlaceRequest = {
   encode(
-    message: QueryMarketPlaceRequest,
+    _: QueryMarketPlaceRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.denomId !== "") {
-      writer.uint32(10).string(message.denomId);
-    }
     return writer;
   },
 
@@ -603,9 +598,6 @@ export const QueryMarketPlaceRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.denomId = reader.string();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -614,35 +606,24 @@ export const QueryMarketPlaceRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryMarketPlaceRequest {
+  fromJSON(_: any): QueryMarketPlaceRequest {
     const message = {
       ...baseQueryMarketPlaceRequest,
     } as QueryMarketPlaceRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
     return message;
   },
 
-  toJSON(message: QueryMarketPlaceRequest): unknown {
+  toJSON(_: QueryMarketPlaceRequest): unknown {
     const obj: any = {};
-    message.denomId !== undefined && (obj.denomId = message.denomId);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<QueryMarketPlaceRequest>
+    _: DeepPartial<QueryMarketPlaceRequest>
   ): QueryMarketPlaceRequest {
     const message = {
       ...baseQueryMarketPlaceRequest,
     } as QueryMarketPlaceRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
     return message;
   },
 };
@@ -654,8 +635,8 @@ export const QueryMarketPlaceResponse = {
     message: QueryMarketPlaceResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.nfts) {
-      NFT.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.marketPlace) {
+      MarketPlace.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -669,12 +650,12 @@ export const QueryMarketPlaceResponse = {
     const message = {
       ...baseQueryMarketPlaceResponse,
     } as QueryMarketPlaceResponse;
-    message.nfts = [];
+    message.marketPlace = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.nfts.push(NFT.decode(reader, reader.uint32()));
+          message.marketPlace.push(MarketPlace.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -688,10 +669,10 @@ export const QueryMarketPlaceResponse = {
     const message = {
       ...baseQueryMarketPlaceResponse,
     } as QueryMarketPlaceResponse;
-    message.nfts = [];
-    if (object.nfts !== undefined && object.nfts !== null) {
-      for (const e of object.nfts) {
-        message.nfts.push(NFT.fromJSON(e));
+    message.marketPlace = [];
+    if (object.marketPlace !== undefined && object.marketPlace !== null) {
+      for (const e of object.marketPlace) {
+        message.marketPlace.push(MarketPlace.fromJSON(e));
       }
     }
     return message;
@@ -699,10 +680,12 @@ export const QueryMarketPlaceResponse = {
 
   toJSON(message: QueryMarketPlaceResponse): unknown {
     const obj: any = {};
-    if (message.nfts) {
-      obj.nfts = message.nfts.map((e) => (e ? NFT.toJSON(e) : undefined));
+    if (message.marketPlace) {
+      obj.marketPlace = message.marketPlace.map((e) =>
+        e ? MarketPlace.toJSON(e) : undefined
+      );
     } else {
-      obj.nfts = [];
+      obj.marketPlace = [];
     }
     return obj;
   },
@@ -713,10 +696,10 @@ export const QueryMarketPlaceResponse = {
     const message = {
       ...baseQueryMarketPlaceResponse,
     } as QueryMarketPlaceResponse;
-    message.nfts = [];
-    if (object.nfts !== undefined && object.nfts !== null) {
-      for (const e of object.nfts) {
-        message.nfts.push(NFT.fromPartial(e));
+    message.marketPlace = [];
+    if (object.marketPlace !== undefined && object.marketPlace !== null) {
+      for (const e of object.marketPlace) {
+        message.marketPlace.push(MarketPlace.fromPartial(e));
       }
     }
     return message;

@@ -58,6 +58,10 @@ import Long from 'long';
   // Query Owner Collcetions
   let collection = await queryClient.nfts.ownerCollection('autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu')
   console.log(collection);
+
+  // Query MarketPlace
+  let marketplace = await queryClient.nfts.marketplace();
+  console.log(marketplace);
 })();
 ```
 ### To transactions
