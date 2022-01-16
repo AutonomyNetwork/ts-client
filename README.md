@@ -62,6 +62,15 @@ import Long from 'long';
   // Query MarketPlace
   let marketplace = await queryClient.nfts.marketplace();
   console.log(marketplace);
+
+    // Query Denom
+    let denom = await queryClient.nfts.denom("nftdenomc55b629434824b3cb33bedcfa206c34c")
+    console.log(denom);
+
+// Query nft with nft_denom_id, nft_id
+  let nft = await queryClient.nfts.nft("nftdenomc55b629434824b3cb33bedcfa206c34c","nftb836f4f54fee4d4d87b3cff722231afd")
+    console.log(nft);
+
 })();
 ```
 ### To transactions
