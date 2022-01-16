@@ -2,7 +2,7 @@ import { createProtobufRpcClient, QueryClient } from '@cosmjs/stargate';
 import Long from 'long';
 import { QueryClientImpl as QueryIssuanceClient,QueryAllTokenResponse, QueryGetTokenResponse  } from './codec/issuance/v1beta1/query';
 import { Token } from './codec/issuance/v1beta1/token';
-import { QueryClientImpl as QueryNFTClient, QueryOwnerNFTsResponse, QueryDenomsResponse, QueryMarketPlaceResponse} from './codec/nft/v1beta1/query';
+import { QueryClientImpl as QueryNFTClient, QueryOwnerNFTsResponse, QueryDenomsResponse, QueryMarketPlaceResponse, QueryDenomResponse, QueryNFTResponse} from './codec/nft/v1beta1/query';
 import { QueryClientImpl as QueryLiquidityClient,QueryLiquidityPoolsResponse , QueryLiquidityPoolResponse} from './codec/tendermint/liquidity/v1beta1/query';
 
 export interface IssuanceExtension {
@@ -27,6 +27,8 @@ export interface NFTExtension {
     readonly ownerCollection: (address: string) => Promise<QueryOwnerNFTsResponse>;
     readonly denoms: () => Promise<QueryDenomsResponse>;
     readonly marketplace: () => Promise<QueryMarketPlaceResponse>;
+    readonly denom: (id:string) => Promise<QueryDenomResponse>;
+    readonly nft: (denom_id: string, nft_id: string) => Promise<QueryNFTResponse>;
   }
 }
 
@@ -111,6 +113,20 @@ export function setupNFTExtension(base: QueryClient):NFTExtension{
       },
       marketplace: async()=>{
         const res = await queryService.MarketPlace({})
+        return res;
+      },
+      denom: async(id: string) => {
+        const res = await queryService.Denom({
+          denomId : id,
+        })
+
+        return res;
+      },
+      nft: async(denom_id: string, nft_id: string) =>{
+        const res = await queryService.NFT({
+          denomId: denom_id,
+          id: nft_id,
+        })
         return res;
       }
     }
