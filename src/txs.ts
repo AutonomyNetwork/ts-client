@@ -3,7 +3,7 @@ import {
   SigningStargateClient,
   defaultRegistryTypes,
   SigningStargateClientOptions,
-  BroadcastTxResponse,
+  DeliverTxResponse,
 } from '@cosmjs/stargate';
 import { Tendermint34Client } from '@cosmjs/tendermint-rpc';
 import { GeneratedType, OfflineSigner } from '@cosmjs/proto-signing';
@@ -74,7 +74,7 @@ export class AutonomyClient extends SigningStargateClient {
     initialSupply: Long,
     fee: StdFee,
     memo: string,
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<DeliverTxResponse> {
     const issueMsg = {
       typeUrl: '/issuance.v1beta1.MsgIssueToken',
       value: {
@@ -209,7 +209,7 @@ export class AutonomyClient extends SigningStargateClient {
     sends: MsgSend[],
     fee: StdFee,
     memo: string,
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<DeliverTxResponse> {
     const msgs = [];
     for (let data of sends) {
       const msg = {

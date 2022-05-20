@@ -69,13 +69,28 @@ import Long from 'long';
 
 // Query nft with nft_denom_id, nft_id
   let nft = await queryClient.nfts.nft("nftdenomc55b629434824b3cb33bedcfa206c34c","nftb836f4f54fee4d4d87b3cff722231afd")
-    console.log(nft);
+  console.log(nft);
 
+    // Query Collection by collection ID
+    let collection = await queryClient.nfts.collectionById(denoms.denoms[0].id)
+    console.log(collection);
+
+    // Query Communities
+    let communities = await queryClient.community.communities();
+    console.log(communities);
+
+    // Query Communities by Community ID
+    let community = await queryClient.community.communityById(communities.communities[0].id)
+    console.log(community);
+
+    let collectionByOwner = await queryClient.nfts.ownerCollection("autonomy1089z23a6pkkl5dulktklcjxe8mgprgpd3cuuu5")
+    console.log(JSON.stringify(collectionByOwner));
 })();
 ```
 ### To transactions
 
 ```ts
+
 
 import { AutonomyClient, autonomyRegistry } from './txs';
 import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
@@ -94,14 +109,14 @@ const sender = {
 const fee: StdFee = {
   amount: [
     {
-      denom: 'atn',
+      denom: 'uaut',
       amount: '200000',
     },
   ],
   gas: '200000',
 };
 (async () => {
-  const gasPrice = GasPrice.fromString('3.14atn');
+  const gasPrice = GasPrice.fromString('3.14uaut');
   const gasLimits = {
     send: 200000,
   };
@@ -119,13 +134,19 @@ const fee: StdFee = {
     const msg = {
       fromAddress: 'autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu',
       toAddress: 'autonomy1r9nfvcdctxyg5q48ae9kupwdh4jlr8kur4sc6q',
-      amount: coins(12, 'atn'),
+      amount: coins(12, 'uaut'),
     };
 
     msgs.push(msg);
   }
-  const resSend = await autonomyClient.sendTokens(sender.address, sender.recipient, coins(12, 'atn'));
+  const resMSend = await autonomyClient.buildMultiSendMsgAndBroadcast(msgs, fee, 'test multisend');
+  console.log(resMSend);
+
+
+  const resSend = await autonomyClient.sendTokens(sender.address, sender.recipient, coins(12, 'uaut'), "auto","test token transfer");
   console.log(resSend);
+
+
   const res = await autonomyClient.issueTokens(
     sender.address,
     'atom',
@@ -137,8 +158,6 @@ const fee: StdFee = {
   );
   console.log(res);
 
-  const resMSend = await autonomyClient.buildMultiSendMsgAndBroadcast(msgs, fee, 'test multisend');
-  console.log(resMSend);
-})();
 
+})();
 ```

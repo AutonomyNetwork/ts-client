@@ -12,6 +12,8 @@ export interface MsgCreateDenom {
   description: string;
   previewUri: string;
   creator: string;
+  depedentCollection: string[];
+  communityId: string;
 }
 
 export interface MsgCreateDenomResponse {}
@@ -65,6 +67,25 @@ export interface MsgBuyNFT {
 
 export interface MsgBuyNFTResponse {}
 
+export interface MsgCreateCommunity {
+  name: string;
+  description: string;
+  creator: string;
+  previewUri: string;
+  id: string;
+}
+
+export interface MsgCreateCommunityResponse {
+  id: string;
+}
+
+export interface MsgJoinCommunity {
+  communityId: string;
+  address: string;
+}
+
+export interface MsgJoinCommunityResponse {}
+
 const baseMsgCreateDenom: object = {
   id: "",
   name: "",
@@ -72,6 +93,8 @@ const baseMsgCreateDenom: object = {
   description: "",
   previewUri: "",
   creator: "",
+  depedentCollection: "",
+  communityId: "",
 };
 
 export const MsgCreateDenom = {
@@ -97,6 +120,12 @@ export const MsgCreateDenom = {
     if (message.creator !== "") {
       writer.uint32(50).string(message.creator);
     }
+    for (const v of message.depedentCollection) {
+      writer.uint32(58).string(v!);
+    }
+    if (message.communityId !== "") {
+      writer.uint32(66).string(message.communityId);
+    }
     return writer;
   },
 
@@ -104,6 +133,7 @@ export const MsgCreateDenom = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgCreateDenom } as MsgCreateDenom;
+    message.depedentCollection = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -125,6 +155,12 @@ export const MsgCreateDenom = {
         case 6:
           message.creator = reader.string();
           break;
+        case 7:
+          message.depedentCollection.push(reader.string());
+          break;
+        case 8:
+          message.communityId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -135,6 +171,7 @@ export const MsgCreateDenom = {
 
   fromJSON(object: any): MsgCreateDenom {
     const message = { ...baseMsgCreateDenom } as MsgCreateDenom;
+    message.depedentCollection = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -165,6 +202,19 @@ export const MsgCreateDenom = {
     } else {
       message.creator = "";
     }
+    if (
+      object.depedentCollection !== undefined &&
+      object.depedentCollection !== null
+    ) {
+      for (const e of object.depedentCollection) {
+        message.depedentCollection.push(String(e));
+      }
+    }
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = String(object.communityId);
+    } else {
+      message.communityId = "";
+    }
     return message;
   },
 
@@ -177,11 +227,19 @@ export const MsgCreateDenom = {
       (obj.description = message.description);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
     message.creator !== undefined && (obj.creator = message.creator);
+    if (message.depedentCollection) {
+      obj.depedentCollection = message.depedentCollection.map((e) => e);
+    } else {
+      obj.depedentCollection = [];
+    }
+    message.communityId !== undefined &&
+      (obj.communityId = message.communityId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgCreateDenom>): MsgCreateDenom {
     const message = { ...baseMsgCreateDenom } as MsgCreateDenom;
+    message.depedentCollection = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -211,6 +269,19 @@ export const MsgCreateDenom = {
       message.creator = object.creator;
     } else {
       message.creator = "";
+    }
+    if (
+      object.depedentCollection !== undefined &&
+      object.depedentCollection !== null
+    ) {
+      for (const e of object.depedentCollection) {
+        message.depedentCollection.push(e);
+      }
+    }
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = object.communityId;
+    } else {
+      message.communityId = "";
     }
     return message;
   },
@@ -1108,6 +1179,336 @@ export const MsgBuyNFTResponse = {
   },
 };
 
+const baseMsgCreateCommunity: object = {
+  name: "",
+  description: "",
+  creator: "",
+  previewUri: "",
+  id: "",
+};
+
+export const MsgCreateCommunity = {
+  encode(
+    message: MsgCreateCommunity,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.creator !== "") {
+      writer.uint32(26).string(message.creator);
+    }
+    if (message.previewUri !== "") {
+      writer.uint32(34).string(message.previewUri);
+    }
+    if (message.id !== "") {
+      writer.uint32(42).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateCommunity {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateCommunity } as MsgCreateCommunity;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.creator = reader.string();
+          break;
+        case 4:
+          message.previewUri = reader.string();
+          break;
+        case 5:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateCommunity {
+    const message = { ...baseMsgCreateCommunity } as MsgCreateCommunity;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
+    }
+    if (object.description !== undefined && object.description !== null) {
+      message.description = String(object.description);
+    } else {
+      message.description = "";
+    }
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.previewUri !== undefined && object.previewUri !== null) {
+      message.previewUri = String(object.previewUri);
+    } else {
+      message.previewUri = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateCommunity): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.previewUri !== undefined && (obj.previewUri = message.previewUri);
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateCommunity>): MsgCreateCommunity {
+    const message = { ...baseMsgCreateCommunity } as MsgCreateCommunity;
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
+    }
+    if (object.description !== undefined && object.description !== null) {
+      message.description = object.description;
+    } else {
+      message.description = "";
+    }
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.previewUri !== undefined && object.previewUri !== null) {
+      message.previewUri = object.previewUri;
+    } else {
+      message.previewUri = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgCreateCommunityResponse: object = { id: "" };
+
+export const MsgCreateCommunityResponse = {
+  encode(
+    message: MsgCreateCommunityResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateCommunityResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateCommunityResponse,
+    } as MsgCreateCommunityResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateCommunityResponse {
+    const message = {
+      ...baseMsgCreateCommunityResponse,
+    } as MsgCreateCommunityResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateCommunityResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateCommunityResponse>
+  ): MsgCreateCommunityResponse {
+    const message = {
+      ...baseMsgCreateCommunityResponse,
+    } as MsgCreateCommunityResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgJoinCommunity: object = { communityId: "", address: "" };
+
+export const MsgJoinCommunity = {
+  encode(
+    message: MsgJoinCommunity,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.communityId !== "") {
+      writer.uint32(10).string(message.communityId);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgJoinCommunity {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgJoinCommunity } as MsgJoinCommunity;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.communityId = reader.string();
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgJoinCommunity {
+    const message = { ...baseMsgJoinCommunity } as MsgJoinCommunity;
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = String(object.communityId);
+    } else {
+      message.communityId = "";
+    }
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgJoinCommunity): unknown {
+    const obj: any = {};
+    message.communityId !== undefined &&
+      (obj.communityId = message.communityId);
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgJoinCommunity>): MsgJoinCommunity {
+    const message = { ...baseMsgJoinCommunity } as MsgJoinCommunity;
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = object.communityId;
+    } else {
+      message.communityId = "";
+    }
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgJoinCommunityResponse: object = {};
+
+export const MsgJoinCommunityResponse = {
+  encode(
+    _: MsgJoinCommunityResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgJoinCommunityResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgJoinCommunityResponse,
+    } as MsgJoinCommunityResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgJoinCommunityResponse {
+    const message = {
+      ...baseMsgJoinCommunityResponse,
+    } as MsgJoinCommunityResponse;
+    return message;
+  },
+
+  toJSON(_: MsgJoinCommunityResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgJoinCommunityResponse>
+  ): MsgJoinCommunityResponse {
+    const message = {
+      ...baseMsgJoinCommunityResponse,
+    } as MsgJoinCommunityResponse;
+    return message;
+  },
+};
+
 export interface Msg {
   CreateDenom(request: MsgCreateDenom): Promise<MsgCreateDenomResponse>;
   MintNFT(request: MsgMintNFT): Promise<MsgMintNFTResponse>;
@@ -1115,6 +1516,10 @@ export interface Msg {
   TransferNFT(request: MsgTransferNFT): Promise<MsgTransferNFTResponse>;
   SellNFT(request: MsgSellNFT): Promise<MsgSellNFTResponse>;
   BuyNFT(request: MsgBuyNFT): Promise<MsgBuyNFTResponse>;
+  CreateCommunity(
+    request: MsgCreateCommunity
+  ): Promise<MsgCreateCommunityResponse>;
+  JoinCommunity(request: MsgJoinCommunity): Promise<MsgJoinCommunityResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1127,6 +1532,8 @@ export class MsgClientImpl implements Msg {
     this.TransferNFT = this.TransferNFT.bind(this);
     this.SellNFT = this.SellNFT.bind(this);
     this.BuyNFT = this.BuyNFT.bind(this);
+    this.CreateCommunity = this.CreateCommunity.bind(this);
+    this.JoinCommunity = this.JoinCommunity.bind(this);
   }
   CreateDenom(request: MsgCreateDenom): Promise<MsgCreateDenomResponse> {
     const data = MsgCreateDenom.encode(request).finish();
@@ -1173,6 +1580,28 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request("nft.v1beta1.Msg", "BuyNFT", data);
     return promise.then((data) =>
       MsgBuyNFTResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreateCommunity(
+    request: MsgCreateCommunity
+  ): Promise<MsgCreateCommunityResponse> {
+    const data = MsgCreateCommunity.encode(request).finish();
+    const promise = this.rpc.request(
+      "nft.v1beta1.Msg",
+      "CreateCommunity",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateCommunityResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  JoinCommunity(request: MsgJoinCommunity): Promise<MsgJoinCommunityResponse> {
+    const data = MsgJoinCommunity.encode(request).finish();
+    const promise = this.rpc.request("nft.v1beta1.Msg", "JoinCommunity", data);
+    return promise.then((data) =>
+      MsgJoinCommunityResponse.decode(new _m0.Reader(data))
     );
   }
 }
