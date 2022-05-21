@@ -1,2 +1,2 @@
-export { setupIssuanceExtension, setupLiquidityExtension, setupNFTExtension} from './queries';
+export { setupIssuanceExtension, setupLiquidityExtension, setupNFTExtension, setUpCommunityExtension } from './queries';
 export { AutonomyClient, autonomyRegistry } from './txs';

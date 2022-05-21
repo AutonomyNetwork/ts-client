@@ -22,6 +22,8 @@ export interface Denom {
   creator: string;
   description: string;
   previewUri: string;
+  dependentDenoms: string[];
+  communityId: string;
 }
 
 export interface Metadata {
@@ -40,6 +42,7 @@ export interface NFT {
   creator: string;
   listed: boolean;
   createdAt?: Date;
+  data: string;
 }
 
 export interface Owner {
@@ -219,6 +222,8 @@ const baseDenom: object = {
   creator: "",
   description: "",
   previewUri: "",
+  dependentDenoms: "",
+  communityId: "",
 };
 
 export const Denom = {
@@ -241,6 +246,12 @@ export const Denom = {
     if (message.previewUri !== "") {
       writer.uint32(50).string(message.previewUri);
     }
+    for (const v of message.dependentDenoms) {
+      writer.uint32(58).string(v!);
+    }
+    if (message.communityId !== "") {
+      writer.uint32(66).string(message.communityId);
+    }
     return writer;
   },
 
@@ -248,6 +259,7 @@ export const Denom = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseDenom } as Denom;
+    message.dependentDenoms = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -269,6 +281,12 @@ export const Denom = {
         case 6:
           message.previewUri = reader.string();
           break;
+        case 7:
+          message.dependentDenoms.push(reader.string());
+          break;
+        case 8:
+          message.communityId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -279,6 +297,7 @@ export const Denom = {
 
   fromJSON(object: any): Denom {
     const message = { ...baseDenom } as Denom;
+    message.dependentDenoms = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = String(object.id);
     } else {
@@ -309,6 +328,19 @@ export const Denom = {
     } else {
       message.previewUri = "";
     }
+    if (
+      object.dependentDenoms !== undefined &&
+      object.dependentDenoms !== null
+    ) {
+      for (const e of object.dependentDenoms) {
+        message.dependentDenoms.push(String(e));
+      }
+    }
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = String(object.communityId);
+    } else {
+      message.communityId = "";
+    }
     return message;
   },
 
@@ -321,11 +353,19 @@ export const Denom = {
     message.description !== undefined &&
       (obj.description = message.description);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
+    if (message.dependentDenoms) {
+      obj.dependentDenoms = message.dependentDenoms.map((e) => e);
+    } else {
+      obj.dependentDenoms = [];
+    }
+    message.communityId !== undefined &&
+      (obj.communityId = message.communityId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Denom>): Denom {
     const message = { ...baseDenom } as Denom;
+    message.dependentDenoms = [];
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id;
     } else {
@@ -355,6 +395,19 @@ export const Denom = {
       message.previewUri = object.previewUri;
     } else {
       message.previewUri = "";
+    }
+    if (
+      object.dependentDenoms !== undefined &&
+      object.dependentDenoms !== null
+    ) {
+      for (const e of object.dependentDenoms) {
+        message.dependentDenoms.push(e);
+      }
+    }
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = object.communityId;
+    } else {
+      message.communityId = "";
     }
     return message;
   },
@@ -482,6 +535,7 @@ const baseNFT: object = {
   royalties: "",
   creator: "",
   listed: false,
+  data: "",
 };
 
 export const NFT = {
@@ -512,6 +566,9 @@ export const NFT = {
         toTimestamp(message.createdAt),
         writer.uint32(66).fork()
       ).ldelim();
+    }
+    if (message.data !== "") {
+      writer.uint32(74).string(message.data);
     }
     return writer;
   },
@@ -548,6 +605,9 @@ export const NFT = {
           message.createdAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 9:
+          message.data = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -599,6 +659,11 @@ export const NFT = {
     } else {
       message.createdAt = undefined;
     }
+    if (object.data !== undefined && object.data !== null) {
+      message.data = String(object.data);
+    } else {
+      message.data = "";
+    }
     return message;
   },
 
@@ -617,6 +682,7 @@ export const NFT = {
     message.listed !== undefined && (obj.listed = message.listed);
     message.createdAt !== undefined &&
       (obj.createdAt = message.createdAt.toISOString());
+    message.data !== undefined && (obj.data = message.data);
     return obj;
   },
 
@@ -661,6 +727,11 @@ export const NFT = {
       message.createdAt = object.createdAt;
     } else {
       message.createdAt = undefined;
+    }
+    if (object.data !== undefined && object.data !== null) {
+      message.data = object.data;
+    } else {
+      message.data = "";
     }
     return message;
   },
