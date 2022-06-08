@@ -79,6 +79,15 @@ import Long from 'long';
     let communities = await queryClient.community.communities();
     console.log(communities);
 
+     // Query all NFTs
+  let nfts = await queryClient.nfts.all();
+  console.log(nfts);
+
+  // Query community collections
+
+  let communityCollections = await queryClient.community.communityCollections(communities.communities[0].id);
+  console.log(communityCollections);
+
     // Query Communities by Community ID
     let community = await queryClient.community.communityById(communities.communities[0].id)
     console.log(community);

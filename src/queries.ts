@@ -17,6 +17,8 @@ import {
   QueryCommunityResponse,
   QueryCollectionResponse,
   QueryCommunityMembersResponse,
+  QueryAllNFTsResponse,
+  QueryCommunityCollectionsResponse,
 } from './codec/nft/v1beta1/query';
 import {
   QueryClientImpl as QueryLiquidityClient,
@@ -49,6 +51,7 @@ export interface NFTExtension {
     readonly marketplace: () => Promise<QueryMarketPlaceResponse>;
     readonly denom: (id: string) => Promise<QueryDenomResponse>;
     readonly nft: (denom_id: string, nft_id: string) => Promise<QueryNFTResponse>;
+    readonly all: () => Promise<QueryAllNFTsResponse>;
   };
 }
 
@@ -57,6 +60,7 @@ export interface CommunityExtension {
     readonly communityById: (id: string) => Promise<QueryCommunityResponse>;
     readonly communities: () => Promise<QueryCommunitiesResponse>;
     readonly comunityMembers: (id: string) => Promise<QueryCommunityMembersResponse>;
+    readonly communityCollections: (id: string) => Promise<QueryCommunityCollectionsResponse>;
   };
 }
 
@@ -163,6 +167,11 @@ export function setupNFTExtension(base: QueryClient): NFTExtension {
 
         return res;
       },
+
+      all: async () => {
+        const res = await queryService.AllNFTs({});
+        return res;
+      },
     },
   };
 }
@@ -186,6 +195,14 @@ export function setUpCommunityExtension(base: QueryClient): CommunityExtension {
       },
       comunityMembers: async (id: string) => {
         const res = await queryService.CommunityMembers({
+          communityId: id,
+        });
+
+        return res;
+      },
+
+      communityCollections: async (id: string) => {
+        const res = await queryService.CommunityCollections({
           communityId: id,
         });
 

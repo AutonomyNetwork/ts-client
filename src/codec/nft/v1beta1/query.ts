@@ -28,6 +28,7 @@ export interface QueryNFTRequest {
 
 export interface QueryNFTResponse {
   nft?: NFT;
+  denom?: Denom;
 }
 
 export interface QueryMarketPlaceNFTRequest {
@@ -88,6 +89,45 @@ export interface QueryCollectionRequest {
 
 export interface QueryCollectionResponse {
   collection?: Collection;
+}
+
+export interface QueryDenomIDsByOwnerRequest {
+  address: string;
+}
+
+export interface QueryDenomIDsByOwnerResponse {
+  ids: string[];
+}
+
+export interface QueryAllNFTsRequest {}
+
+export interface DenomInfo {
+  denomId: string;
+  name: string;
+}
+
+export interface CommunityInfo {
+  communityId: string;
+  name: string;
+}
+
+export interface ALLNFT {
+  nft?: NFT;
+  denomInfo?: DenomInfo;
+  communityInfo?: CommunityInfo;
+}
+
+export interface QueryAllNFTsResponse {
+  all: ALLNFT[];
+}
+
+export interface QueryCommunityCollectionsRequest {
+  communityId: string;
+}
+
+export interface QueryCommunityCollectionsResponse {
+  community?: Community;
+  denoms: Denom[];
 }
 
 const baseQueryDenomRequest: object = { denomId: "" };
@@ -398,6 +438,9 @@ export const QueryNFTResponse = {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
+    if (message.denom !== undefined) {
+      Denom.encode(message.denom, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -410,6 +453,9 @@ export const QueryNFTResponse = {
       switch (tag >>> 3) {
         case 1:
           message.nft = NFT.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.denom = Denom.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -426,6 +472,11 @@ export const QueryNFTResponse = {
     } else {
       message.nft = undefined;
     }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = Denom.fromJSON(object.denom);
+    } else {
+      message.denom = undefined;
+    }
     return message;
   },
 
@@ -433,6 +484,8 @@ export const QueryNFTResponse = {
     const obj: any = {};
     message.nft !== undefined &&
       (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    message.denom !== undefined &&
+      (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
     return obj;
   },
 
@@ -442,6 +495,11 @@ export const QueryNFTResponse = {
       message.nft = NFT.fromPartial(object.nft);
     } else {
       message.nft = undefined;
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = Denom.fromPartial(object.denom);
+    } else {
+      message.denom = undefined;
     }
     return message;
   },
@@ -1515,9 +1573,685 @@ export const QueryCollectionResponse = {
   },
 };
 
+const baseQueryDenomIDsByOwnerRequest: object = { address: "" };
+
+export const QueryDenomIDsByOwnerRequest = {
+  encode(
+    message: QueryDenomIDsByOwnerRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryDenomIDsByOwnerRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryDenomIDsByOwnerRequest,
+    } as QueryDenomIDsByOwnerRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDenomIDsByOwnerRequest {
+    const message = {
+      ...baseQueryDenomIDsByOwnerRequest,
+    } as QueryDenomIDsByOwnerRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryDenomIDsByOwnerRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryDenomIDsByOwnerRequest>
+  ): QueryDenomIDsByOwnerRequest {
+    const message = {
+      ...baseQueryDenomIDsByOwnerRequest,
+    } as QueryDenomIDsByOwnerRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryDenomIDsByOwnerResponse: object = { ids: "" };
+
+export const QueryDenomIDsByOwnerResponse = {
+  encode(
+    message: QueryDenomIDsByOwnerResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.ids) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryDenomIDsByOwnerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryDenomIDsByOwnerResponse,
+    } as QueryDenomIDsByOwnerResponse;
+    message.ids = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ids.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDenomIDsByOwnerResponse {
+    const message = {
+      ...baseQueryDenomIDsByOwnerResponse,
+    } as QueryDenomIDsByOwnerResponse;
+    message.ids = [];
+    if (object.ids !== undefined && object.ids !== null) {
+      for (const e of object.ids) {
+        message.ids.push(String(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryDenomIDsByOwnerResponse): unknown {
+    const obj: any = {};
+    if (message.ids) {
+      obj.ids = message.ids.map((e) => e);
+    } else {
+      obj.ids = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryDenomIDsByOwnerResponse>
+  ): QueryDenomIDsByOwnerResponse {
+    const message = {
+      ...baseQueryDenomIDsByOwnerResponse,
+    } as QueryDenomIDsByOwnerResponse;
+    message.ids = [];
+    if (object.ids !== undefined && object.ids !== null) {
+      for (const e of object.ids) {
+        message.ids.push(e);
+      }
+    }
+    return message;
+  },
+};
+
+const baseQueryAllNFTsRequest: object = {};
+
+export const QueryAllNFTsRequest = {
+  encode(
+    _: QueryAllNFTsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllNFTsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllNFTsRequest } as QueryAllNFTsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllNFTsRequest {
+    const message = { ...baseQueryAllNFTsRequest } as QueryAllNFTsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllNFTsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<QueryAllNFTsRequest>): QueryAllNFTsRequest {
+    const message = { ...baseQueryAllNFTsRequest } as QueryAllNFTsRequest;
+    return message;
+  },
+};
+
+const baseDenomInfo: object = { denomId: "", name: "" };
+
+export const DenomInfo = {
+  encode(
+    message: DenomInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denomId !== "") {
+      writer.uint32(10).string(message.denomId);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DenomInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDenomInfo } as DenomInfo;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denomId = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DenomInfo {
+    const message = { ...baseDenomInfo } as DenomInfo;
+    if (object.denomId !== undefined && object.denomId !== null) {
+      message.denomId = String(object.denomId);
+    } else {
+      message.denomId = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
+    }
+    return message;
+  },
+
+  toJSON(message: DenomInfo): unknown {
+    const obj: any = {};
+    message.denomId !== undefined && (obj.denomId = message.denomId);
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DenomInfo>): DenomInfo {
+    const message = { ...baseDenomInfo } as DenomInfo;
+    if (object.denomId !== undefined && object.denomId !== null) {
+      message.denomId = object.denomId;
+    } else {
+      message.denomId = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
+    }
+    return message;
+  },
+};
+
+const baseCommunityInfo: object = { communityId: "", name: "" };
+
+export const CommunityInfo = {
+  encode(
+    message: CommunityInfo,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.communityId !== "") {
+      writer.uint32(10).string(message.communityId);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CommunityInfo {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommunityInfo } as CommunityInfo;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.communityId = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommunityInfo {
+    const message = { ...baseCommunityInfo } as CommunityInfo;
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = String(object.communityId);
+    } else {
+      message.communityId = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = String(object.name);
+    } else {
+      message.name = "";
+    }
+    return message;
+  },
+
+  toJSON(message: CommunityInfo): unknown {
+    const obj: any = {};
+    message.communityId !== undefined &&
+      (obj.communityId = message.communityId);
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CommunityInfo>): CommunityInfo {
+    const message = { ...baseCommunityInfo } as CommunityInfo;
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = object.communityId;
+    } else {
+      message.communityId = "";
+    }
+    if (object.name !== undefined && object.name !== null) {
+      message.name = object.name;
+    } else {
+      message.name = "";
+    }
+    return message;
+  },
+};
+
+const baseALLNFT: object = {};
+
+export const ALLNFT = {
+  encode(
+    message: ALLNFT,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.nft !== undefined) {
+      NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.denomInfo !== undefined) {
+      DenomInfo.encode(message.denomInfo, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.communityInfo !== undefined) {
+      CommunityInfo.encode(
+        message.communityInfo,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ALLNFT {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseALLNFT } as ALLNFT;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nft = NFT.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.denomInfo = DenomInfo.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.communityInfo = CommunityInfo.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ALLNFT {
+    const message = { ...baseALLNFT } as ALLNFT;
+    if (object.nft !== undefined && object.nft !== null) {
+      message.nft = NFT.fromJSON(object.nft);
+    } else {
+      message.nft = undefined;
+    }
+    if (object.denomInfo !== undefined && object.denomInfo !== null) {
+      message.denomInfo = DenomInfo.fromJSON(object.denomInfo);
+    } else {
+      message.denomInfo = undefined;
+    }
+    if (object.communityInfo !== undefined && object.communityInfo !== null) {
+      message.communityInfo = CommunityInfo.fromJSON(object.communityInfo);
+    } else {
+      message.communityInfo = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: ALLNFT): unknown {
+    const obj: any = {};
+    message.nft !== undefined &&
+      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    message.denomInfo !== undefined &&
+      (obj.denomInfo = message.denomInfo
+        ? DenomInfo.toJSON(message.denomInfo)
+        : undefined);
+    message.communityInfo !== undefined &&
+      (obj.communityInfo = message.communityInfo
+        ? CommunityInfo.toJSON(message.communityInfo)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ALLNFT>): ALLNFT {
+    const message = { ...baseALLNFT } as ALLNFT;
+    if (object.nft !== undefined && object.nft !== null) {
+      message.nft = NFT.fromPartial(object.nft);
+    } else {
+      message.nft = undefined;
+    }
+    if (object.denomInfo !== undefined && object.denomInfo !== null) {
+      message.denomInfo = DenomInfo.fromPartial(object.denomInfo);
+    } else {
+      message.denomInfo = undefined;
+    }
+    if (object.communityInfo !== undefined && object.communityInfo !== null) {
+      message.communityInfo = CommunityInfo.fromPartial(object.communityInfo);
+    } else {
+      message.communityInfo = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllNFTsResponse: object = {};
+
+export const QueryAllNFTsResponse = {
+  encode(
+    message: QueryAllNFTsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.all) {
+      ALLNFT.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllNFTsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllNFTsResponse } as QueryAllNFTsResponse;
+    message.all = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.all.push(ALLNFT.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllNFTsResponse {
+    const message = { ...baseQueryAllNFTsResponse } as QueryAllNFTsResponse;
+    message.all = [];
+    if (object.all !== undefined && object.all !== null) {
+      for (const e of object.all) {
+        message.all.push(ALLNFT.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllNFTsResponse): unknown {
+    const obj: any = {};
+    if (message.all) {
+      obj.all = message.all.map((e) => (e ? ALLNFT.toJSON(e) : undefined));
+    } else {
+      obj.all = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryAllNFTsResponse>): QueryAllNFTsResponse {
+    const message = { ...baseQueryAllNFTsResponse } as QueryAllNFTsResponse;
+    message.all = [];
+    if (object.all !== undefined && object.all !== null) {
+      for (const e of object.all) {
+        message.all.push(ALLNFT.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
+const baseQueryCommunityCollectionsRequest: object = { communityId: "" };
+
+export const QueryCommunityCollectionsRequest = {
+  encode(
+    message: QueryCommunityCollectionsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.communityId !== "") {
+      writer.uint32(10).string(message.communityId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCommunityCollectionsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCommunityCollectionsRequest,
+    } as QueryCommunityCollectionsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.communityId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCommunityCollectionsRequest {
+    const message = {
+      ...baseQueryCommunityCollectionsRequest,
+    } as QueryCommunityCollectionsRequest;
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = String(object.communityId);
+    } else {
+      message.communityId = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryCommunityCollectionsRequest): unknown {
+    const obj: any = {};
+    message.communityId !== undefined &&
+      (obj.communityId = message.communityId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCommunityCollectionsRequest>
+  ): QueryCommunityCollectionsRequest {
+    const message = {
+      ...baseQueryCommunityCollectionsRequest,
+    } as QueryCommunityCollectionsRequest;
+    if (object.communityId !== undefined && object.communityId !== null) {
+      message.communityId = object.communityId;
+    } else {
+      message.communityId = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryCommunityCollectionsResponse: object = {};
+
+export const QueryCommunityCollectionsResponse = {
+  encode(
+    message: QueryCommunityCollectionsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.community !== undefined) {
+      Community.encode(message.community, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.denoms) {
+      Denom.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCommunityCollectionsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCommunityCollectionsResponse,
+    } as QueryCommunityCollectionsResponse;
+    message.denoms = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.community = Community.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.denoms.push(Denom.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCommunityCollectionsResponse {
+    const message = {
+      ...baseQueryCommunityCollectionsResponse,
+    } as QueryCommunityCollectionsResponse;
+    message.denoms = [];
+    if (object.community !== undefined && object.community !== null) {
+      message.community = Community.fromJSON(object.community);
+    } else {
+      message.community = undefined;
+    }
+    if (object.denoms !== undefined && object.denoms !== null) {
+      for (const e of object.denoms) {
+        message.denoms.push(Denom.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryCommunityCollectionsResponse): unknown {
+    const obj: any = {};
+    message.community !== undefined &&
+      (obj.community = message.community
+        ? Community.toJSON(message.community)
+        : undefined);
+    if (message.denoms) {
+      obj.denoms = message.denoms.map((e) => (e ? Denom.toJSON(e) : undefined));
+    } else {
+      obj.denoms = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCommunityCollectionsResponse>
+  ): QueryCommunityCollectionsResponse {
+    const message = {
+      ...baseQueryCommunityCollectionsResponse,
+    } as QueryCommunityCollectionsResponse;
+    message.denoms = [];
+    if (object.community !== undefined && object.community !== null) {
+      message.community = Community.fromPartial(object.community);
+    } else {
+      message.community = undefined;
+    }
+    if (object.denoms !== undefined && object.denoms !== null) {
+      for (const e of object.denoms) {
+        message.denoms.push(Denom.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 export interface Query {
   Denom(request: QueryDenomRequest): Promise<QueryDenomResponse>;
   Denoms(request: QueryDenomsRequest): Promise<QueryDenomsResponse>;
+  DenomIDsByOwner(
+    request: QueryDenomIDsByOwnerRequest
+  ): Promise<QueryDenomIDsByOwnerResponse>;
   Collection(request: QueryCollectionRequest): Promise<QueryCollectionResponse>;
   NFT(request: QueryNFTRequest): Promise<QueryNFTResponse>;
   MarketPlaceNFT(
@@ -1527,10 +2261,14 @@ export interface Query {
     request: QueryMarketPlaceRequest
   ): Promise<QueryMarketPlaceResponse>;
   OwnerNFTs(request: QueryOwnerNFTsRequest): Promise<QueryOwnerNFTsResponse>;
+  AllNFTs(request: QueryAllNFTsRequest): Promise<QueryAllNFTsResponse>;
   Communities(
     request: QueryCommunitiesRequest
   ): Promise<QueryCommunitiesResponse>;
   Community(request: QueryCommunityRequest): Promise<QueryCommunityResponse>;
+  CommunityCollections(
+    request: QueryCommunityCollectionsRequest
+  ): Promise<QueryCommunityCollectionsResponse>;
   CommunityMembers(
     request: QueryCommunityMembersRequest
   ): Promise<QueryCommunityMembersResponse>;
@@ -1542,13 +2280,16 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Denom = this.Denom.bind(this);
     this.Denoms = this.Denoms.bind(this);
+    this.DenomIDsByOwner = this.DenomIDsByOwner.bind(this);
     this.Collection = this.Collection.bind(this);
     this.NFT = this.NFT.bind(this);
     this.MarketPlaceNFT = this.MarketPlaceNFT.bind(this);
     this.MarketPlace = this.MarketPlace.bind(this);
     this.OwnerNFTs = this.OwnerNFTs.bind(this);
+    this.AllNFTs = this.AllNFTs.bind(this);
     this.Communities = this.Communities.bind(this);
     this.Community = this.Community.bind(this);
+    this.CommunityCollections = this.CommunityCollections.bind(this);
     this.CommunityMembers = this.CommunityMembers.bind(this);
   }
   Denom(request: QueryDenomRequest): Promise<QueryDenomResponse> {
@@ -1564,6 +2305,20 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request("nft.v1beta1.Query", "Denoms", data);
     return promise.then((data) =>
       QueryDenomsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DenomIDsByOwner(
+    request: QueryDenomIDsByOwnerRequest
+  ): Promise<QueryDenomIDsByOwnerResponse> {
+    const data = QueryDenomIDsByOwnerRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "nft.v1beta1.Query",
+      "DenomIDsByOwner",
+      data
+    );
+    return promise.then((data) =>
+      QueryDenomIDsByOwnerResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -1617,6 +2372,14 @@ export class QueryClientImpl implements Query {
     );
   }
 
+  AllNFTs(request: QueryAllNFTsRequest): Promise<QueryAllNFTsResponse> {
+    const data = QueryAllNFTsRequest.encode(request).finish();
+    const promise = this.rpc.request("nft.v1beta1.Query", "AllNFTs", data);
+    return promise.then((data) =>
+      QueryAllNFTsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   Communities(
     request: QueryCommunitiesRequest
   ): Promise<QueryCommunitiesResponse> {
@@ -1632,6 +2395,20 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request("nft.v1beta1.Query", "Community", data);
     return promise.then((data) =>
       QueryCommunityResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CommunityCollections(
+    request: QueryCommunityCollectionsRequest
+  ): Promise<QueryCommunityCollectionsResponse> {
+    const data = QueryCommunityCollectionsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "nft.v1beta1.Query",
+      "CommunityCollections",
+      data
+    );
+    return promise.then((data) =>
+      QueryCommunityCollectionsResponse.decode(new _m0.Reader(data))
     );
   }
 
