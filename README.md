@@ -63,6 +63,13 @@ import Long from 'long';
   let marketplace = await queryClient.nfts.marketplace();
   console.log(marketplace);
 
+  let singleNFT = marketplace.marketPlace[0]
+  console.log(singleNFT);
+
+  let marketplaceNFT = await queryClient.nfts.marketplaceNFT(singleNFT.denomID, singleNFT.nftId)
+  console.log(marketplaceNFT);
+
+
     // Query Denom
     let denom = await queryClient.nfts.denom("nftdenomc55b629434824b3cb33bedcfa206c34c")
     console.log(denom);
