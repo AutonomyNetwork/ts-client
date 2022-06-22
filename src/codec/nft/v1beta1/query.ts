@@ -38,6 +38,7 @@ export interface QueryMarketPlaceNFTRequest {
 
 export interface QueryMarketPlaceNFTResponse {
   marketPlace?: MarketPlace;
+  nft?: NFT;
 }
 
 export interface QueryMarketPlaceRequest {}
@@ -604,6 +605,9 @@ export const QueryMarketPlaceNFTResponse = {
         writer.uint32(10).fork()
       ).ldelim();
     }
+    if (message.nft !== undefined) {
+      NFT.encode(message.nft, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -622,6 +626,9 @@ export const QueryMarketPlaceNFTResponse = {
         case 1:
           message.marketPlace = MarketPlace.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.nft = NFT.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -639,6 +646,11 @@ export const QueryMarketPlaceNFTResponse = {
     } else {
       message.marketPlace = undefined;
     }
+    if (object.nft !== undefined && object.nft !== null) {
+      message.nft = NFT.fromJSON(object.nft);
+    } else {
+      message.nft = undefined;
+    }
     return message;
   },
 
@@ -648,6 +660,8 @@ export const QueryMarketPlaceNFTResponse = {
       (obj.marketPlace = message.marketPlace
         ? MarketPlace.toJSON(message.marketPlace)
         : undefined);
+    message.nft !== undefined &&
+      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
   },
 
@@ -661,6 +675,11 @@ export const QueryMarketPlaceNFTResponse = {
       message.marketPlace = MarketPlace.fromPartial(object.marketPlace);
     } else {
       message.marketPlace = undefined;
+    }
+    if (object.nft !== undefined && object.nft !== null) {
+      message.nft = NFT.fromPartial(object.nft);
+    } else {
+      message.nft = undefined;
     }
     return message;
   },

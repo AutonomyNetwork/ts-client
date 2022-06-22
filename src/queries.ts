@@ -19,6 +19,7 @@ import {
   QueryCommunityMembersResponse,
   QueryAllNFTsResponse,
   QueryCommunityCollectionsResponse,
+  QueryMarketPlaceNFTResponse,
 } from './codec/nft/v1beta1/query';
 import {
   QueryClientImpl as QueryLiquidityClient,
@@ -49,6 +50,7 @@ export interface NFTExtension {
     readonly collectionById: (id: string) => Promise<QueryCollectionResponse>;
     readonly denoms: () => Promise<QueryDenomsResponse>;
     readonly marketplace: () => Promise<QueryMarketPlaceResponse>;
+    readonly marketplaceNFT:(denom_id:string, nft_id:string) => Promise<QueryMarketPlaceNFTResponse>;
     readonly denom: (id: string) => Promise<QueryDenomResponse>;
     readonly nft: (denom_id: string, nft_id: string) => Promise<QueryNFTResponse>;
     readonly all: () => Promise<QueryAllNFTsResponse>;
@@ -144,6 +146,13 @@ export function setupNFTExtension(base: QueryClient): NFTExtension {
       },
       marketplace: async () => {
         const res = await queryService.MarketPlace({});
+        return res;
+      },
+      marketplaceNFT: async(denom_id:string, nft_id: string) =>{
+        const res = await queryService.MarketPlaceNFT({
+          denomId: denom_id,
+          id:nft_id,
+        })
         return res;
       },
       denom: async (id: string) => {
