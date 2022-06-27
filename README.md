@@ -59,6 +59,24 @@ import Long from 'long';
   let collection = await queryClient.nfts.ownerCollection('autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu')
   console.log(collection);
 
+
+  const paginationKey = new Uint8Array()
+
+  // default Query MarketPlace
+  let marketplaceDefault = await queryClient.nfts.marketplace();
+  console.log(marketplaceDefault);
+
+
+  // Query MarketPlace with pagination
+  let marketplace = await queryClient.nfts.marketplace(Long.fromNumber(2), paginationKey);
+  console.log(marketplace.marketPlace);
+
+
+  // Query with nextKey pagination
+  let marketplaceNext = await queryClient.nfts.marketplace(Long.fromNumber(4), marketplace.pagination!.nextKey);
+  console.log(marketplaceNext);
+
+
   // Query MarketPlace
   let marketplace = await queryClient.nfts.marketplace();
   console.log(marketplace);

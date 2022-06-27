@@ -49,7 +49,7 @@ export interface NFTExtension {
     readonly ownerCollection: (address: string) => Promise<QueryOwnerNFTsResponse>;
     readonly collectionById: (id: string) => Promise<QueryCollectionResponse>;
     readonly denoms: () => Promise<QueryDenomsResponse>;
-    readonly marketplace: () => Promise<QueryMarketPlaceResponse>;
+    readonly marketplace: (limit?: Long, key?: Uint8Array) => Promise<QueryMarketPlaceResponse>;
     readonly marketplaceNFT:(denom_id:string, nft_id:string) => Promise<QueryMarketPlaceNFTResponse>;
     readonly denom: (id: string) => Promise<QueryDenomResponse>;
     readonly nft: (denom_id: string, nft_id: string) => Promise<QueryNFTResponse>;
@@ -144,9 +144,22 @@ export function setupNFTExtension(base: QueryClient): NFTExtension {
         const res = await queryService.Denoms({});
         return res;
       },
-      marketplace: async () => {
-        const res = await queryService.MarketPlace({});
-        return res;
+      marketplace: async (limit?: Long, key?: Uint8Array) => {
+        if (limit! && key!){
+        const res = await queryService.MarketPlace({
+            pagination:{
+              limit: limit! ,
+              key: key!,
+              offset: Long.fromNumber(0, true),
+              countTotal: true,
+              reverse: false,
+            }
+          });
+          return res
+        }else{
+      const  res1 = await queryService.MarketPlace({});
+      return res1;
+      }
       },
       marketplaceNFT: async(denom_id:string, nft_id: string) =>{
         const res = await queryService.MarketPlaceNFT({
