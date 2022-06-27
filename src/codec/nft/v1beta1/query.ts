@@ -3,6 +3,10 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Denom, NFT, Collection } from "../../nft/v1beta1/nft";
 import { MarketPlace } from "../../nft/v1beta1/market_place";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../cosmos/base/query/v1beta1/pagination";
 import { Community, CommunityMembers } from "../../nft/v1beta1/community";
 
 export const protobufPackage = "nft.v1beta1";
@@ -41,10 +45,13 @@ export interface QueryMarketPlaceNFTResponse {
   nft?: NFT;
 }
 
-export interface QueryMarketPlaceRequest {}
+export interface QueryMarketPlaceRequest {
+  pagination?: PageRequest;
+}
 
 export interface QueryMarketPlaceResponse {
   marketPlace: MarketPlace[];
+  pagination?: PageResponse;
 }
 
 export interface QueryOwnerNFTsRequest {
@@ -689,9 +696,12 @@ const baseQueryMarketPlaceRequest: object = {};
 
 export const QueryMarketPlaceRequest = {
   encode(
-    _: QueryMarketPlaceRequest,
+    message: QueryMarketPlaceRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -707,6 +717,9 @@ export const QueryMarketPlaceRequest = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -715,24 +728,38 @@ export const QueryMarketPlaceRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryMarketPlaceRequest {
+  fromJSON(object: any): QueryMarketPlaceRequest {
     const message = {
       ...baseQueryMarketPlaceRequest,
     } as QueryMarketPlaceRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
     return message;
   },
 
-  toJSON(_: QueryMarketPlaceRequest): unknown {
+  toJSON(message: QueryMarketPlaceRequest): unknown {
     const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<QueryMarketPlaceRequest>
+    object: DeepPartial<QueryMarketPlaceRequest>
   ): QueryMarketPlaceRequest {
     const message = {
       ...baseQueryMarketPlaceRequest,
     } as QueryMarketPlaceRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
     return message;
   },
 };
@@ -746,6 +773,12 @@ export const QueryMarketPlaceResponse = {
   ): _m0.Writer {
     for (const v of message.marketPlace) {
       MarketPlace.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -766,6 +799,9 @@ export const QueryMarketPlaceResponse = {
         case 1:
           message.marketPlace.push(MarketPlace.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -784,6 +820,11 @@ export const QueryMarketPlaceResponse = {
         message.marketPlace.push(MarketPlace.fromJSON(e));
       }
     }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
     return message;
   },
 
@@ -796,6 +837,10 @@ export const QueryMarketPlaceResponse = {
     } else {
       obj.marketPlace = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -810,6 +855,11 @@ export const QueryMarketPlaceResponse = {
       for (const e of object.marketPlace) {
         message.marketPlace.push(MarketPlace.fromPartial(e));
       }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
     }
     return message;
   },
