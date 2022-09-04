@@ -3,10 +3,10 @@ const fee: StdFee = {
     amount: [
       {
         denom: 'uaut',
-        amount: '20000',
+        amount: '500',
       },
     ],
-    gas: '2000000',
+    gas: '150000',
   };
 
 export type MINTNFT = {
