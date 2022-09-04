@@ -83,6 +83,6 @@ app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(PORT, () => {
   console.log(`NFT Faucet Server Started at ${PORT} `);
-  console.log(`/status Request for statsu `);
+  console.log(`/status Request for status `);
   console.log(`/credit  to get NFTFaucet `);
 });
