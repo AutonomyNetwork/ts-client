@@ -18,6 +18,7 @@ lib/
 
 # demo mnemonics from cli
 *.key
+.env
 
 # Code coverage
 .nyc_output/
