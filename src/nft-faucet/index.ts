@@ -20,6 +20,7 @@ export class NFTFaucet {
       gasPrice: gasPrice,
       gasLimits: gasLimits,
       registry: new Registry([...autonomyRegistry]),
+      broadcastTimeoutMs:5,
     };
     const wallet = await DirectSecp256k1HdWallet.fromMnemonic(menmonic, { prefix: addressPrefix });
     const client = await AutonomyClient.autonomySigner(apiUrl, wallet, options);

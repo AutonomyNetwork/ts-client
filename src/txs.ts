@@ -61,7 +61,7 @@ export class AutonomyClient extends SigningStargateClient {
   public static async autonomySigner(
     endpoint: string,
     signer: OfflineSigner,
-    options: SigningStargateClientOptions = {},
+    options: SigningStargateClientOptions,
   ): Promise<AutonomyClient> {
     const tmClient = await Tendermint34Client.connect(endpoint);
     return new AutonomyClient(tmClient, signer, options);
