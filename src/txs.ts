@@ -10,6 +10,9 @@ import { GeneratedType, OfflineSigner } from '@cosmjs/proto-signing';
 import Long from 'long';
 import { MsgSend } from './codec/cosmos/bank/v1beta1/tx';
 import { MsgIssueToken } from './codec/issuance/v1beta1/tx';
+// import { coins } from '@cosmjs/amino';
+
+
 import {
   MsgCreatePool,
   MsgCreatePoolResponse,
@@ -32,8 +35,10 @@ import {
   MsgSellNFTResponse,
   MsgBuyNFT,
   MsgBuyNFTResponse,
+  MsgCreateCommunity,
 } from './codec/nft/v1beta1/tx';
 import { Coin } from './codec/cosmos_proto/coin';
+// import { Any } from './codec/google/protobuf/any';
 
 export const autonomyRegistry: ReadonlyArray<[string, GeneratedType]> = [
   ...defaultRegistryTypes,
@@ -43,6 +48,7 @@ export const autonomyRegistry: ReadonlyArray<[string, GeneratedType]> = [
   ['/nft.v1beta1.MsgTransferNFT', MsgTransferNFT],
   ['/nft.v1beta1.MsgSellNFT', MsgSellNFT],
   ['/nft.v1beta1.MsgBuyNFT', MsgBuyNFT],
+  ['/nft.v1beta1.MsgCreateCommunity', MsgCreateCommunity],
 
   ['/tendermint.liquidity.v1beta1.MsgCreatePool', MsgCreatePool],
   ['/tendermint.liquidity.v1beta1.MsgDepositWithinBatch', MsgDepositWithinBatch],
@@ -87,6 +93,31 @@ export class AutonomyClient extends SigningStargateClient {
     };
     return this.signAndBroadcast(sender, [issueMsg], fee, memo);
   }
+
+  public async createcommunity(
+    sender: string,
+    id: string,
+    name: string,
+    description: string,
+    preview_url: string,
+    fee: StdFee,
+    memo: string,
+  ): Promise<DeliverTxResponse> {
+    const msg = {
+      typeUrl: '/nft.v1beta1.MsgCreateCommunity',
+      value: {
+        id: id,
+        name: name,
+        description: description,
+        previewUri: preview_url,
+        creator: sender,
+      },
+    };
+
+    return this.signAndBroadcast(sender, [msg], fee, memo);
+  }
+
+
 
   public async createdenom(
     sender: string,
@@ -304,4 +335,34 @@ export class AutonomyClient extends SigningStargateClient {
     };
     return this.signAndBroadcast(withdrawerAddress, [msg], fee, memo);
   }
+
+
+  // public async feeGrantAllowance(granter:string, grantee:string,fee:StdFee, memo:string) :Promise<DeliverTxResponse>{
+  //   const allowance = {
+  //     typeUrl : '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',
+  //     value : AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
+  //       allowance:{
+  //           typeUrl:"/cosmos.feegrant.v1beta1.BasicAllowance",
+  //           value: BasicAllowance.encode(
+  //               BasicAllowance.fromPartial({
+  //                   spendLimit: coins(100, 'stake')
+  //               })
+  //           ).finish()
+  //       },
+  //       allowedMessages:["/nft.v1beta1.MsgCreateCommunity"]
+  //     })).finish()
+  //   }
+
+  //   const msg_fee_grant_allowance = {
+  //     typeUrl :'/cosmos.feegrant.v1beta1.MsgGrantAllowance',
+  //     value:{
+  //       granter: granter,
+  //       grantee:grantee,
+  //       allowance:allowance,
+  //     }
+  //   }
+
+  //   return this.signAndBroadcast(granter, [msg_fee_grant_allowance], fee, memo)
+
+  // }
 }

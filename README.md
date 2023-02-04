@@ -124,8 +124,6 @@ import Long from 'long';
 ### To transactions
 
 ```ts
-
-
 import { AutonomyClient, autonomyRegistry } from './txs';
 import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
 import { StdFee } from '@cosmjs/amino';
@@ -143,14 +141,14 @@ const sender = {
 const fee: StdFee = {
   amount: [
     {
-      denom: 'uaut',
+      denom: 'stake',
       amount: '200000',
     },
   ],
   gas: '200000',
 };
 (async () => {
-  const gasPrice = GasPrice.fromString('3.14uaut');
+  const gasPrice = GasPrice.fromString('3.14stake');
   const gasLimits = {
     send: 200000,
   };
@@ -163,18 +161,18 @@ const fee: StdFee = {
 
   const autonomyClient = await AutonomyClient.autonomySigner('localhost:26657', wallet, options);
 
-  const msgs = [];
-  for (let i = 0; i < 5; i++) {
-    const msg = {
-      fromAddress: 'autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu',
-      toAddress: 'autonomy1r9nfvcdctxyg5q48ae9kupwdh4jlr8kur4sc6q',
-      amount: coins(12, 'uaut'),
-    };
+//   const msgs = [];
+//   for (let i = 0; i < 5; i++) {
+//     const msg = {
+//       fromAddress: 'autonomy1s5gng5s7w4yk4tk6qmfld8r7p4468jw2hfpklu',
+//       toAddress: 'autonomy1r9nfvcdctxyg5q48ae9kupwdh4jlr8kur4sc6q',
+//       amount: coins(12, 'uaut'),
+//     };
 
-    msgs.push(msg);
-  }
-  const resMSend = await autonomyClient.buildMultiSendMsgAndBroadcast(msgs, fee, 'test multisend');
-  console.log(resMSend);
+//     msgs.push(msg);
+//   }
+//   const resMSend = await autonomyClient.buildMultiSendMsgAndBroadcast(msgs, fee, 'test multisend');
+//   console.log(resMSend);
 
 
   const resSend = await autonomyClient.sendTokens(sender.address, sender.recipient, coins(12, 'uaut'), "auto","test token transfer");
@@ -192,6 +190,10 @@ const fee: StdFee = {
   );
   console.log(res);
 
+  
+  const grantRes = await autonomyClient.feeGrantAllowance(sender.address, sender.address, fee, "test fee grant")
+  console.log(grantRes);
+  
 
 })();
 ```
