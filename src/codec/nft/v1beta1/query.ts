@@ -1,15 +1,20 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Denom, NFT, Collection } from "../../nft/v1beta1/nft";
-import { MarketPlace } from "../../nft/v1beta1/market_place";
-import {
-  PageRequest,
-  PageResponse,
-} from "../../cosmos/base/query/v1beta1/pagination";
-import { Community, CommunityMembers } from "../../nft/v1beta1/community";
+import { PageRequest, PageResponse } from "../../cosmos/base/query/v1beta1/pagination";
+import { Community, CommunityMembers } from "./community";
+import { MarketPlace } from "./market_place";
+import { Collection, Denom, NFT } from "./nft";
 
 export const protobufPackage = "nft.v1beta1";
+
+export interface QueryCommunitiesByOwnerRequest {
+  address: string;
+}
+
+export interface QueryCommunitiesByOwnerResponse {
+  commities?: Community;
+}
 
 export interface QueryDenomRequest {
   denomId: string;
@@ -19,7 +24,8 @@ export interface QueryDenomResponse {
   denom?: Denom;
 }
 
-export interface QueryDenomsRequest {}
+export interface QueryDenomsRequest {
+}
 
 export interface QueryDenomsResponse {
   denoms: Denom[];
@@ -77,7 +83,8 @@ export interface QueryCommunityResponse {
 }
 
 /** TODO: pagination */
-export interface QueryCommunitiesRequest {}
+export interface QueryCommunitiesRequest {
+}
 
 export interface QueryCommunitiesResponse {
   communities: Community[];
@@ -107,7 +114,8 @@ export interface QueryDenomIDsByOwnerResponse {
   ids: string[];
 }
 
-export interface QueryAllNFTsRequest {}
+export interface QueryAllNFTsRequest {
+}
 
 export interface DenomInfo {
   denomId: string;
@@ -138,13 +146,113 @@ export interface QueryCommunityCollectionsResponse {
   denoms: Denom[];
 }
 
-const baseQueryDenomRequest: object = { denomId: "" };
+function createBaseQueryCommunitiesByOwnerRequest(): QueryCommunitiesByOwnerRequest {
+  return { address: "" };
+}
+
+export const QueryCommunitiesByOwnerRequest = {
+  encode(message: QueryCommunitiesByOwnerRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunitiesByOwnerRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryCommunitiesByOwnerRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCommunitiesByOwnerRequest {
+    return { address: isSet(object.address) ? String(object.address) : "" };
+  },
+
+  toJSON(message: QueryCommunitiesByOwnerRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryCommunitiesByOwnerRequest>, I>>(
+    object: I,
+  ): QueryCommunitiesByOwnerRequest {
+    const message = createBaseQueryCommunitiesByOwnerRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryCommunitiesByOwnerResponse(): QueryCommunitiesByOwnerResponse {
+  return { commities: undefined };
+}
+
+export const QueryCommunitiesByOwnerResponse = {
+  encode(message: QueryCommunitiesByOwnerResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.commities !== undefined) {
+      Community.encode(message.commities, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunitiesByOwnerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryCommunitiesByOwnerResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commities = Community.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCommunitiesByOwnerResponse {
+    return { commities: isSet(object.commities) ? Community.fromJSON(object.commities) : undefined };
+  },
+
+  toJSON(message: QueryCommunitiesByOwnerResponse): unknown {
+    const obj: any = {};
+    message.commities !== undefined &&
+      (obj.commities = message.commities ? Community.toJSON(message.commities) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryCommunitiesByOwnerResponse>, I>>(
+    object: I,
+  ): QueryCommunitiesByOwnerResponse {
+    const message = createBaseQueryCommunitiesByOwnerResponse();
+    message.commities = (object.commities !== undefined && object.commities !== null)
+      ? Community.fromPartial(object.commities)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryDenomRequest(): QueryDenomRequest {
+  return { denomId: "" };
+}
 
 export const QueryDenomRequest = {
-  encode(
-    message: QueryDenomRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDenomRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denomId !== "") {
       writer.uint32(10).string(message.denomId);
     }
@@ -154,7 +262,7 @@ export const QueryDenomRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryDenomRequest } as QueryDenomRequest;
+    const message = createBaseQueryDenomRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -170,13 +278,7 @@ export const QueryDenomRequest = {
   },
 
   fromJSON(object: any): QueryDenomRequest {
-    const message = { ...baseQueryDenomRequest } as QueryDenomRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    return message;
+    return { denomId: isSet(object.denomId) ? String(object.denomId) : "" };
   },
 
   toJSON(message: QueryDenomRequest): unknown {
@@ -185,24 +287,19 @@ export const QueryDenomRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryDenomRequest>): QueryDenomRequest {
-    const message = { ...baseQueryDenomRequest } as QueryDenomRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryDenomRequest>, I>>(object: I): QueryDenomRequest {
+    const message = createBaseQueryDenomRequest();
+    message.denomId = object.denomId ?? "";
     return message;
   },
 };
 
-const baseQueryDenomResponse: object = {};
+function createBaseQueryDenomResponse(): QueryDenomResponse {
+  return { denom: undefined };
+}
 
 export const QueryDenomResponse = {
-  encode(
-    message: QueryDenomResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDenomResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== undefined) {
       Denom.encode(message.denom, writer.uint32(10).fork()).ldelim();
     }
@@ -212,7 +309,7 @@ export const QueryDenomResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryDenomResponse } as QueryDenomResponse;
+    const message = createBaseQueryDenomResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -228,47 +325,35 @@ export const QueryDenomResponse = {
   },
 
   fromJSON(object: any): QueryDenomResponse {
-    const message = { ...baseQueryDenomResponse } as QueryDenomResponse;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromJSON(object.denom);
-    } else {
-      message.denom = undefined;
-    }
-    return message;
+    return { denom: isSet(object.denom) ? Denom.fromJSON(object.denom) : undefined };
   },
 
   toJSON(message: QueryDenomResponse): unknown {
     const obj: any = {};
-    message.denom !== undefined &&
-      (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
+    message.denom !== undefined && (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryDenomResponse>): QueryDenomResponse {
-    const message = { ...baseQueryDenomResponse } as QueryDenomResponse;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromPartial(object.denom);
-    } else {
-      message.denom = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryDenomResponse>, I>>(object: I): QueryDenomResponse {
+    const message = createBaseQueryDenomResponse();
+    message.denom = (object.denom !== undefined && object.denom !== null) ? Denom.fromPartial(object.denom) : undefined;
     return message;
   },
 };
 
-const baseQueryDenomsRequest: object = {};
+function createBaseQueryDenomsRequest(): QueryDenomsRequest {
+  return {};
+}
 
 export const QueryDenomsRequest = {
-  encode(
-    _: QueryDenomsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryDenomsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryDenomsRequest } as QueryDenomsRequest;
+    const message = createBaseQueryDenomsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -281,8 +366,7 @@ export const QueryDenomsRequest = {
   },
 
   fromJSON(_: any): QueryDenomsRequest {
-    const message = { ...baseQueryDenomsRequest } as QueryDenomsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryDenomsRequest): unknown {
@@ -290,19 +374,18 @@ export const QueryDenomsRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<QueryDenomsRequest>): QueryDenomsRequest {
-    const message = { ...baseQueryDenomsRequest } as QueryDenomsRequest;
+  fromPartial<I extends Exact<DeepPartial<QueryDenomsRequest>, I>>(_: I): QueryDenomsRequest {
+    const message = createBaseQueryDenomsRequest();
     return message;
   },
 };
 
-const baseQueryDenomsResponse: object = {};
+function createBaseQueryDenomsResponse(): QueryDenomsResponse {
+  return { denoms: [] };
+}
 
 export const QueryDenomsResponse = {
-  encode(
-    message: QueryDenomsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDenomsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.denoms) {
       Denom.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -312,8 +395,7 @@ export const QueryDenomsResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryDenomsResponse } as QueryDenomsResponse;
-    message.denoms = [];
+    const message = createBaseQueryDenomsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -329,45 +411,32 @@ export const QueryDenomsResponse = {
   },
 
   fromJSON(object: any): QueryDenomsResponse {
-    const message = { ...baseQueryDenomsResponse } as QueryDenomsResponse;
-    message.denoms = [];
-    if (object.denoms !== undefined && object.denoms !== null) {
-      for (const e of object.denoms) {
-        message.denoms.push(Denom.fromJSON(e));
-      }
-    }
-    return message;
+    return { denoms: Array.isArray(object?.denoms) ? object.denoms.map((e: any) => Denom.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueryDenomsResponse): unknown {
     const obj: any = {};
     if (message.denoms) {
-      obj.denoms = message.denoms.map((e) => (e ? Denom.toJSON(e) : undefined));
+      obj.denoms = message.denoms.map((e) => e ? Denom.toJSON(e) : undefined);
     } else {
       obj.denoms = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryDenomsResponse>): QueryDenomsResponse {
-    const message = { ...baseQueryDenomsResponse } as QueryDenomsResponse;
-    message.denoms = [];
-    if (object.denoms !== undefined && object.denoms !== null) {
-      for (const e of object.denoms) {
-        message.denoms.push(Denom.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryDenomsResponse>, I>>(object: I): QueryDenomsResponse {
+    const message = createBaseQueryDenomsResponse();
+    message.denoms = object.denoms?.map((e) => Denom.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryNFTRequest: object = { denomId: "", id: "" };
+function createBaseQueryNFTRequest(): QueryNFTRequest {
+  return { denomId: "", id: "" };
+}
 
 export const QueryNFTRequest = {
-  encode(
-    message: QueryNFTRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryNFTRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denomId !== "") {
       writer.uint32(10).string(message.denomId);
     }
@@ -380,7 +449,7 @@ export const QueryNFTRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryNFTRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryNFTRequest } as QueryNFTRequest;
+    const message = createBaseQueryNFTRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -399,18 +468,10 @@ export const QueryNFTRequest = {
   },
 
   fromJSON(object: any): QueryNFTRequest {
-    const message = { ...baseQueryNFTRequest } as QueryNFTRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    return message;
+    return {
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+    };
   },
 
   toJSON(message: QueryNFTRequest): unknown {
@@ -420,29 +481,20 @@ export const QueryNFTRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryNFTRequest>): QueryNFTRequest {
-    const message = { ...baseQueryNFTRequest } as QueryNFTRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryNFTRequest>, I>>(object: I): QueryNFTRequest {
+    const message = createBaseQueryNFTRequest();
+    message.denomId = object.denomId ?? "";
+    message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseQueryNFTResponse: object = {};
+function createBaseQueryNFTResponse(): QueryNFTResponse {
+  return { nft: undefined, denom: undefined };
+}
 
 export const QueryNFTResponse = {
-  encode(
-    message: QueryNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
@@ -455,7 +507,7 @@ export const QueryNFTResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryNFTResponse } as QueryNFTResponse;
+    const message = createBaseQueryNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -474,52 +526,33 @@ export const QueryNFTResponse = {
   },
 
   fromJSON(object: any): QueryNFTResponse {
-    const message = { ...baseQueryNFTResponse } as QueryNFTResponse;
-    if (object.nft !== undefined && object.nft !== null) {
-      message.nft = NFT.fromJSON(object.nft);
-    } else {
-      message.nft = undefined;
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromJSON(object.denom);
-    } else {
-      message.denom = undefined;
-    }
-    return message;
+    return {
+      nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined,
+      denom: isSet(object.denom) ? Denom.fromJSON(object.denom) : undefined,
+    };
   },
 
   toJSON(message: QueryNFTResponse): unknown {
     const obj: any = {};
-    message.nft !== undefined &&
-      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
-    message.denom !== undefined &&
-      (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
+    message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    message.denom !== undefined && (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryNFTResponse>): QueryNFTResponse {
-    const message = { ...baseQueryNFTResponse } as QueryNFTResponse;
-    if (object.nft !== undefined && object.nft !== null) {
-      message.nft = NFT.fromPartial(object.nft);
-    } else {
-      message.nft = undefined;
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromPartial(object.denom);
-    } else {
-      message.denom = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryNFTResponse>, I>>(object: I): QueryNFTResponse {
+    const message = createBaseQueryNFTResponse();
+    message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
+    message.denom = (object.denom !== undefined && object.denom !== null) ? Denom.fromPartial(object.denom) : undefined;
     return message;
   },
 };
 
-const baseQueryMarketPlaceNFTRequest: object = { id: "", denomId: "" };
+function createBaseQueryMarketPlaceNFTRequest(): QueryMarketPlaceNFTRequest {
+  return { id: "", denomId: "" };
+}
 
 export const QueryMarketPlaceNFTRequest = {
-  encode(
-    message: QueryMarketPlaceNFTRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryMarketPlaceNFTRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -529,15 +562,10 @@ export const QueryMarketPlaceNFTRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryMarketPlaceNFTRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMarketPlaceNFTRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryMarketPlaceNFTRequest,
-    } as QueryMarketPlaceNFTRequest;
+    const message = createBaseQueryMarketPlaceNFTRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -556,20 +584,10 @@ export const QueryMarketPlaceNFTRequest = {
   },
 
   fromJSON(object: any): QueryMarketPlaceNFTRequest {
-    const message = {
-      ...baseQueryMarketPlaceNFTRequest,
-    } as QueryMarketPlaceNFTRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+    };
   },
 
   toJSON(message: QueryMarketPlaceNFTRequest): unknown {
@@ -579,38 +597,22 @@ export const QueryMarketPlaceNFTRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryMarketPlaceNFTRequest>
-  ): QueryMarketPlaceNFTRequest {
-    const message = {
-      ...baseQueryMarketPlaceNFTRequest,
-    } as QueryMarketPlaceNFTRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryMarketPlaceNFTRequest>, I>>(object: I): QueryMarketPlaceNFTRequest {
+    const message = createBaseQueryMarketPlaceNFTRequest();
+    message.id = object.id ?? "";
+    message.denomId = object.denomId ?? "";
     return message;
   },
 };
 
-const baseQueryMarketPlaceNFTResponse: object = {};
+function createBaseQueryMarketPlaceNFTResponse(): QueryMarketPlaceNFTResponse {
+  return { marketPlace: undefined, nft: undefined };
+}
 
 export const QueryMarketPlaceNFTResponse = {
-  encode(
-    message: QueryMarketPlaceNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryMarketPlaceNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.marketPlace !== undefined) {
-      MarketPlace.encode(
-        message.marketPlace,
-        writer.uint32(10).fork()
-      ).ldelim();
+      MarketPlace.encode(message.marketPlace, writer.uint32(10).fork()).ldelim();
     }
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(18).fork()).ldelim();
@@ -618,15 +620,10 @@ export const QueryMarketPlaceNFTResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryMarketPlaceNFTResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMarketPlaceNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryMarketPlaceNFTResponse,
-    } as QueryMarketPlaceNFTResponse;
+    const message = createBaseQueryMarketPlaceNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -645,75 +642,46 @@ export const QueryMarketPlaceNFTResponse = {
   },
 
   fromJSON(object: any): QueryMarketPlaceNFTResponse {
-    const message = {
-      ...baseQueryMarketPlaceNFTResponse,
-    } as QueryMarketPlaceNFTResponse;
-    if (object.marketPlace !== undefined && object.marketPlace !== null) {
-      message.marketPlace = MarketPlace.fromJSON(object.marketPlace);
-    } else {
-      message.marketPlace = undefined;
-    }
-    if (object.nft !== undefined && object.nft !== null) {
-      message.nft = NFT.fromJSON(object.nft);
-    } else {
-      message.nft = undefined;
-    }
-    return message;
+    return {
+      marketPlace: isSet(object.marketPlace) ? MarketPlace.fromJSON(object.marketPlace) : undefined,
+      nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined,
+    };
   },
 
   toJSON(message: QueryMarketPlaceNFTResponse): unknown {
     const obj: any = {};
     message.marketPlace !== undefined &&
-      (obj.marketPlace = message.marketPlace
-        ? MarketPlace.toJSON(message.marketPlace)
-        : undefined);
-    message.nft !== undefined &&
-      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+      (obj.marketPlace = message.marketPlace ? MarketPlace.toJSON(message.marketPlace) : undefined);
+    message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryMarketPlaceNFTResponse>
-  ): QueryMarketPlaceNFTResponse {
-    const message = {
-      ...baseQueryMarketPlaceNFTResponse,
-    } as QueryMarketPlaceNFTResponse;
-    if (object.marketPlace !== undefined && object.marketPlace !== null) {
-      message.marketPlace = MarketPlace.fromPartial(object.marketPlace);
-    } else {
-      message.marketPlace = undefined;
-    }
-    if (object.nft !== undefined && object.nft !== null) {
-      message.nft = NFT.fromPartial(object.nft);
-    } else {
-      message.nft = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryMarketPlaceNFTResponse>, I>>(object: I): QueryMarketPlaceNFTResponse {
+    const message = createBaseQueryMarketPlaceNFTResponse();
+    message.marketPlace = (object.marketPlace !== undefined && object.marketPlace !== null)
+      ? MarketPlace.fromPartial(object.marketPlace)
+      : undefined;
+    message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
     return message;
   },
 };
 
-const baseQueryMarketPlaceRequest: object = {};
+function createBaseQueryMarketPlaceRequest(): QueryMarketPlaceRequest {
+  return { pagination: undefined };
+}
 
 export const QueryMarketPlaceRequest = {
-  encode(
-    message: QueryMarketPlaceRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryMarketPlaceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryMarketPlaceRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMarketPlaceRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryMarketPlaceRequest,
-    } as QueryMarketPlaceRequest;
+    const message = createBaseQueryMarketPlaceRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -729,70 +697,44 @@ export const QueryMarketPlaceRequest = {
   },
 
   fromJSON(object: any): QueryMarketPlaceRequest {
-    const message = {
-      ...baseQueryMarketPlaceRequest,
-    } as QueryMarketPlaceRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
-    return message;
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
   toJSON(message: QueryMarketPlaceRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryMarketPlaceRequest>
-  ): QueryMarketPlaceRequest {
-    const message = {
-      ...baseQueryMarketPlaceRequest,
-    } as QueryMarketPlaceRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryMarketPlaceRequest>, I>>(object: I): QueryMarketPlaceRequest {
+    const message = createBaseQueryMarketPlaceRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryMarketPlaceResponse: object = {};
+function createBaseQueryMarketPlaceResponse(): QueryMarketPlaceResponse {
+  return { marketPlace: [], pagination: undefined };
+}
 
 export const QueryMarketPlaceResponse = {
-  encode(
-    message: QueryMarketPlaceResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryMarketPlaceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.marketPlace) {
       MarketPlace.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryMarketPlaceResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMarketPlaceResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryMarketPlaceResponse,
-    } as QueryMarketPlaceResponse;
-    message.marketPlace = [];
+    const message = createBaseQueryMarketPlaceResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -811,80 +753,52 @@ export const QueryMarketPlaceResponse = {
   },
 
   fromJSON(object: any): QueryMarketPlaceResponse {
-    const message = {
-      ...baseQueryMarketPlaceResponse,
-    } as QueryMarketPlaceResponse;
-    message.marketPlace = [];
-    if (object.marketPlace !== undefined && object.marketPlace !== null) {
-      for (const e of object.marketPlace) {
-        message.marketPlace.push(MarketPlace.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
-    return message;
+    return {
+      marketPlace: Array.isArray(object?.marketPlace)
+        ? object.marketPlace.map((e: any) => MarketPlace.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryMarketPlaceResponse): unknown {
     const obj: any = {};
     if (message.marketPlace) {
-      obj.marketPlace = message.marketPlace.map((e) =>
-        e ? MarketPlace.toJSON(e) : undefined
-      );
+      obj.marketPlace = message.marketPlace.map((e) => e ? MarketPlace.toJSON(e) : undefined);
     } else {
       obj.marketPlace = [];
     }
     message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryMarketPlaceResponse>
-  ): QueryMarketPlaceResponse {
-    const message = {
-      ...baseQueryMarketPlaceResponse,
-    } as QueryMarketPlaceResponse;
-    message.marketPlace = [];
-    if (object.marketPlace !== undefined && object.marketPlace !== null) {
-      for (const e of object.marketPlace) {
-        message.marketPlace.push(MarketPlace.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryMarketPlaceResponse>, I>>(object: I): QueryMarketPlaceResponse {
+    const message = createBaseQueryMarketPlaceResponse();
+    message.marketPlace = object.marketPlace?.map((e) => MarketPlace.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryOwnerNFTsRequest: object = { owner: "" };
+function createBaseQueryOwnerNFTsRequest(): QueryOwnerNFTsRequest {
+  return { owner: "" };
+}
 
 export const QueryOwnerNFTsRequest = {
-  encode(
-    message: QueryOwnerNFTsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryOwnerNFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryOwnerNFTsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryOwnerNFTsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryOwnerNFTsRequest } as QueryOwnerNFTsRequest;
+    const message = createBaseQueryOwnerNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -900,13 +814,7 @@ export const QueryOwnerNFTsRequest = {
   },
 
   fromJSON(object: any): QueryOwnerNFTsRequest {
-    const message = { ...baseQueryOwnerNFTsRequest } as QueryOwnerNFTsRequest;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
-    } else {
-      message.owner = "";
-    }
-    return message;
+    return { owner: isSet(object.owner) ? String(object.owner) : "" };
   },
 
   toJSON(message: QueryOwnerNFTsRequest): unknown {
@@ -915,26 +823,19 @@ export const QueryOwnerNFTsRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOwnerNFTsRequest>
-  ): QueryOwnerNFTsRequest {
-    const message = { ...baseQueryOwnerNFTsRequest } as QueryOwnerNFTsRequest;
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
-    } else {
-      message.owner = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryOwnerNFTsRequest>, I>>(object: I): QueryOwnerNFTsRequest {
+    const message = createBaseQueryOwnerNFTsRequest();
+    message.owner = object.owner ?? "";
     return message;
   },
 };
 
-const baseQueryOwnerNFTsResponse: object = { owner: "" };
+function createBaseQueryOwnerNFTsResponse(): QueryOwnerNFTsResponse {
+  return { owner: "", collections: [] };
+}
 
 export const QueryOwnerNFTsResponse = {
-  encode(
-    message: QueryOwnerNFTsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryOwnerNFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.owner !== "") {
       writer.uint32(10).string(message.owner);
     }
@@ -944,14 +845,10 @@ export const QueryOwnerNFTsResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryOwnerNFTsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryOwnerNFTsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryOwnerNFTsResponse } as QueryOwnerNFTsResponse;
-    message.collections = [];
+    const message = createBaseQueryOwnerNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -959,9 +856,7 @@ export const QueryOwnerNFTsResponse = {
           message.owner = reader.string();
           break;
         case 2:
-          message.collections.push(
-            OwnerNFTCollection.decode(reader, reader.uint32())
-          );
+          message.collections.push(OwnerNFTCollection.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -972,60 +867,39 @@ export const QueryOwnerNFTsResponse = {
   },
 
   fromJSON(object: any): QueryOwnerNFTsResponse {
-    const message = { ...baseQueryOwnerNFTsResponse } as QueryOwnerNFTsResponse;
-    message.collections = [];
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
-    } else {
-      message.owner = "";
-    }
-    if (object.collections !== undefined && object.collections !== null) {
-      for (const e of object.collections) {
-        message.collections.push(OwnerNFTCollection.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      collections: Array.isArray(object?.collections)
+        ? object.collections.map((e: any) => OwnerNFTCollection.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: QueryOwnerNFTsResponse): unknown {
     const obj: any = {};
     message.owner !== undefined && (obj.owner = message.owner);
     if (message.collections) {
-      obj.collections = message.collections.map((e) =>
-        e ? OwnerNFTCollection.toJSON(e) : undefined
-      );
+      obj.collections = message.collections.map((e) => e ? OwnerNFTCollection.toJSON(e) : undefined);
     } else {
       obj.collections = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOwnerNFTsResponse>
-  ): QueryOwnerNFTsResponse {
-    const message = { ...baseQueryOwnerNFTsResponse } as QueryOwnerNFTsResponse;
-    message.collections = [];
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
-    } else {
-      message.owner = "";
-    }
-    if (object.collections !== undefined && object.collections !== null) {
-      for (const e of object.collections) {
-        message.collections.push(OwnerNFTCollection.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryOwnerNFTsResponse>, I>>(object: I): QueryOwnerNFTsResponse {
+    const message = createBaseQueryOwnerNFTsResponse();
+    message.owner = object.owner ?? "";
+    message.collections = object.collections?.map((e) => OwnerNFTCollection.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseOwnerNFTCollection: object = {};
+function createBaseOwnerNFTCollection(): OwnerNFTCollection {
+  return { denom: undefined, nfts: [] };
+}
 
 export const OwnerNFTCollection = {
-  encode(
-    message: OwnerNFTCollection,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: OwnerNFTCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== undefined) {
       Denom.encode(message.denom, writer.uint32(10).fork()).ldelim();
     }
@@ -1038,8 +912,7 @@ export const OwnerNFTCollection = {
   decode(input: _m0.Reader | Uint8Array, length?: number): OwnerNFTCollection {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOwnerNFTCollection } as OwnerNFTCollection;
-    message.nfts = [];
+    const message = createBaseOwnerNFTCollection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1058,70 +931,47 @@ export const OwnerNFTCollection = {
   },
 
   fromJSON(object: any): OwnerNFTCollection {
-    const message = { ...baseOwnerNFTCollection } as OwnerNFTCollection;
-    message.nfts = [];
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromJSON(object.denom);
-    } else {
-      message.denom = undefined;
-    }
-    if (object.nfts !== undefined && object.nfts !== null) {
-      for (const e of object.nfts) {
-        message.nfts.push(NFT.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      denom: isSet(object.denom) ? Denom.fromJSON(object.denom) : undefined,
+      nfts: Array.isArray(object?.nfts) ? object.nfts.map((e: any) => NFT.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: OwnerNFTCollection): unknown {
     const obj: any = {};
-    message.denom !== undefined &&
-      (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
+    message.denom !== undefined && (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
     if (message.nfts) {
-      obj.nfts = message.nfts.map((e) => (e ? NFT.toJSON(e) : undefined));
+      obj.nfts = message.nfts.map((e) => e ? NFT.toJSON(e) : undefined);
     } else {
       obj.nfts = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OwnerNFTCollection>): OwnerNFTCollection {
-    const message = { ...baseOwnerNFTCollection } as OwnerNFTCollection;
-    message.nfts = [];
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromPartial(object.denom);
-    } else {
-      message.denom = undefined;
-    }
-    if (object.nfts !== undefined && object.nfts !== null) {
-      for (const e of object.nfts) {
-        message.nfts.push(NFT.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<OwnerNFTCollection>, I>>(object: I): OwnerNFTCollection {
+    const message = createBaseOwnerNFTCollection();
+    message.denom = (object.denom !== undefined && object.denom !== null) ? Denom.fromPartial(object.denom) : undefined;
+    message.nfts = object.nfts?.map((e) => NFT.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryCommunityRequest: object = { communityId: "" };
+function createBaseQueryCommunityRequest(): QueryCommunityRequest {
+  return { communityId: "" };
+}
 
 export const QueryCommunityRequest = {
-  encode(
-    message: QueryCommunityRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunityRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.communityId !== "") {
       writer.uint32(10).string(message.communityId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunityRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunityRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryCommunityRequest } as QueryCommunityRequest;
+    const message = createBaseQueryCommunityRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1137,55 +987,38 @@ export const QueryCommunityRequest = {
   },
 
   fromJSON(object: any): QueryCommunityRequest {
-    const message = { ...baseQueryCommunityRequest } as QueryCommunityRequest;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    return message;
+    return { communityId: isSet(object.communityId) ? String(object.communityId) : "" };
   },
 
   toJSON(message: QueryCommunityRequest): unknown {
     const obj: any = {};
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunityRequest>
-  ): QueryCommunityRequest {
-    const message = { ...baseQueryCommunityRequest } as QueryCommunityRequest;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryCommunityRequest>, I>>(object: I): QueryCommunityRequest {
+    const message = createBaseQueryCommunityRequest();
+    message.communityId = object.communityId ?? "";
     return message;
   },
 };
 
-const baseQueryCommunityResponse: object = {};
+function createBaseQueryCommunityResponse(): QueryCommunityResponse {
+  return { community: undefined };
+}
 
 export const QueryCommunityResponse = {
-  encode(
-    message: QueryCommunityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.community !== undefined) {
       Community.encode(message.community, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryCommunityResponse } as QueryCommunityResponse;
+    const message = createBaseQueryCommunityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1201,56 +1034,38 @@ export const QueryCommunityResponse = {
   },
 
   fromJSON(object: any): QueryCommunityResponse {
-    const message = { ...baseQueryCommunityResponse } as QueryCommunityResponse;
-    if (object.community !== undefined && object.community !== null) {
-      message.community = Community.fromJSON(object.community);
-    } else {
-      message.community = undefined;
-    }
-    return message;
+    return { community: isSet(object.community) ? Community.fromJSON(object.community) : undefined };
   },
 
   toJSON(message: QueryCommunityResponse): unknown {
     const obj: any = {};
     message.community !== undefined &&
-      (obj.community = message.community
-        ? Community.toJSON(message.community)
-        : undefined);
+      (obj.community = message.community ? Community.toJSON(message.community) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunityResponse>
-  ): QueryCommunityResponse {
-    const message = { ...baseQueryCommunityResponse } as QueryCommunityResponse;
-    if (object.community !== undefined && object.community !== null) {
-      message.community = Community.fromPartial(object.community);
-    } else {
-      message.community = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryCommunityResponse>, I>>(object: I): QueryCommunityResponse {
+    const message = createBaseQueryCommunityResponse();
+    message.community = (object.community !== undefined && object.community !== null)
+      ? Community.fromPartial(object.community)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryCommunitiesRequest: object = {};
+function createBaseQueryCommunitiesRequest(): QueryCommunitiesRequest {
+  return {};
+}
 
 export const QueryCommunitiesRequest = {
-  encode(
-    _: QueryCommunitiesRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryCommunitiesRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunitiesRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunitiesRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCommunitiesRequest,
-    } as QueryCommunitiesRequest;
+    const message = createBaseQueryCommunitiesRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1263,10 +1078,7 @@ export const QueryCommunitiesRequest = {
   },
 
   fromJSON(_: any): QueryCommunitiesRequest {
-    const message = {
-      ...baseQueryCommunitiesRequest,
-    } as QueryCommunitiesRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryCommunitiesRequest): unknown {
@@ -1274,39 +1086,28 @@ export const QueryCommunitiesRequest = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<QueryCommunitiesRequest>
-  ): QueryCommunitiesRequest {
-    const message = {
-      ...baseQueryCommunitiesRequest,
-    } as QueryCommunitiesRequest;
+  fromPartial<I extends Exact<DeepPartial<QueryCommunitiesRequest>, I>>(_: I): QueryCommunitiesRequest {
+    const message = createBaseQueryCommunitiesRequest();
     return message;
   },
 };
 
-const baseQueryCommunitiesResponse: object = {};
+function createBaseQueryCommunitiesResponse(): QueryCommunitiesResponse {
+  return { communities: [] };
+}
 
 export const QueryCommunitiesResponse = {
-  encode(
-    message: QueryCommunitiesResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunitiesResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.communities) {
       Community.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunitiesResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunitiesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCommunitiesResponse,
-    } as QueryCommunitiesResponse;
-    message.communities = [];
+    const message = createBaseQueryCommunitiesResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1322,68 +1123,44 @@ export const QueryCommunitiesResponse = {
   },
 
   fromJSON(object: any): QueryCommunitiesResponse {
-    const message = {
-      ...baseQueryCommunitiesResponse,
-    } as QueryCommunitiesResponse;
-    message.communities = [];
-    if (object.communities !== undefined && object.communities !== null) {
-      for (const e of object.communities) {
-        message.communities.push(Community.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      communities: Array.isArray(object?.communities) ? object.communities.map((e: any) => Community.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: QueryCommunitiesResponse): unknown {
     const obj: any = {};
     if (message.communities) {
-      obj.communities = message.communities.map((e) =>
-        e ? Community.toJSON(e) : undefined
-      );
+      obj.communities = message.communities.map((e) => e ? Community.toJSON(e) : undefined);
     } else {
       obj.communities = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunitiesResponse>
-  ): QueryCommunitiesResponse {
-    const message = {
-      ...baseQueryCommunitiesResponse,
-    } as QueryCommunitiesResponse;
-    message.communities = [];
-    if (object.communities !== undefined && object.communities !== null) {
-      for (const e of object.communities) {
-        message.communities.push(Community.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryCommunitiesResponse>, I>>(object: I): QueryCommunitiesResponse {
+    const message = createBaseQueryCommunitiesResponse();
+    message.communities = object.communities?.map((e) => Community.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryCommunityMembersRequest: object = { communityId: "" };
+function createBaseQueryCommunityMembersRequest(): QueryCommunityMembersRequest {
+  return { communityId: "" };
+}
 
 export const QueryCommunityMembersRequest = {
-  encode(
-    message: QueryCommunityMembersRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunityMembersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.communityId !== "") {
       writer.uint32(10).string(message.communityId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunityMembersRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunityMembersRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCommunityMembersRequest,
-    } as QueryCommunityMembersRequest;
+    const message = createBaseQueryCommunityMembersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1399,64 +1176,38 @@ export const QueryCommunityMembersRequest = {
   },
 
   fromJSON(object: any): QueryCommunityMembersRequest {
-    const message = {
-      ...baseQueryCommunityMembersRequest,
-    } as QueryCommunityMembersRequest;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    return message;
+    return { communityId: isSet(object.communityId) ? String(object.communityId) : "" };
   },
 
   toJSON(message: QueryCommunityMembersRequest): unknown {
     const obj: any = {};
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunityMembersRequest>
-  ): QueryCommunityMembersRequest {
-    const message = {
-      ...baseQueryCommunityMembersRequest,
-    } as QueryCommunityMembersRequest;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryCommunityMembersRequest>, I>>(object: I): QueryCommunityMembersRequest {
+    const message = createBaseQueryCommunityMembersRequest();
+    message.communityId = object.communityId ?? "";
     return message;
   },
 };
 
-const baseQueryCommunityMembersResponse: object = {};
+function createBaseQueryCommunityMembersResponse(): QueryCommunityMembersResponse {
+  return { members: undefined };
+}
 
 export const QueryCommunityMembersResponse = {
-  encode(
-    message: QueryCommunityMembersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunityMembersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.members !== undefined) {
-      CommunityMembers.encode(
-        message.members,
-        writer.uint32(10).fork()
-      ).ldelim();
+      CommunityMembers.encode(message.members, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunityMembersResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunityMembersResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCommunityMembersResponse,
-    } as QueryCommunityMembersResponse;
+    const message = createBaseQueryCommunityMembersResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1472,61 +1223,43 @@ export const QueryCommunityMembersResponse = {
   },
 
   fromJSON(object: any): QueryCommunityMembersResponse {
-    const message = {
-      ...baseQueryCommunityMembersResponse,
-    } as QueryCommunityMembersResponse;
-    if (object.members !== undefined && object.members !== null) {
-      message.members = CommunityMembers.fromJSON(object.members);
-    } else {
-      message.members = undefined;
-    }
-    return message;
+    return { members: isSet(object.members) ? CommunityMembers.fromJSON(object.members) : undefined };
   },
 
   toJSON(message: QueryCommunityMembersResponse): unknown {
     const obj: any = {};
     message.members !== undefined &&
-      (obj.members = message.members
-        ? CommunityMembers.toJSON(message.members)
-        : undefined);
+      (obj.members = message.members ? CommunityMembers.toJSON(message.members) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunityMembersResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryCommunityMembersResponse>, I>>(
+    object: I,
   ): QueryCommunityMembersResponse {
-    const message = {
-      ...baseQueryCommunityMembersResponse,
-    } as QueryCommunityMembersResponse;
-    if (object.members !== undefined && object.members !== null) {
-      message.members = CommunityMembers.fromPartial(object.members);
-    } else {
-      message.members = undefined;
-    }
+    const message = createBaseQueryCommunityMembersResponse();
+    message.members = (object.members !== undefined && object.members !== null)
+      ? CommunityMembers.fromPartial(object.members)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryCollectionRequest: object = { denomId: "" };
+function createBaseQueryCollectionRequest(): QueryCollectionRequest {
+  return { denomId: "" };
+}
 
 export const QueryCollectionRequest = {
-  encode(
-    message: QueryCollectionRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCollectionRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denomId !== "") {
       writer.uint32(10).string(message.denomId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCollectionRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCollectionRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryCollectionRequest } as QueryCollectionRequest;
+    const message = createBaseQueryCollectionRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1542,13 +1275,7 @@ export const QueryCollectionRequest = {
   },
 
   fromJSON(object: any): QueryCollectionRequest {
-    const message = { ...baseQueryCollectionRequest } as QueryCollectionRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    return message;
+    return { denomId: isSet(object.denomId) ? String(object.denomId) : "" };
   },
 
   toJSON(message: QueryCollectionRequest): unknown {
@@ -1557,41 +1284,29 @@ export const QueryCollectionRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCollectionRequest>
-  ): QueryCollectionRequest {
-    const message = { ...baseQueryCollectionRequest } as QueryCollectionRequest;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryCollectionRequest>, I>>(object: I): QueryCollectionRequest {
+    const message = createBaseQueryCollectionRequest();
+    message.denomId = object.denomId ?? "";
     return message;
   },
 };
 
-const baseQueryCollectionResponse: object = {};
+function createBaseQueryCollectionResponse(): QueryCollectionResponse {
+  return { collection: undefined };
+}
 
 export const QueryCollectionResponse = {
-  encode(
-    message: QueryCollectionResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCollectionResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.collection !== undefined) {
       Collection.encode(message.collection, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCollectionResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCollectionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCollectionResponse,
-    } as QueryCollectionResponse;
+    const message = createBaseQueryCollectionResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1607,63 +1322,41 @@ export const QueryCollectionResponse = {
   },
 
   fromJSON(object: any): QueryCollectionResponse {
-    const message = {
-      ...baseQueryCollectionResponse,
-    } as QueryCollectionResponse;
-    if (object.collection !== undefined && object.collection !== null) {
-      message.collection = Collection.fromJSON(object.collection);
-    } else {
-      message.collection = undefined;
-    }
-    return message;
+    return { collection: isSet(object.collection) ? Collection.fromJSON(object.collection) : undefined };
   },
 
   toJSON(message: QueryCollectionResponse): unknown {
     const obj: any = {};
     message.collection !== undefined &&
-      (obj.collection = message.collection
-        ? Collection.toJSON(message.collection)
-        : undefined);
+      (obj.collection = message.collection ? Collection.toJSON(message.collection) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCollectionResponse>
-  ): QueryCollectionResponse {
-    const message = {
-      ...baseQueryCollectionResponse,
-    } as QueryCollectionResponse;
-    if (object.collection !== undefined && object.collection !== null) {
-      message.collection = Collection.fromPartial(object.collection);
-    } else {
-      message.collection = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryCollectionResponse>, I>>(object: I): QueryCollectionResponse {
+    const message = createBaseQueryCollectionResponse();
+    message.collection = (object.collection !== undefined && object.collection !== null)
+      ? Collection.fromPartial(object.collection)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryDenomIDsByOwnerRequest: object = { address: "" };
+function createBaseQueryDenomIDsByOwnerRequest(): QueryDenomIDsByOwnerRequest {
+  return { address: "" };
+}
 
 export const QueryDenomIDsByOwnerRequest = {
-  encode(
-    message: QueryDenomIDsByOwnerRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDenomIDsByOwnerRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDenomIDsByOwnerRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomIDsByOwnerRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDenomIDsByOwnerRequest,
-    } as QueryDenomIDsByOwnerRequest;
+    const message = createBaseQueryDenomIDsByOwnerRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1679,15 +1372,7 @@ export const QueryDenomIDsByOwnerRequest = {
   },
 
   fromJSON(object: any): QueryDenomIDsByOwnerRequest {
-    const message = {
-      ...baseQueryDenomIDsByOwnerRequest,
-    } as QueryDenomIDsByOwnerRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    return message;
+    return { address: isSet(object.address) ? String(object.address) : "" };
   },
 
   toJSON(message: QueryDenomIDsByOwnerRequest): unknown {
@@ -1696,44 +1381,29 @@ export const QueryDenomIDsByOwnerRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDenomIDsByOwnerRequest>
-  ): QueryDenomIDsByOwnerRequest {
-    const message = {
-      ...baseQueryDenomIDsByOwnerRequest,
-    } as QueryDenomIDsByOwnerRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryDenomIDsByOwnerRequest>, I>>(object: I): QueryDenomIDsByOwnerRequest {
+    const message = createBaseQueryDenomIDsByOwnerRequest();
+    message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseQueryDenomIDsByOwnerResponse: object = { ids: "" };
+function createBaseQueryDenomIDsByOwnerResponse(): QueryDenomIDsByOwnerResponse {
+  return { ids: [] };
+}
 
 export const QueryDenomIDsByOwnerResponse = {
-  encode(
-    message: QueryDenomIDsByOwnerResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryDenomIDsByOwnerResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.ids) {
       writer.uint32(10).string(v!);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryDenomIDsByOwnerResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomIDsByOwnerResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryDenomIDsByOwnerResponse,
-    } as QueryDenomIDsByOwnerResponse;
-    message.ids = [];
+    const message = createBaseQueryDenomIDsByOwnerResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1749,16 +1419,7 @@ export const QueryDenomIDsByOwnerResponse = {
   },
 
   fromJSON(object: any): QueryDenomIDsByOwnerResponse {
-    const message = {
-      ...baseQueryDenomIDsByOwnerResponse,
-    } as QueryDenomIDsByOwnerResponse;
-    message.ids = [];
-    if (object.ids !== undefined && object.ids !== null) {
-      for (const e of object.ids) {
-        message.ids.push(String(e));
-      }
-    }
-    return message;
+    return { ids: Array.isArray(object?.ids) ? object.ids.map((e: any) => String(e)) : [] };
   },
 
   toJSON(message: QueryDenomIDsByOwnerResponse): unknown {
@@ -1771,36 +1432,26 @@ export const QueryDenomIDsByOwnerResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryDenomIDsByOwnerResponse>
-  ): QueryDenomIDsByOwnerResponse {
-    const message = {
-      ...baseQueryDenomIDsByOwnerResponse,
-    } as QueryDenomIDsByOwnerResponse;
-    message.ids = [];
-    if (object.ids !== undefined && object.ids !== null) {
-      for (const e of object.ids) {
-        message.ids.push(e);
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryDenomIDsByOwnerResponse>, I>>(object: I): QueryDenomIDsByOwnerResponse {
+    const message = createBaseQueryDenomIDsByOwnerResponse();
+    message.ids = object.ids?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseQueryAllNFTsRequest: object = {};
+function createBaseQueryAllNFTsRequest(): QueryAllNFTsRequest {
+  return {};
+}
 
 export const QueryAllNFTsRequest = {
-  encode(
-    _: QueryAllNFTsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: QueryAllNFTsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllNFTsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllNFTsRequest } as QueryAllNFTsRequest;
+    const message = createBaseQueryAllNFTsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1813,8 +1464,7 @@ export const QueryAllNFTsRequest = {
   },
 
   fromJSON(_: any): QueryAllNFTsRequest {
-    const message = { ...baseQueryAllNFTsRequest } as QueryAllNFTsRequest;
-    return message;
+    return {};
   },
 
   toJSON(_: QueryAllNFTsRequest): unknown {
@@ -1822,19 +1472,18 @@ export const QueryAllNFTsRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<QueryAllNFTsRequest>): QueryAllNFTsRequest {
-    const message = { ...baseQueryAllNFTsRequest } as QueryAllNFTsRequest;
+  fromPartial<I extends Exact<DeepPartial<QueryAllNFTsRequest>, I>>(_: I): QueryAllNFTsRequest {
+    const message = createBaseQueryAllNFTsRequest();
     return message;
   },
 };
 
-const baseDenomInfo: object = { denomId: "", name: "" };
+function createBaseDenomInfo(): DenomInfo {
+  return { denomId: "", name: "" };
+}
 
 export const DenomInfo = {
-  encode(
-    message: DenomInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: DenomInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denomId !== "") {
       writer.uint32(10).string(message.denomId);
     }
@@ -1847,7 +1496,7 @@ export const DenomInfo = {
   decode(input: _m0.Reader | Uint8Array, length?: number): DenomInfo {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDenomInfo } as DenomInfo;
+    const message = createBaseDenomInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1866,18 +1515,10 @@ export const DenomInfo = {
   },
 
   fromJSON(object: any): DenomInfo {
-    const message = { ...baseDenomInfo } as DenomInfo;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    return message;
+    return {
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+    };
   },
 
   toJSON(message: DenomInfo): unknown {
@@ -1887,29 +1528,20 @@ export const DenomInfo = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<DenomInfo>): DenomInfo {
-    const message = { ...baseDenomInfo } as DenomInfo;
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<DenomInfo>, I>>(object: I): DenomInfo {
+    const message = createBaseDenomInfo();
+    message.denomId = object.denomId ?? "";
+    message.name = object.name ?? "";
     return message;
   },
 };
 
-const baseCommunityInfo: object = { communityId: "", name: "" };
+function createBaseCommunityInfo(): CommunityInfo {
+  return { communityId: "", name: "" };
+}
 
 export const CommunityInfo = {
-  encode(
-    message: CommunityInfo,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommunityInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.communityId !== "") {
       writer.uint32(10).string(message.communityId);
     }
@@ -1922,7 +1554,7 @@ export const CommunityInfo = {
   decode(input: _m0.Reader | Uint8Array, length?: number): CommunityInfo {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommunityInfo } as CommunityInfo;
+    const message = createBaseCommunityInfo();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1941,51 +1573,33 @@ export const CommunityInfo = {
   },
 
   fromJSON(object: any): CommunityInfo {
-    const message = { ...baseCommunityInfo } as CommunityInfo;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    return message;
+    return {
+      communityId: isSet(object.communityId) ? String(object.communityId) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+    };
   },
 
   toJSON(message: CommunityInfo): unknown {
     const obj: any = {};
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     message.name !== undefined && (obj.name = message.name);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CommunityInfo>): CommunityInfo {
-    const message = { ...baseCommunityInfo } as CommunityInfo;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<CommunityInfo>, I>>(object: I): CommunityInfo {
+    const message = createBaseCommunityInfo();
+    message.communityId = object.communityId ?? "";
+    message.name = object.name ?? "";
     return message;
   },
 };
 
-const baseALLNFT: object = {};
+function createBaseALLNFT(): ALLNFT {
+  return { nft: undefined, denomInfo: undefined, communityInfo: undefined };
+}
 
 export const ALLNFT = {
-  encode(
-    message: ALLNFT,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: ALLNFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nft !== undefined) {
       NFT.encode(message.nft, writer.uint32(10).fork()).ldelim();
     }
@@ -1993,10 +1607,7 @@ export const ALLNFT = {
       DenomInfo.encode(message.denomInfo, writer.uint32(18).fork()).ldelim();
     }
     if (message.communityInfo !== undefined) {
-      CommunityInfo.encode(
-        message.communityInfo,
-        writer.uint32(26).fork()
-      ).ldelim();
+      CommunityInfo.encode(message.communityInfo, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -2004,7 +1615,7 @@ export const ALLNFT = {
   decode(input: _m0.Reader | Uint8Array, length?: number): ALLNFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseALLNFT } as ALLNFT;
+    const message = createBaseALLNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2026,82 +1637,52 @@ export const ALLNFT = {
   },
 
   fromJSON(object: any): ALLNFT {
-    const message = { ...baseALLNFT } as ALLNFT;
-    if (object.nft !== undefined && object.nft !== null) {
-      message.nft = NFT.fromJSON(object.nft);
-    } else {
-      message.nft = undefined;
-    }
-    if (object.denomInfo !== undefined && object.denomInfo !== null) {
-      message.denomInfo = DenomInfo.fromJSON(object.denomInfo);
-    } else {
-      message.denomInfo = undefined;
-    }
-    if (object.communityInfo !== undefined && object.communityInfo !== null) {
-      message.communityInfo = CommunityInfo.fromJSON(object.communityInfo);
-    } else {
-      message.communityInfo = undefined;
-    }
-    return message;
+    return {
+      nft: isSet(object.nft) ? NFT.fromJSON(object.nft) : undefined,
+      denomInfo: isSet(object.denomInfo) ? DenomInfo.fromJSON(object.denomInfo) : undefined,
+      communityInfo: isSet(object.communityInfo) ? CommunityInfo.fromJSON(object.communityInfo) : undefined,
+    };
   },
 
   toJSON(message: ALLNFT): unknown {
     const obj: any = {};
-    message.nft !== undefined &&
-      (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
+    message.nft !== undefined && (obj.nft = message.nft ? NFT.toJSON(message.nft) : undefined);
     message.denomInfo !== undefined &&
-      (obj.denomInfo = message.denomInfo
-        ? DenomInfo.toJSON(message.denomInfo)
-        : undefined);
+      (obj.denomInfo = message.denomInfo ? DenomInfo.toJSON(message.denomInfo) : undefined);
     message.communityInfo !== undefined &&
-      (obj.communityInfo = message.communityInfo
-        ? CommunityInfo.toJSON(message.communityInfo)
-        : undefined);
+      (obj.communityInfo = message.communityInfo ? CommunityInfo.toJSON(message.communityInfo) : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ALLNFT>): ALLNFT {
-    const message = { ...baseALLNFT } as ALLNFT;
-    if (object.nft !== undefined && object.nft !== null) {
-      message.nft = NFT.fromPartial(object.nft);
-    } else {
-      message.nft = undefined;
-    }
-    if (object.denomInfo !== undefined && object.denomInfo !== null) {
-      message.denomInfo = DenomInfo.fromPartial(object.denomInfo);
-    } else {
-      message.denomInfo = undefined;
-    }
-    if (object.communityInfo !== undefined && object.communityInfo !== null) {
-      message.communityInfo = CommunityInfo.fromPartial(object.communityInfo);
-    } else {
-      message.communityInfo = undefined;
-    }
+  fromPartial<I extends Exact<DeepPartial<ALLNFT>, I>>(object: I): ALLNFT {
+    const message = createBaseALLNFT();
+    message.nft = (object.nft !== undefined && object.nft !== null) ? NFT.fromPartial(object.nft) : undefined;
+    message.denomInfo = (object.denomInfo !== undefined && object.denomInfo !== null)
+      ? DenomInfo.fromPartial(object.denomInfo)
+      : undefined;
+    message.communityInfo = (object.communityInfo !== undefined && object.communityInfo !== null)
+      ? CommunityInfo.fromPartial(object.communityInfo)
+      : undefined;
     return message;
   },
 };
 
-const baseQueryAllNFTsResponse: object = {};
+function createBaseQueryAllNFTsResponse(): QueryAllNFTsResponse {
+  return { all: [] };
+}
 
 export const QueryAllNFTsResponse = {
-  encode(
-    message: QueryAllNFTsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryAllNFTsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.all) {
       ALLNFT.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllNFTsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllNFTsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllNFTsResponse } as QueryAllNFTsResponse;
-    message.all = [];
+    const message = createBaseQueryAllNFTsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2117,60 +1698,42 @@ export const QueryAllNFTsResponse = {
   },
 
   fromJSON(object: any): QueryAllNFTsResponse {
-    const message = { ...baseQueryAllNFTsResponse } as QueryAllNFTsResponse;
-    message.all = [];
-    if (object.all !== undefined && object.all !== null) {
-      for (const e of object.all) {
-        message.all.push(ALLNFT.fromJSON(e));
-      }
-    }
-    return message;
+    return { all: Array.isArray(object?.all) ? object.all.map((e: any) => ALLNFT.fromJSON(e)) : [] };
   },
 
   toJSON(message: QueryAllNFTsResponse): unknown {
     const obj: any = {};
     if (message.all) {
-      obj.all = message.all.map((e) => (e ? ALLNFT.toJSON(e) : undefined));
+      obj.all = message.all.map((e) => e ? ALLNFT.toJSON(e) : undefined);
     } else {
       obj.all = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllNFTsResponse>): QueryAllNFTsResponse {
-    const message = { ...baseQueryAllNFTsResponse } as QueryAllNFTsResponse;
-    message.all = [];
-    if (object.all !== undefined && object.all !== null) {
-      for (const e of object.all) {
-        message.all.push(ALLNFT.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<QueryAllNFTsResponse>, I>>(object: I): QueryAllNFTsResponse {
+    const message = createBaseQueryAllNFTsResponse();
+    message.all = object.all?.map((e) => ALLNFT.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseQueryCommunityCollectionsRequest: object = { communityId: "" };
+function createBaseQueryCommunityCollectionsRequest(): QueryCommunityCollectionsRequest {
+  return { communityId: "" };
+}
 
 export const QueryCommunityCollectionsRequest = {
-  encode(
-    message: QueryCommunityCollectionsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunityCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.communityId !== "") {
       writer.uint32(10).string(message.communityId);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunityCollectionsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunityCollectionsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCommunityCollectionsRequest,
-    } as QueryCommunityCollectionsRequest;
+    const message = createBaseQueryCommunityCollectionsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2186,46 +1749,30 @@ export const QueryCommunityCollectionsRequest = {
   },
 
   fromJSON(object: any): QueryCommunityCollectionsRequest {
-    const message = {
-      ...baseQueryCommunityCollectionsRequest,
-    } as QueryCommunityCollectionsRequest;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    return message;
+    return { communityId: isSet(object.communityId) ? String(object.communityId) : "" };
   },
 
   toJSON(message: QueryCommunityCollectionsRequest): unknown {
     const obj: any = {};
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunityCollectionsRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryCommunityCollectionsRequest>, I>>(
+    object: I,
   ): QueryCommunityCollectionsRequest {
-    const message = {
-      ...baseQueryCommunityCollectionsRequest,
-    } as QueryCommunityCollectionsRequest;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
+    const message = createBaseQueryCommunityCollectionsRequest();
+    message.communityId = object.communityId ?? "";
     return message;
   },
 };
 
-const baseQueryCommunityCollectionsResponse: object = {};
+function createBaseQueryCommunityCollectionsResponse(): QueryCommunityCollectionsResponse {
+  return { community: undefined, denoms: [] };
+}
 
 export const QueryCommunityCollectionsResponse = {
-  encode(
-    message: QueryCommunityCollectionsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: QueryCommunityCollectionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.community !== undefined) {
       Community.encode(message.community, writer.uint32(10).fork()).ldelim();
     }
@@ -2235,16 +1782,10 @@ export const QueryCommunityCollectionsResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCommunityCollectionsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryCommunityCollectionsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCommunityCollectionsResponse,
-    } as QueryCommunityCollectionsResponse;
-    message.denoms = [];
+    const message = createBaseQueryCommunityCollectionsResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2263,54 +1804,32 @@ export const QueryCommunityCollectionsResponse = {
   },
 
   fromJSON(object: any): QueryCommunityCollectionsResponse {
-    const message = {
-      ...baseQueryCommunityCollectionsResponse,
-    } as QueryCommunityCollectionsResponse;
-    message.denoms = [];
-    if (object.community !== undefined && object.community !== null) {
-      message.community = Community.fromJSON(object.community);
-    } else {
-      message.community = undefined;
-    }
-    if (object.denoms !== undefined && object.denoms !== null) {
-      for (const e of object.denoms) {
-        message.denoms.push(Denom.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      community: isSet(object.community) ? Community.fromJSON(object.community) : undefined,
+      denoms: Array.isArray(object?.denoms) ? object.denoms.map((e: any) => Denom.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: QueryCommunityCollectionsResponse): unknown {
     const obj: any = {};
     message.community !== undefined &&
-      (obj.community = message.community
-        ? Community.toJSON(message.community)
-        : undefined);
+      (obj.community = message.community ? Community.toJSON(message.community) : undefined);
     if (message.denoms) {
-      obj.denoms = message.denoms.map((e) => (e ? Denom.toJSON(e) : undefined));
+      obj.denoms = message.denoms.map((e) => e ? Denom.toJSON(e) : undefined);
     } else {
       obj.denoms = [];
     }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCommunityCollectionsResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryCommunityCollectionsResponse>, I>>(
+    object: I,
   ): QueryCommunityCollectionsResponse {
-    const message = {
-      ...baseQueryCommunityCollectionsResponse,
-    } as QueryCommunityCollectionsResponse;
-    message.denoms = [];
-    if (object.community !== undefined && object.community !== null) {
-      message.community = Community.fromPartial(object.community);
-    } else {
-      message.community = undefined;
-    }
-    if (object.denoms !== undefined && object.denoms !== null) {
-      for (const e of object.denoms) {
-        message.denoms.push(Denom.fromPartial(e));
-      }
-    }
+    const message = createBaseQueryCommunityCollectionsResponse();
+    message.community = (object.community !== undefined && object.community !== null)
+      ? Community.fromPartial(object.community)
+      : undefined;
+    message.denoms = object.denoms?.map((e) => Denom.fromPartial(e)) || [];
     return message;
   },
 };
@@ -2318,29 +1837,18 @@ export const QueryCommunityCollectionsResponse = {
 export interface Query {
   Denom(request: QueryDenomRequest): Promise<QueryDenomResponse>;
   Denoms(request: QueryDenomsRequest): Promise<QueryDenomsResponse>;
-  DenomIDsByOwner(
-    request: QueryDenomIDsByOwnerRequest
-  ): Promise<QueryDenomIDsByOwnerResponse>;
+  DenomIDsByOwner(request: QueryDenomIDsByOwnerRequest): Promise<QueryDenomIDsByOwnerResponse>;
   Collection(request: QueryCollectionRequest): Promise<QueryCollectionResponse>;
   NFT(request: QueryNFTRequest): Promise<QueryNFTResponse>;
-  MarketPlaceNFT(
-    request: QueryMarketPlaceNFTRequest
-  ): Promise<QueryMarketPlaceNFTResponse>;
-  MarketPlace(
-    request: QueryMarketPlaceRequest
-  ): Promise<QueryMarketPlaceResponse>;
+  MarketPlaceNFT(request: QueryMarketPlaceNFTRequest): Promise<QueryMarketPlaceNFTResponse>;
+  MarketPlace(request: QueryMarketPlaceRequest): Promise<QueryMarketPlaceResponse>;
   OwnerNFTs(request: QueryOwnerNFTsRequest): Promise<QueryOwnerNFTsResponse>;
   AllNFTs(request: QueryAllNFTsRequest): Promise<QueryAllNFTsResponse>;
-  Communities(
-    request: QueryCommunitiesRequest
-  ): Promise<QueryCommunitiesResponse>;
+  Communities(request: QueryCommunitiesRequest): Promise<QueryCommunitiesResponse>;
   Community(request: QueryCommunityRequest): Promise<QueryCommunityResponse>;
-  CommunityCollections(
-    request: QueryCommunityCollectionsRequest
-  ): Promise<QueryCommunityCollectionsResponse>;
-  CommunityMembers(
-    request: QueryCommunityMembersRequest
-  ): Promise<QueryCommunityMembersResponse>;
+  CommunityCollections(request: QueryCommunityCollectionsRequest): Promise<QueryCommunityCollectionsResponse>;
+  CommunityMembers(request: QueryCommunityMembersRequest): Promise<QueryCommunityMembersResponse>;
+  CommunitiesByOwner(request: QueryCommunitiesByOwnerRequest): Promise<QueryCommunitiesByOwnerResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2360,170 +1868,114 @@ export class QueryClientImpl implements Query {
     this.Community = this.Community.bind(this);
     this.CommunityCollections = this.CommunityCollections.bind(this);
     this.CommunityMembers = this.CommunityMembers.bind(this);
+    this.CommunitiesByOwner = this.CommunitiesByOwner.bind(this);
   }
   Denom(request: QueryDenomRequest): Promise<QueryDenomResponse> {
     const data = QueryDenomRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "Denom", data);
-    return promise.then((data) =>
-      QueryDenomResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryDenomResponse.decode(new _m0.Reader(data)));
   }
 
   Denoms(request: QueryDenomsRequest): Promise<QueryDenomsResponse> {
     const data = QueryDenomsRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "Denoms", data);
-    return promise.then((data) =>
-      QueryDenomsResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryDenomsResponse.decode(new _m0.Reader(data)));
   }
 
-  DenomIDsByOwner(
-    request: QueryDenomIDsByOwnerRequest
-  ): Promise<QueryDenomIDsByOwnerResponse> {
+  DenomIDsByOwner(request: QueryDenomIDsByOwnerRequest): Promise<QueryDenomIDsByOwnerResponse> {
     const data = QueryDenomIDsByOwnerRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "nft.v1beta1.Query",
-      "DenomIDsByOwner",
-      data
-    );
-    return promise.then((data) =>
-      QueryDenomIDsByOwnerResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request("nft.v1beta1.Query", "DenomIDsByOwner", data);
+    return promise.then((data) => QueryDenomIDsByOwnerResponse.decode(new _m0.Reader(data)));
   }
 
-  Collection(
-    request: QueryCollectionRequest
-  ): Promise<QueryCollectionResponse> {
+  Collection(request: QueryCollectionRequest): Promise<QueryCollectionResponse> {
     const data = QueryCollectionRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "Collection", data);
-    return promise.then((data) =>
-      QueryCollectionResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryCollectionResponse.decode(new _m0.Reader(data)));
   }
 
   NFT(request: QueryNFTRequest): Promise<QueryNFTResponse> {
     const data = QueryNFTRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "NFT", data);
-    return promise.then((data) =>
-      QueryNFTResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryNFTResponse.decode(new _m0.Reader(data)));
   }
 
-  MarketPlaceNFT(
-    request: QueryMarketPlaceNFTRequest
-  ): Promise<QueryMarketPlaceNFTResponse> {
+  MarketPlaceNFT(request: QueryMarketPlaceNFTRequest): Promise<QueryMarketPlaceNFTResponse> {
     const data = QueryMarketPlaceNFTRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "nft.v1beta1.Query",
-      "MarketPlaceNFT",
-      data
-    );
-    return promise.then((data) =>
-      QueryMarketPlaceNFTResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request("nft.v1beta1.Query", "MarketPlaceNFT", data);
+    return promise.then((data) => QueryMarketPlaceNFTResponse.decode(new _m0.Reader(data)));
   }
 
-  MarketPlace(
-    request: QueryMarketPlaceRequest
-  ): Promise<QueryMarketPlaceResponse> {
+  MarketPlace(request: QueryMarketPlaceRequest): Promise<QueryMarketPlaceResponse> {
     const data = QueryMarketPlaceRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "MarketPlace", data);
-    return promise.then((data) =>
-      QueryMarketPlaceResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryMarketPlaceResponse.decode(new _m0.Reader(data)));
   }
 
   OwnerNFTs(request: QueryOwnerNFTsRequest): Promise<QueryOwnerNFTsResponse> {
     const data = QueryOwnerNFTsRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "OwnerNFTs", data);
-    return promise.then((data) =>
-      QueryOwnerNFTsResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryOwnerNFTsResponse.decode(new _m0.Reader(data)));
   }
 
   AllNFTs(request: QueryAllNFTsRequest): Promise<QueryAllNFTsResponse> {
     const data = QueryAllNFTsRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "AllNFTs", data);
-    return promise.then((data) =>
-      QueryAllNFTsResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryAllNFTsResponse.decode(new _m0.Reader(data)));
   }
 
-  Communities(
-    request: QueryCommunitiesRequest
-  ): Promise<QueryCommunitiesResponse> {
+  Communities(request: QueryCommunitiesRequest): Promise<QueryCommunitiesResponse> {
     const data = QueryCommunitiesRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "Communities", data);
-    return promise.then((data) =>
-      QueryCommunitiesResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryCommunitiesResponse.decode(new _m0.Reader(data)));
   }
 
   Community(request: QueryCommunityRequest): Promise<QueryCommunityResponse> {
     const data = QueryCommunityRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "Community", data);
-    return promise.then((data) =>
-      QueryCommunityResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => QueryCommunityResponse.decode(new _m0.Reader(data)));
   }
 
-  CommunityCollections(
-    request: QueryCommunityCollectionsRequest
-  ): Promise<QueryCommunityCollectionsResponse> {
+  CommunityCollections(request: QueryCommunityCollectionsRequest): Promise<QueryCommunityCollectionsResponse> {
     const data = QueryCommunityCollectionsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "nft.v1beta1.Query",
-      "CommunityCollections",
-      data
-    );
-    return promise.then((data) =>
-      QueryCommunityCollectionsResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request("nft.v1beta1.Query", "CommunityCollections", data);
+    return promise.then((data) => QueryCommunityCollectionsResponse.decode(new _m0.Reader(data)));
   }
 
-  CommunityMembers(
-    request: QueryCommunityMembersRequest
-  ): Promise<QueryCommunityMembersResponse> {
+  CommunityMembers(request: QueryCommunityMembersRequest): Promise<QueryCommunityMembersResponse> {
     const data = QueryCommunityMembersRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "nft.v1beta1.Query",
-      "CommunityMembers",
-      data
-    );
-    return promise.then((data) =>
-      QueryCommunityMembersResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request("nft.v1beta1.Query", "CommunityMembers", data);
+    return promise.then((data) => QueryCommunityMembersResponse.decode(new _m0.Reader(data)));
+  }
+
+  CommunitiesByOwner(request: QueryCommunitiesByOwnerRequest): Promise<QueryCommunitiesByOwnerResponse> {
+    const data = QueryCommunitiesByOwnerRequest.encode(request).finish();
+    const promise = this.rpc.request("nft.v1beta1.Query", "CommunitiesByOwner", data);
+    return promise.then((data) => QueryCommunitiesByOwnerResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined
-  | Long;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

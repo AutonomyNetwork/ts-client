@@ -130,19 +130,20 @@ export class AutonomyClient extends SigningStargateClient {
     fee: StdFee,
     memo: string,
   ): Promise<MsgCreateDenomResponse> {
-    const msg = {
-      typeUrl: '/nft.v1beta1.MsgCreateDenom',
-      value: {
+
+     const msg = {
+      typeUrl :'/nft.v1beta1.MsgCreateDenom',
+      value :{
         id: id,
         name: name,
         symbol: symbol,
         description: description,
         previewUri: preview_url,
         creator: sender,
-        community_id: community_id,
-      },
-    };
-
+        communityId:community_id
+      }
+    }
+    
     return this.signAndBroadcast(sender, [msg], fee, memo);
   }
 

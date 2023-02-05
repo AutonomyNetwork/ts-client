@@ -13,20 +13,12 @@ export interface MarketPlace {
   filled: boolean;
 }
 
-const baseMarketPlace: object = {
-  nftId: "",
-  denomID: "",
-  price: "",
-  seller: "",
-  buyer: "",
-  filled: false,
-};
+function createBaseMarketPlace(): MarketPlace {
+  return { nftId: "", denomID: "", price: "", seller: "", buyer: "", filled: false };
+}
 
 export const MarketPlace = {
-  encode(
-    message: MarketPlace,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MarketPlace, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.nftId !== "") {
       writer.uint32(10).string(message.nftId);
     }
@@ -51,7 +43,7 @@ export const MarketPlace = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MarketPlace {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMarketPlace } as MarketPlace;
+    const message = createBaseMarketPlace();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -82,38 +74,14 @@ export const MarketPlace = {
   },
 
   fromJSON(object: any): MarketPlace {
-    const message = { ...baseMarketPlace } as MarketPlace;
-    if (object.nftId !== undefined && object.nftId !== null) {
-      message.nftId = String(object.nftId);
-    } else {
-      message.nftId = "";
-    }
-    if (object.denomID !== undefined && object.denomID !== null) {
-      message.denomID = String(object.denomID);
-    } else {
-      message.denomID = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.seller !== undefined && object.seller !== null) {
-      message.seller = String(object.seller);
-    } else {
-      message.seller = "";
-    }
-    if (object.buyer !== undefined && object.buyer !== null) {
-      message.buyer = String(object.buyer);
-    } else {
-      message.buyer = "";
-    }
-    if (object.filled !== undefined && object.filled !== null) {
-      message.filled = Boolean(object.filled);
-    } else {
-      message.filled = false;
-    }
-    return message;
+    return {
+      nftId: isSet(object.nftId) ? String(object.nftId) : "",
+      denomID: isSet(object.denomID) ? String(object.denomID) : "",
+      price: isSet(object.price) ? String(object.price) : "",
+      seller: isSet(object.seller) ? String(object.seller) : "",
+      buyer: isSet(object.buyer) ? String(object.buyer) : "",
+      filled: isSet(object.filled) ? Boolean(object.filled) : false,
+    };
   },
 
   toJSON(message: MarketPlace): unknown {
@@ -127,62 +95,35 @@ export const MarketPlace = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MarketPlace>): MarketPlace {
-    const message = { ...baseMarketPlace } as MarketPlace;
-    if (object.nftId !== undefined && object.nftId !== null) {
-      message.nftId = object.nftId;
-    } else {
-      message.nftId = "";
-    }
-    if (object.denomID !== undefined && object.denomID !== null) {
-      message.denomID = object.denomID;
-    } else {
-      message.denomID = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.seller !== undefined && object.seller !== null) {
-      message.seller = object.seller;
-    } else {
-      message.seller = "";
-    }
-    if (object.buyer !== undefined && object.buyer !== null) {
-      message.buyer = object.buyer;
-    } else {
-      message.buyer = "";
-    }
-    if (object.filled !== undefined && object.filled !== null) {
-      message.filled = object.filled;
-    } else {
-      message.filled = false;
-    }
+  fromPartial<I extends Exact<DeepPartial<MarketPlace>, I>>(object: I): MarketPlace {
+    const message = createBaseMarketPlace();
+    message.nftId = object.nftId ?? "";
+    message.denomID = object.denomID ?? "";
+    message.price = object.price ?? "";
+    message.seller = object.seller ?? "";
+    message.buyer = object.buyer ?? "";
+    message.filled = object.filled ?? false;
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined
-  | Long;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
