@@ -126,6 +126,7 @@ export class AutonomyClient extends SigningStargateClient {
     symbol: string,
     description: string,
     preview_url: string,
+    community_id:string,
     fee: StdFee,
     memo: string,
   ): Promise<MsgCreateDenomResponse> {
@@ -138,6 +139,7 @@ export class AutonomyClient extends SigningStargateClient {
         description: description,
         previewUri: preview_url,
         creator: sender,
+        community_id: community_id,
       },
     };
 
