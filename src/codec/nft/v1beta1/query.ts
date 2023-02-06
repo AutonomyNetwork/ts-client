@@ -3,17 +3,39 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../../cosmos/base/query/v1beta1/pagination";
 import { Community, CommunityMembers } from "./community";
-import { MarketPlace } from "./market_place";
+import { ListedType, listedTypeFromJSON, listedTypeToJSON, MarketPlace } from "./market_place";
 import { Collection, Denom, NFT } from "./nft";
 
 export const protobufPackage = "nft.v1beta1";
 
+export interface QueryMarketPlaceByTypeRequest {
+  listedType: ListedType;
+  pagination?: PageRequest;
+}
+
+export interface QueryMarketPlaceByTypeResponse {
+  marketPlace: MarketPlace[];
+  pagination?: PageResponse;
+}
+
 export interface QueryCommunitiesByOwnerRequest {
   address: string;
+  pagination?: PageRequest;
 }
 
 export interface QueryCommunitiesByOwnerResponse {
-  commities?: Community;
+  communities: Community[];
+  pagination?: PageResponse;
+}
+
+export interface QueryDenomsByOwnerRequest {
+  address: string;
+  pagination?: PageRequest;
+}
+
+export interface QueryDenomsByOwnerResponse {
+  denom: Denom[];
+  pagination?: PageResponse;
 }
 
 export interface QueryDenomRequest {
@@ -146,14 +168,149 @@ export interface QueryCommunityCollectionsResponse {
   denoms: Denom[];
 }
 
+function createBaseQueryMarketPlaceByTypeRequest(): QueryMarketPlaceByTypeRequest {
+  return { listedType: 0, pagination: undefined };
+}
+
+export const QueryMarketPlaceByTypeRequest = {
+  encode(message: QueryMarketPlaceByTypeRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.listedType !== 0) {
+      writer.uint32(8).int32(message.listedType);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMarketPlaceByTypeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryMarketPlaceByTypeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.listedType = reader.int32() as any;
+          break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMarketPlaceByTypeRequest {
+    return {
+      listedType: isSet(object.listedType) ? listedTypeFromJSON(object.listedType) : 0,
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryMarketPlaceByTypeRequest): unknown {
+    const obj: any = {};
+    message.listedType !== undefined && (obj.listedType = listedTypeToJSON(message.listedType));
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryMarketPlaceByTypeRequest>, I>>(
+    object: I,
+  ): QueryMarketPlaceByTypeRequest {
+    const message = createBaseQueryMarketPlaceByTypeRequest();
+    message.listedType = object.listedType ?? 0;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryMarketPlaceByTypeResponse(): QueryMarketPlaceByTypeResponse {
+  return { marketPlace: [], pagination: undefined };
+}
+
+export const QueryMarketPlaceByTypeResponse = {
+  encode(message: QueryMarketPlaceByTypeResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.marketPlace) {
+      MarketPlace.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMarketPlaceByTypeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryMarketPlaceByTypeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketPlace.push(MarketPlace.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryMarketPlaceByTypeResponse {
+    return {
+      marketPlace: Array.isArray(object?.marketPlace)
+        ? object.marketPlace.map((e: any) => MarketPlace.fromJSON(e))
+        : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryMarketPlaceByTypeResponse): unknown {
+    const obj: any = {};
+    if (message.marketPlace) {
+      obj.marketPlace = message.marketPlace.map((e) => e ? MarketPlace.toJSON(e) : undefined);
+    } else {
+      obj.marketPlace = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryMarketPlaceByTypeResponse>, I>>(
+    object: I,
+  ): QueryMarketPlaceByTypeResponse {
+    const message = createBaseQueryMarketPlaceByTypeResponse();
+    message.marketPlace = object.marketPlace?.map((e) => MarketPlace.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseQueryCommunitiesByOwnerRequest(): QueryCommunitiesByOwnerRequest {
-  return { address: "" };
+  return { address: "", pagination: undefined };
 }
 
 export const QueryCommunitiesByOwnerRequest = {
   encode(message: QueryCommunitiesByOwnerRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -168,6 +325,9 @@ export const QueryCommunitiesByOwnerRequest = {
         case 1:
           message.address = reader.string();
           break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -177,12 +337,17 @@ export const QueryCommunitiesByOwnerRequest = {
   },
 
   fromJSON(object: any): QueryCommunitiesByOwnerRequest {
-    return { address: isSet(object.address) ? String(object.address) : "" };
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryCommunitiesByOwnerRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
     return obj;
   },
 
@@ -191,18 +356,24 @@ export const QueryCommunitiesByOwnerRequest = {
   ): QueryCommunitiesByOwnerRequest {
     const message = createBaseQueryCommunitiesByOwnerRequest();
     message.address = object.address ?? "";
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
 function createBaseQueryCommunitiesByOwnerResponse(): QueryCommunitiesByOwnerResponse {
-  return { commities: undefined };
+  return { communities: [], pagination: undefined };
 }
 
 export const QueryCommunitiesByOwnerResponse = {
   encode(message: QueryCommunitiesByOwnerResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.commities !== undefined) {
-      Community.encode(message.commities, writer.uint32(10).fork()).ldelim();
+    for (const v of message.communities) {
+      Community.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -215,7 +386,10 @@ export const QueryCommunitiesByOwnerResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.commities = Community.decode(reader, reader.uint32());
+          message.communities.push(Community.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -226,13 +400,21 @@ export const QueryCommunitiesByOwnerResponse = {
   },
 
   fromJSON(object: any): QueryCommunitiesByOwnerResponse {
-    return { commities: isSet(object.commities) ? Community.fromJSON(object.commities) : undefined };
+    return {
+      communities: Array.isArray(object?.communities) ? object.communities.map((e: any) => Community.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
   },
 
   toJSON(message: QueryCommunitiesByOwnerResponse): unknown {
     const obj: any = {};
-    message.commities !== undefined &&
-      (obj.commities = message.commities ? Community.toJSON(message.commities) : undefined);
+    if (message.communities) {
+      obj.communities = message.communities.map((e) => e ? Community.toJSON(e) : undefined);
+    } else {
+      obj.communities = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
     return obj;
   },
 
@@ -240,8 +422,135 @@ export const QueryCommunitiesByOwnerResponse = {
     object: I,
   ): QueryCommunitiesByOwnerResponse {
     const message = createBaseQueryCommunitiesByOwnerResponse();
-    message.commities = (object.commities !== undefined && object.commities !== null)
-      ? Community.fromPartial(object.commities)
+    message.communities = object.communities?.map((e) => Community.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryDenomsByOwnerRequest(): QueryDenomsByOwnerRequest {
+  return { address: "", pagination: undefined };
+}
+
+export const QueryDenomsByOwnerRequest = {
+  encode(message: QueryDenomsByOwnerRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomsByOwnerRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryDenomsByOwnerRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDenomsByOwnerRequest {
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryDenomsByOwnerRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryDenomsByOwnerRequest>, I>>(object: I): QueryDenomsByOwnerRequest {
+    const message = createBaseQueryDenomsByOwnerRequest();
+    message.address = object.address ?? "";
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryDenomsByOwnerResponse(): QueryDenomsByOwnerResponse {
+  return { denom: [], pagination: undefined };
+}
+
+export const QueryDenomsByOwnerResponse = {
+  encode(message: QueryDenomsByOwnerResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.denom) {
+      Denom.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryDenomsByOwnerResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryDenomsByOwnerResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom.push(Denom.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDenomsByOwnerResponse {
+    return {
+      denom: Array.isArray(object?.denom) ? object.denom.map((e: any) => Denom.fromJSON(e)) : [],
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
+    };
+  },
+
+  toJSON(message: QueryDenomsByOwnerResponse): unknown {
+    const obj: any = {};
+    if (message.denom) {
+      obj.denom = message.denom.map((e) => e ? Denom.toJSON(e) : undefined);
+    } else {
+      obj.denom = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<QueryDenomsByOwnerResponse>, I>>(object: I): QueryDenomsByOwnerResponse {
+    const message = createBaseQueryDenomsByOwnerResponse();
+    message.denom = object.denom?.map((e) => Denom.fromPartial(e)) || [];
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
       : undefined;
     return message;
   },
@@ -1842,6 +2151,7 @@ export interface Query {
   NFT(request: QueryNFTRequest): Promise<QueryNFTResponse>;
   MarketPlaceNFT(request: QueryMarketPlaceNFTRequest): Promise<QueryMarketPlaceNFTResponse>;
   MarketPlace(request: QueryMarketPlaceRequest): Promise<QueryMarketPlaceResponse>;
+  MarketPlaceByType(request: QueryMarketPlaceByTypeRequest): Promise<QueryMarketPlaceByTypeResponse>;
   OwnerNFTs(request: QueryOwnerNFTsRequest): Promise<QueryOwnerNFTsResponse>;
   AllNFTs(request: QueryAllNFTsRequest): Promise<QueryAllNFTsResponse>;
   Communities(request: QueryCommunitiesRequest): Promise<QueryCommunitiesResponse>;
@@ -1849,6 +2159,7 @@ export interface Query {
   CommunityCollections(request: QueryCommunityCollectionsRequest): Promise<QueryCommunityCollectionsResponse>;
   CommunityMembers(request: QueryCommunityMembersRequest): Promise<QueryCommunityMembersResponse>;
   CommunitiesByOwner(request: QueryCommunitiesByOwnerRequest): Promise<QueryCommunitiesByOwnerResponse>;
+  DenomsByOwner(request: QueryDenomsByOwnerRequest): Promise<QueryDenomsByOwnerResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1862,6 +2173,7 @@ export class QueryClientImpl implements Query {
     this.NFT = this.NFT.bind(this);
     this.MarketPlaceNFT = this.MarketPlaceNFT.bind(this);
     this.MarketPlace = this.MarketPlace.bind(this);
+    this.MarketPlaceByType = this.MarketPlaceByType.bind(this);
     this.OwnerNFTs = this.OwnerNFTs.bind(this);
     this.AllNFTs = this.AllNFTs.bind(this);
     this.Communities = this.Communities.bind(this);
@@ -1869,6 +2181,7 @@ export class QueryClientImpl implements Query {
     this.CommunityCollections = this.CommunityCollections.bind(this);
     this.CommunityMembers = this.CommunityMembers.bind(this);
     this.CommunitiesByOwner = this.CommunitiesByOwner.bind(this);
+    this.DenomsByOwner = this.DenomsByOwner.bind(this);
   }
   Denom(request: QueryDenomRequest): Promise<QueryDenomResponse> {
     const data = QueryDenomRequest.encode(request).finish();
@@ -1912,6 +2225,12 @@ export class QueryClientImpl implements Query {
     return promise.then((data) => QueryMarketPlaceResponse.decode(new _m0.Reader(data)));
   }
 
+  MarketPlaceByType(request: QueryMarketPlaceByTypeRequest): Promise<QueryMarketPlaceByTypeResponse> {
+    const data = QueryMarketPlaceByTypeRequest.encode(request).finish();
+    const promise = this.rpc.request("nft.v1beta1.Query", "MarketPlaceByType", data);
+    return promise.then((data) => QueryMarketPlaceByTypeResponse.decode(new _m0.Reader(data)));
+  }
+
   OwnerNFTs(request: QueryOwnerNFTsRequest): Promise<QueryOwnerNFTsResponse> {
     const data = QueryOwnerNFTsRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "OwnerNFTs", data);
@@ -1952,6 +2271,12 @@ export class QueryClientImpl implements Query {
     const data = QueryCommunitiesByOwnerRequest.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Query", "CommunitiesByOwner", data);
     return promise.then((data) => QueryCommunitiesByOwnerResponse.decode(new _m0.Reader(data)));
+  }
+
+  DenomsByOwner(request: QueryDenomsByOwnerRequest): Promise<QueryDenomsByOwnerResponse> {
+    const data = QueryDenomsByOwnerRequest.encode(request).finish();
+    const promise = this.rpc.request("nft.v1beta1.Query", "DenomsByOwner", data);
+    return promise.then((data) => QueryDenomsByOwnerResponse.decode(new _m0.Reader(data)));
   }
 }
 

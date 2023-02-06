@@ -20,7 +20,12 @@ import {
   QueryAllNFTsResponse,
   QueryCommunityCollectionsResponse,
   QueryMarketPlaceNFTResponse,
+  QueryCommunitiesByOwnerResponse,
+  QueryDenomsByOwnerResponse,
+  QueryMarketPlaceByTypeResponse,
 } from './codec/nft/v1beta1/query';
+
+import {  ListedType } from './codec/nft/v1beta1/market_place'
 import {
   QueryClientImpl as QueryLiquidityClient,
   QueryLiquidityPoolsResponse,
@@ -54,6 +59,9 @@ export interface NFTExtension {
     readonly denom: (id: string) => Promise<QueryDenomResponse>;
     readonly nft: (denom_id: string, nft_id: string) => Promise<QueryNFTResponse>;
     readonly all: () => Promise<QueryAllNFTsResponse>;
+    readonly communitiesByOwner: (address: string,limit?:Long, key?: Uint8Array) => Promise <QueryCommunitiesByOwnerResponse>
+    readonly denomsByOwner: (address:string,limit?:Long, key?:Uint8Array) => Promise <QueryDenomsByOwnerResponse>
+    readonly marketplaceType: (listed_type: ListedType, limit?:Long, key?:Uint8Array) => Promise<QueryMarketPlaceByTypeResponse>
   };
 }
 
@@ -193,6 +201,68 @@ export function setupNFTExtension(base: QueryClient): NFTExtension {
       all: async () => {
         const res = await queryService.AllNFTs({});
         return res;
+      },
+      communitiesByOwner: async (address:string, limit?:Long, key?:Uint8Array) =>{
+        if (limit! && key! ){
+          const res = await queryService.CommunitiesByOwner({
+            pagination:{
+              limit:limit!,
+              key:key!,
+              offset:Long.fromNumber(0, true),
+              countTotal: true,
+              reverse:false
+            },
+            address:address,
+          })
+          return res
+        }else{
+          const res1 = await queryService.CommunitiesByOwner({
+            address: address,
+          })
+          return res1
+        }
+      },
+      denomsByOwner: async(address:string,limit?:Long, key?:Uint8Array) => {
+        if (limit! && key!){
+          const res = await queryService.DenomsByOwner({
+            pagination:{
+              limit:limit!,
+              key:key!,
+              offset: Long.fromNumber(0, true),
+              countTotal: true,
+              reverse:false
+            },
+            address:address
+          })
+
+          return res
+        }else{
+          const res1 = await queryService.DenomsByOwner({
+            address: address,
+          })
+          return res1
+        }
+      },
+      marketplaceType: async(listed_type:ListedType, limit?:Long, key?:Uint8Array) => {
+        if (limit! && key!){
+          const res = await queryService.MarketPlaceByType({
+            pagination:{
+              limit:limit!,
+              key:key!,
+              offset: Long.fromNumber(0, true),
+              countTotal: true,
+              reverse:false
+            },
+            listedType: listed_type
+          })
+
+          return res
+        }else{
+          const res1 = await queryService.MarketPlaceByType({
+            listedType: listed_type
+          })
+          return res1
+        }
       },
     },
   };

@@ -4,6 +4,45 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "nft.v1beta1";
 
+export enum ListedType {
+  LISTED_TYPE_UNSPECIFIED = 0,
+  LISTED_TYPE_FIAT = 1,
+  LISTED_TYPE_CRYPTO = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function listedTypeFromJSON(object: any): ListedType {
+  switch (object) {
+    case 0:
+    case "LISTED_TYPE_UNSPECIFIED":
+      return ListedType.LISTED_TYPE_UNSPECIFIED;
+    case 1:
+    case "LISTED_TYPE_FIAT":
+      return ListedType.LISTED_TYPE_FIAT;
+    case 2:
+    case "LISTED_TYPE_CRYPTO":
+      return ListedType.LISTED_TYPE_CRYPTO;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ListedType.UNRECOGNIZED;
+  }
+}
+
+export function listedTypeToJSON(object: ListedType): string {
+  switch (object) {
+    case ListedType.LISTED_TYPE_UNSPECIFIED:
+      return "LISTED_TYPE_UNSPECIFIED";
+    case ListedType.LISTED_TYPE_FIAT:
+      return "LISTED_TYPE_FIAT";
+    case ListedType.LISTED_TYPE_CRYPTO:
+      return "LISTED_TYPE_CRYPTO";
+    case ListedType.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 export interface MarketPlace {
   nftId: string;
   denomID: string;
@@ -11,10 +50,25 @@ export interface MarketPlace {
   seller: string;
   buyer: string;
   filled: boolean;
+  listedType: ListedType;
+  currency: string;
+  fiatAmount: string;
+  orderRefId: string;
 }
 
 function createBaseMarketPlace(): MarketPlace {
-  return { nftId: "", denomID: "", price: "", seller: "", buyer: "", filled: false };
+  return {
+    nftId: "",
+    denomID: "",
+    price: "",
+    seller: "",
+    buyer: "",
+    filled: false,
+    listedType: 0,
+    currency: "",
+    fiatAmount: "",
+    orderRefId: "",
+  };
 }
 
 export const MarketPlace = {
@@ -36,6 +90,18 @@ export const MarketPlace = {
     }
     if (message.filled === true) {
       writer.uint32(48).bool(message.filled);
+    }
+    if (message.listedType !== 0) {
+      writer.uint32(56).int32(message.listedType);
+    }
+    if (message.currency !== "") {
+      writer.uint32(66).string(message.currency);
+    }
+    if (message.fiatAmount !== "") {
+      writer.uint32(74).string(message.fiatAmount);
+    }
+    if (message.orderRefId !== "") {
+      writer.uint32(82).string(message.orderRefId);
     }
     return writer;
   },
@@ -65,6 +131,18 @@ export const MarketPlace = {
         case 6:
           message.filled = reader.bool();
           break;
+        case 7:
+          message.listedType = reader.int32() as any;
+          break;
+        case 8:
+          message.currency = reader.string();
+          break;
+        case 9:
+          message.fiatAmount = reader.string();
+          break;
+        case 10:
+          message.orderRefId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -81,6 +159,10 @@ export const MarketPlace = {
       seller: isSet(object.seller) ? String(object.seller) : "",
       buyer: isSet(object.buyer) ? String(object.buyer) : "",
       filled: isSet(object.filled) ? Boolean(object.filled) : false,
+      listedType: isSet(object.listedType) ? listedTypeFromJSON(object.listedType) : 0,
+      currency: isSet(object.currency) ? String(object.currency) : "",
+      fiatAmount: isSet(object.fiatAmount) ? String(object.fiatAmount) : "",
+      orderRefId: isSet(object.orderRefId) ? String(object.orderRefId) : "",
     };
   },
 
@@ -92,6 +174,10 @@ export const MarketPlace = {
     message.seller !== undefined && (obj.seller = message.seller);
     message.buyer !== undefined && (obj.buyer = message.buyer);
     message.filled !== undefined && (obj.filled = message.filled);
+    message.listedType !== undefined && (obj.listedType = listedTypeToJSON(message.listedType));
+    message.currency !== undefined && (obj.currency = message.currency);
+    message.fiatAmount !== undefined && (obj.fiatAmount = message.fiatAmount);
+    message.orderRefId !== undefined && (obj.orderRefId = message.orderRefId);
     return obj;
   },
 
@@ -103,6 +189,10 @@ export const MarketPlace = {
     message.seller = object.seller ?? "";
     message.buyer = object.buyer ?? "";
     message.filled = object.filled ?? false;
+    message.listedType = object.listedType ?? 0;
+    message.currency = object.currency ?? "";
+    message.fiatAmount = object.fiatAmount ?? "";
+    message.orderRefId = object.orderRefId ?? "";
     return message;
   },
 };

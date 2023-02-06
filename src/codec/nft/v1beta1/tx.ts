@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { ListedType, listedTypeFromJSON, listedTypeToJSON } from "./market_place";
 import { Metadata } from "./nft";
 
 export const protobufPackage = "nft.v1beta1";
@@ -59,6 +60,9 @@ export interface MsgSellNFT {
   denomId: string;
   price: string;
   seller: string;
+  listedType: ListedType;
+  currency: string;
+  fiatAmount: string;
 }
 
 export interface MsgSellNFTResponse {
@@ -68,6 +72,10 @@ export interface MsgBuyNFT {
   id: string;
   denomId: string;
   buyer: string;
+  listedType: ListedType;
+  currency: string;
+  fiatAmount: string;
+  orderRefId: string;
 }
 
 export interface MsgBuyNFTResponse {
@@ -91,6 +99,12 @@ export interface MsgJoinCommunity {
 }
 
 export interface MsgJoinCommunityResponse {
+}
+
+export interface MsgUpdateCommunity {
+}
+
+export interface MsgUpdateCommunityResponse {
 }
 
 function createBaseMsgCreateDenom(): MsgCreateDenom {
@@ -652,7 +666,7 @@ export const MsgTransferNFTResponse = {
 };
 
 function createBaseMsgSellNFT(): MsgSellNFT {
-  return { id: "", denomId: "", price: "", seller: "" };
+  return { id: "", denomId: "", price: "", seller: "", listedType: 0, currency: "", fiatAmount: "" };
 }
 
 export const MsgSellNFT = {
@@ -668,6 +682,15 @@ export const MsgSellNFT = {
     }
     if (message.seller !== "") {
       writer.uint32(34).string(message.seller);
+    }
+    if (message.listedType !== 0) {
+      writer.uint32(40).int32(message.listedType);
+    }
+    if (message.currency !== "") {
+      writer.uint32(50).string(message.currency);
+    }
+    if (message.fiatAmount !== "") {
+      writer.uint32(58).string(message.fiatAmount);
     }
     return writer;
   },
@@ -691,6 +714,15 @@ export const MsgSellNFT = {
         case 4:
           message.seller = reader.string();
           break;
+        case 5:
+          message.listedType = reader.int32() as any;
+          break;
+        case 6:
+          message.currency = reader.string();
+          break;
+        case 7:
+          message.fiatAmount = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -705,6 +737,9 @@ export const MsgSellNFT = {
       denomId: isSet(object.denomId) ? String(object.denomId) : "",
       price: isSet(object.price) ? String(object.price) : "",
       seller: isSet(object.seller) ? String(object.seller) : "",
+      listedType: isSet(object.listedType) ? listedTypeFromJSON(object.listedType) : 0,
+      currency: isSet(object.currency) ? String(object.currency) : "",
+      fiatAmount: isSet(object.fiatAmount) ? String(object.fiatAmount) : "",
     };
   },
 
@@ -714,6 +749,9 @@ export const MsgSellNFT = {
     message.denomId !== undefined && (obj.denomId = message.denomId);
     message.price !== undefined && (obj.price = message.price);
     message.seller !== undefined && (obj.seller = message.seller);
+    message.listedType !== undefined && (obj.listedType = listedTypeToJSON(message.listedType));
+    message.currency !== undefined && (obj.currency = message.currency);
+    message.fiatAmount !== undefined && (obj.fiatAmount = message.fiatAmount);
     return obj;
   },
 
@@ -723,6 +761,9 @@ export const MsgSellNFT = {
     message.denomId = object.denomId ?? "";
     message.price = object.price ?? "";
     message.seller = object.seller ?? "";
+    message.listedType = object.listedType ?? 0;
+    message.currency = object.currency ?? "";
+    message.fiatAmount = object.fiatAmount ?? "";
     return message;
   },
 };
@@ -767,7 +808,7 @@ export const MsgSellNFTResponse = {
 };
 
 function createBaseMsgBuyNFT(): MsgBuyNFT {
-  return { id: "", denomId: "", buyer: "" };
+  return { id: "", denomId: "", buyer: "", listedType: 0, currency: "", fiatAmount: "", orderRefId: "" };
 }
 
 export const MsgBuyNFT = {
@@ -780,6 +821,18 @@ export const MsgBuyNFT = {
     }
     if (message.buyer !== "") {
       writer.uint32(26).string(message.buyer);
+    }
+    if (message.listedType !== 0) {
+      writer.uint32(32).int32(message.listedType);
+    }
+    if (message.currency !== "") {
+      writer.uint32(42).string(message.currency);
+    }
+    if (message.fiatAmount !== "") {
+      writer.uint32(50).string(message.fiatAmount);
+    }
+    if (message.orderRefId !== "") {
+      writer.uint32(58).string(message.orderRefId);
     }
     return writer;
   },
@@ -800,6 +853,18 @@ export const MsgBuyNFT = {
         case 3:
           message.buyer = reader.string();
           break;
+        case 4:
+          message.listedType = reader.int32() as any;
+          break;
+        case 5:
+          message.currency = reader.string();
+          break;
+        case 6:
+          message.fiatAmount = reader.string();
+          break;
+        case 7:
+          message.orderRefId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -813,6 +878,10 @@ export const MsgBuyNFT = {
       id: isSet(object.id) ? String(object.id) : "",
       denomId: isSet(object.denomId) ? String(object.denomId) : "",
       buyer: isSet(object.buyer) ? String(object.buyer) : "",
+      listedType: isSet(object.listedType) ? listedTypeFromJSON(object.listedType) : 0,
+      currency: isSet(object.currency) ? String(object.currency) : "",
+      fiatAmount: isSet(object.fiatAmount) ? String(object.fiatAmount) : "",
+      orderRefId: isSet(object.orderRefId) ? String(object.orderRefId) : "",
     };
   },
 
@@ -821,6 +890,10 @@ export const MsgBuyNFT = {
     message.id !== undefined && (obj.id = message.id);
     message.denomId !== undefined && (obj.denomId = message.denomId);
     message.buyer !== undefined && (obj.buyer = message.buyer);
+    message.listedType !== undefined && (obj.listedType = listedTypeToJSON(message.listedType));
+    message.currency !== undefined && (obj.currency = message.currency);
+    message.fiatAmount !== undefined && (obj.fiatAmount = message.fiatAmount);
+    message.orderRefId !== undefined && (obj.orderRefId = message.orderRefId);
     return obj;
   },
 
@@ -829,6 +902,10 @@ export const MsgBuyNFT = {
     message.id = object.id ?? "";
     message.denomId = object.denomId ?? "";
     message.buyer = object.buyer ?? "";
+    message.listedType = object.listedType ?? 0;
+    message.currency = object.currency ?? "";
+    message.fiatAmount = object.fiatAmount ?? "";
+    message.orderRefId = object.orderRefId ?? "";
     return message;
   },
 };
@@ -1101,6 +1178,84 @@ export const MsgJoinCommunityResponse = {
   },
 };
 
+function createBaseMsgUpdateCommunity(): MsgUpdateCommunity {
+  return {};
+}
+
+export const MsgUpdateCommunity = {
+  encode(_: MsgUpdateCommunity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateCommunity {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateCommunity();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateCommunity {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateCommunity): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateCommunity>, I>>(_: I): MsgUpdateCommunity {
+    const message = createBaseMsgUpdateCommunity();
+    return message;
+  },
+};
+
+function createBaseMsgUpdateCommunityResponse(): MsgUpdateCommunityResponse {
+  return {};
+}
+
+export const MsgUpdateCommunityResponse = {
+  encode(_: MsgUpdateCommunityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateCommunityResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateCommunityResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateCommunityResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateCommunityResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateCommunityResponse>, I>>(_: I): MsgUpdateCommunityResponse {
+    const message = createBaseMsgUpdateCommunityResponse();
+    return message;
+  },
+};
+
 export interface Msg {
   CreateDenom(request: MsgCreateDenom): Promise<MsgCreateDenomResponse>;
   MintNFT(request: MsgMintNFT): Promise<MsgMintNFTResponse>;
@@ -1109,6 +1264,7 @@ export interface Msg {
   SellNFT(request: MsgSellNFT): Promise<MsgSellNFTResponse>;
   BuyNFT(request: MsgBuyNFT): Promise<MsgBuyNFTResponse>;
   CreateCommunity(request: MsgCreateCommunity): Promise<MsgCreateCommunityResponse>;
+  /** rpc UpdateCommunity(MsgUpdateCommunity) returns (MsgUpdateCommunityResponse); */
   JoinCommunity(request: MsgJoinCommunity): Promise<MsgJoinCommunityResponse>;
 }
 
