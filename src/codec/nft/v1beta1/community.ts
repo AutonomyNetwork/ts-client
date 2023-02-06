@@ -17,19 +17,12 @@ export interface CommunityMembers {
   addresses: string[];
 }
 
-const baseCommunity: object = {
-  name: "",
-  id: "",
-  creator: "",
-  description: "",
-  previewUri: "",
-};
+function createBaseCommunity(): Community {
+  return { name: "", id: "", creator: "", description: "", previewUri: "" };
+}
 
 export const Community = {
-  encode(
-    message: Community,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Community, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -51,7 +44,7 @@ export const Community = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Community {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommunity } as Community;
+    const message = createBaseCommunity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -79,33 +72,13 @@ export const Community = {
   },
 
   fromJSON(object: any): Community {
-    const message = { ...baseCommunity } as Community;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = String(object.previewUri);
-    } else {
-      message.previewUri = "";
-    }
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      previewUri: isSet(object.previewUri) ? String(object.previewUri) : "",
+    };
   },
 
   toJSON(message: Community): unknown {
@@ -113,50 +86,28 @@ export const Community = {
     message.name !== undefined && (obj.name = message.name);
     message.id !== undefined && (obj.id = message.id);
     message.creator !== undefined && (obj.creator = message.creator);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Community>): Community {
-    const message = { ...baseCommunity } as Community;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = object.previewUri;
-    } else {
-      message.previewUri = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<Community>, I>>(object: I): Community {
+    const message = createBaseCommunity();
+    message.name = object.name ?? "";
+    message.id = object.id ?? "";
+    message.creator = object.creator ?? "";
+    message.description = object.description ?? "";
+    message.previewUri = object.previewUri ?? "";
     return message;
   },
 };
 
-const baseCommunityMembers: object = { communityId: "", addresses: "" };
+function createBaseCommunityMembers(): CommunityMembers {
+  return { communityId: "", addresses: [] };
+}
 
 export const CommunityMembers = {
-  encode(
-    message: CommunityMembers,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: CommunityMembers, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.communityId !== "") {
       writer.uint32(10).string(message.communityId);
     }
@@ -169,8 +120,7 @@ export const CommunityMembers = {
   decode(input: _m0.Reader | Uint8Array, length?: number): CommunityMembers {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCommunityMembers } as CommunityMembers;
-    message.addresses = [];
+    const message = createBaseCommunityMembers();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -189,25 +139,15 @@ export const CommunityMembers = {
   },
 
   fromJSON(object: any): CommunityMembers {
-    const message = { ...baseCommunityMembers } as CommunityMembers;
-    message.addresses = [];
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    if (object.addresses !== undefined && object.addresses !== null) {
-      for (const e of object.addresses) {
-        message.addresses.push(String(e));
-      }
-    }
-    return message;
+    return {
+      communityId: isSet(object.communityId) ? String(object.communityId) : "",
+      addresses: Array.isArray(object?.addresses) ? object.addresses.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: CommunityMembers): unknown {
     const obj: any = {};
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     if (message.addresses) {
       obj.addresses = message.addresses.map((e) => e);
     } else {
@@ -216,43 +156,31 @@ export const CommunityMembers = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CommunityMembers>): CommunityMembers {
-    const message = { ...baseCommunityMembers } as CommunityMembers;
-    message.addresses = [];
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
-    if (object.addresses !== undefined && object.addresses !== null) {
-      for (const e of object.addresses) {
-        message.addresses.push(e);
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<CommunityMembers>, I>>(object: I): CommunityMembers {
+    const message = createBaseCommunityMembers();
+    message.communityId = object.communityId ?? "";
+    message.addresses = object.addresses?.map((e) => e) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined
-  | Long;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

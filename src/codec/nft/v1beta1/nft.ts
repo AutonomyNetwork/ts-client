@@ -50,13 +50,12 @@ export interface Owner {
   idCollections: IDCollection[];
 }
 
-const baseCollection: object = {};
+function createBaseCollection(): Collection {
+  return { denom: undefined, nfts: [] };
+}
 
 export const Collection = {
-  encode(
-    message: Collection,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Collection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== undefined) {
       Denom.encode(message.denom, writer.uint32(10).fork()).ldelim();
     }
@@ -69,8 +68,7 @@ export const Collection = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Collection {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseCollection } as Collection;
-    message.nfts = [];
+    const message = createBaseCollection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -89,57 +87,37 @@ export const Collection = {
   },
 
   fromJSON(object: any): Collection {
-    const message = { ...baseCollection } as Collection;
-    message.nfts = [];
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromJSON(object.denom);
-    } else {
-      message.denom = undefined;
-    }
-    if (object.nfts !== undefined && object.nfts !== null) {
-      for (const e of object.nfts) {
-        message.nfts.push(NFT.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      denom: isSet(object.denom) ? Denom.fromJSON(object.denom) : undefined,
+      nfts: Array.isArray(object?.nfts) ? object.nfts.map((e: any) => NFT.fromJSON(e)) : [],
+    };
   },
 
   toJSON(message: Collection): unknown {
     const obj: any = {};
-    message.denom !== undefined &&
-      (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
+    message.denom !== undefined && (obj.denom = message.denom ? Denom.toJSON(message.denom) : undefined);
     if (message.nfts) {
-      obj.nfts = message.nfts.map((e) => (e ? NFT.toJSON(e) : undefined));
+      obj.nfts = message.nfts.map((e) => e ? NFT.toJSON(e) : undefined);
     } else {
       obj.nfts = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Collection>): Collection {
-    const message = { ...baseCollection } as Collection;
-    message.nfts = [];
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = Denom.fromPartial(object.denom);
-    } else {
-      message.denom = undefined;
-    }
-    if (object.nfts !== undefined && object.nfts !== null) {
-      for (const e of object.nfts) {
-        message.nfts.push(NFT.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<Collection>, I>>(object: I): Collection {
+    const message = createBaseCollection();
+    message.denom = (object.denom !== undefined && object.denom !== null) ? Denom.fromPartial(object.denom) : undefined;
+    message.nfts = object.nfts?.map((e) => NFT.fromPartial(e)) || [];
     return message;
   },
 };
 
-const baseIDCollection: object = { denomId: "", nftIds: "" };
+function createBaseIDCollection(): IDCollection {
+  return { denomId: "", nftIds: [] };
+}
 
 export const IDCollection = {
-  encode(
-    message: IDCollection,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: IDCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denomId !== "") {
       writer.uint32(10).string(message.denomId);
     }
@@ -152,8 +130,7 @@ export const IDCollection = {
   decode(input: _m0.Reader | Uint8Array, length?: number): IDCollection {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseIDCollection } as IDCollection;
-    message.nftIds = [];
+    const message = createBaseIDCollection();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -172,19 +149,10 @@ export const IDCollection = {
   },
 
   fromJSON(object: any): IDCollection {
-    const message = { ...baseIDCollection } as IDCollection;
-    message.nftIds = [];
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.nftIds !== undefined && object.nftIds !== null) {
-      for (const e of object.nftIds) {
-        message.nftIds.push(String(e));
-      }
-    }
-    return message;
+    return {
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      nftIds: Array.isArray(object?.nftIds) ? object.nftIds.map((e: any) => String(e)) : [],
+    };
   },
 
   toJSON(message: IDCollection): unknown {
@@ -198,33 +166,26 @@ export const IDCollection = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<IDCollection>): IDCollection {
-    const message = { ...baseIDCollection } as IDCollection;
-    message.nftIds = [];
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.nftIds !== undefined && object.nftIds !== null) {
-      for (const e of object.nftIds) {
-        message.nftIds.push(e);
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<IDCollection>, I>>(object: I): IDCollection {
+    const message = createBaseIDCollection();
+    message.denomId = object.denomId ?? "";
+    message.nftIds = object.nftIds?.map((e) => e) || [];
     return message;
   },
 };
 
-const baseDenom: object = {
-  id: "",
-  name: "",
-  symbol: "",
-  creator: "",
-  description: "",
-  previewUri: "",
-  dependentDenoms: "",
-  communityId: "",
-};
+function createBaseDenom(): Denom {
+  return {
+    id: "",
+    name: "",
+    symbol: "",
+    creator: "",
+    description: "",
+    previewUri: "",
+    dependentDenoms: [],
+    communityId: "",
+  };
+}
 
 export const Denom = {
   encode(message: Denom, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -258,8 +219,7 @@ export const Denom = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Denom {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDenom } as Denom;
-    message.dependentDenoms = [];
+    const message = createBaseDenom();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -296,52 +256,16 @@ export const Denom = {
   },
 
   fromJSON(object: any): Denom {
-    const message = { ...baseDenom } as Denom;
-    message.dependentDenoms = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = String(object.symbol);
-    } else {
-      message.symbol = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = String(object.previewUri);
-    } else {
-      message.previewUri = "";
-    }
-    if (
-      object.dependentDenoms !== undefined &&
-      object.dependentDenoms !== null
-    ) {
-      for (const e of object.dependentDenoms) {
-        message.dependentDenoms.push(String(e));
-      }
-    }
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      previewUri: isSet(object.previewUri) ? String(object.previewUri) : "",
+      dependentDenoms: Array.isArray(object?.dependentDenoms) ? object.dependentDenoms.map((e: any) => String(e)) : [],
+      communityId: isSet(object.communityId) ? String(object.communityId) : "",
+    };
   },
 
   toJSON(message: Denom): unknown {
@@ -350,81 +274,37 @@ export const Denom = {
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
     message.creator !== undefined && (obj.creator = message.creator);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
     if (message.dependentDenoms) {
       obj.dependentDenoms = message.dependentDenoms.map((e) => e);
     } else {
       obj.dependentDenoms = [];
     }
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Denom>): Denom {
-    const message = { ...baseDenom } as Denom;
-    message.dependentDenoms = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = object.symbol;
-    } else {
-      message.symbol = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = object.previewUri;
-    } else {
-      message.previewUri = "";
-    }
-    if (
-      object.dependentDenoms !== undefined &&
-      object.dependentDenoms !== null
-    ) {
-      for (const e of object.dependentDenoms) {
-        message.dependentDenoms.push(e);
-      }
-    }
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<Denom>, I>>(object: I): Denom {
+    const message = createBaseDenom();
+    message.id = object.id ?? "";
+    message.name = object.name ?? "";
+    message.symbol = object.symbol ?? "";
+    message.creator = object.creator ?? "";
+    message.description = object.description ?? "";
+    message.previewUri = object.previewUri ?? "";
+    message.dependentDenoms = object.dependentDenoms?.map((e) => e) || [];
+    message.communityId = object.communityId ?? "";
     return message;
   },
 };
 
-const baseMetadata: object = {
-  name: "",
-  description: "",
-  mediaUri: "",
-  previewUri: "",
-};
+function createBaseMetadata(): Metadata {
+  return { name: "", description: "", mediaUri: "", previewUri: "" };
+}
 
 export const Metadata = {
-  encode(
-    message: Metadata,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: Metadata, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -443,7 +323,7 @@ export const Metadata = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMetadata } as Metadata;
+    const message = createBaseMetadata();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -468,75 +348,46 @@ export const Metadata = {
   },
 
   fromJSON(object: any): Metadata {
-    const message = { ...baseMetadata } as Metadata;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.mediaUri !== undefined && object.mediaUri !== null) {
-      message.mediaUri = String(object.mediaUri);
-    } else {
-      message.mediaUri = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = String(object.previewUri);
-    } else {
-      message.previewUri = "";
-    }
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      mediaUri: isSet(object.mediaUri) ? String(object.mediaUri) : "",
+      previewUri: isSet(object.previewUri) ? String(object.previewUri) : "",
+    };
   },
 
   toJSON(message: Metadata): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.mediaUri !== undefined && (obj.mediaUri = message.mediaUri);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Metadata>): Metadata {
-    const message = { ...baseMetadata } as Metadata;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.mediaUri !== undefined && object.mediaUri !== null) {
-      message.mediaUri = object.mediaUri;
-    } else {
-      message.mediaUri = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = object.previewUri;
-    } else {
-      message.previewUri = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<Metadata>, I>>(object: I): Metadata {
+    const message = createBaseMetadata();
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
+    message.mediaUri = object.mediaUri ?? "";
+    message.previewUri = object.previewUri ?? "";
     return message;
   },
 };
 
-const baseNFT: object = {
-  id: "",
-  owner: "",
-  transferable: false,
-  royalties: "",
-  creator: "",
-  listed: false,
-  data: "",
-};
+function createBaseNFT(): NFT {
+  return {
+    id: "",
+    metadata: undefined,
+    owner: "",
+    transferable: false,
+    royalties: "",
+    creator: "",
+    listed: false,
+    createdAt: undefined,
+    data: "",
+  };
+}
 
 export const NFT = {
   encode(message: NFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -562,10 +413,7 @@ export const NFT = {
       writer.uint32(56).bool(message.listed);
     }
     if (message.createdAt !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.createdAt),
-        writer.uint32(66).fork()
-      ).ldelim();
+      Timestamp.encode(toTimestamp(message.createdAt), writer.uint32(66).fork()).ldelim();
     }
     if (message.data !== "") {
       writer.uint32(74).string(message.data);
@@ -576,7 +424,7 @@ export const NFT = {
   decode(input: _m0.Reader | Uint8Array, length?: number): NFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNFT } as NFT;
+    const message = createBaseNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -602,9 +450,7 @@ export const NFT = {
           message.listed = reader.bool();
           break;
         case 8:
-          message.createdAt = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
+          message.createdAt = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
           break;
         case 9:
           message.data = reader.string();
@@ -618,126 +464,53 @@ export const NFT = {
   },
 
   fromJSON(object: any): NFT {
-    const message = { ...baseNFT } as NFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      message.metadata = Metadata.fromJSON(object.metadata);
-    } else {
-      message.metadata = undefined;
-    }
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
-    } else {
-      message.owner = "";
-    }
-    if (object.transferable !== undefined && object.transferable !== null) {
-      message.transferable = Boolean(object.transferable);
-    } else {
-      message.transferable = false;
-    }
-    if (object.royalties !== undefined && object.royalties !== null) {
-      message.royalties = String(object.royalties);
-    } else {
-      message.royalties = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.listed !== undefined && object.listed !== null) {
-      message.listed = Boolean(object.listed);
-    } else {
-      message.listed = false;
-    }
-    if (object.createdAt !== undefined && object.createdAt !== null) {
-      message.createdAt = fromJsonTimestamp(object.createdAt);
-    } else {
-      message.createdAt = undefined;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = String(object.data);
-    } else {
-      message.data = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      transferable: isSet(object.transferable) ? Boolean(object.transferable) : false,
+      royalties: isSet(object.royalties) ? String(object.royalties) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      listed: isSet(object.listed) ? Boolean(object.listed) : false,
+      createdAt: isSet(object.createdAt) ? fromJsonTimestamp(object.createdAt) : undefined,
+      data: isSet(object.data) ? String(object.data) : "",
+    };
   },
 
   toJSON(message: NFT): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
-    message.metadata !== undefined &&
-      (obj.metadata = message.metadata
-        ? Metadata.toJSON(message.metadata)
-        : undefined);
+    message.metadata !== undefined && (obj.metadata = message.metadata ? Metadata.toJSON(message.metadata) : undefined);
     message.owner !== undefined && (obj.owner = message.owner);
-    message.transferable !== undefined &&
-      (obj.transferable = message.transferable);
+    message.transferable !== undefined && (obj.transferable = message.transferable);
     message.royalties !== undefined && (obj.royalties = message.royalties);
     message.creator !== undefined && (obj.creator = message.creator);
     message.listed !== undefined && (obj.listed = message.listed);
-    message.createdAt !== undefined &&
-      (obj.createdAt = message.createdAt.toISOString());
+    message.createdAt !== undefined && (obj.createdAt = message.createdAt.toISOString());
     message.data !== undefined && (obj.data = message.data);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<NFT>): NFT {
-    const message = { ...baseNFT } as NFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      message.metadata = Metadata.fromPartial(object.metadata);
-    } else {
-      message.metadata = undefined;
-    }
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
-    } else {
-      message.owner = "";
-    }
-    if (object.transferable !== undefined && object.transferable !== null) {
-      message.transferable = object.transferable;
-    } else {
-      message.transferable = false;
-    }
-    if (object.royalties !== undefined && object.royalties !== null) {
-      message.royalties = object.royalties;
-    } else {
-      message.royalties = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.listed !== undefined && object.listed !== null) {
-      message.listed = object.listed;
-    } else {
-      message.listed = false;
-    }
-    if (object.createdAt !== undefined && object.createdAt !== null) {
-      message.createdAt = object.createdAt;
-    } else {
-      message.createdAt = undefined;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = object.data;
-    } else {
-      message.data = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<NFT>, I>>(object: I): NFT {
+    const message = createBaseNFT();
+    message.id = object.id ?? "";
+    message.metadata = (object.metadata !== undefined && object.metadata !== null)
+      ? Metadata.fromPartial(object.metadata)
+      : undefined;
+    message.owner = object.owner ?? "";
+    message.transferable = object.transferable ?? false;
+    message.royalties = object.royalties ?? "";
+    message.creator = object.creator ?? "";
+    message.listed = object.listed ?? false;
+    message.createdAt = object.createdAt ?? undefined;
+    message.data = object.data ?? "";
     return message;
   },
 };
 
-const baseOwner: object = { address: "" };
+function createBaseOwner(): Owner {
+  return { address: "", idCollections: [] };
+}
 
 export const Owner = {
   encode(message: Owner, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -753,8 +526,7 @@ export const Owner = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Owner {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOwner } as Owner;
-    message.idCollections = [];
+    const message = createBaseOwner();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -762,9 +534,7 @@ export const Owner = {
           message.address = reader.string();
           break;
         case 2:
-          message.idCollections.push(
-            IDCollection.decode(reader, reader.uint32())
-          );
+          message.idCollections.push(IDCollection.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -775,69 +545,44 @@ export const Owner = {
   },
 
   fromJSON(object: any): Owner {
-    const message = { ...baseOwner } as Owner;
-    message.idCollections = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.idCollections !== undefined && object.idCollections !== null) {
-      for (const e of object.idCollections) {
-        message.idCollections.push(IDCollection.fromJSON(e));
-      }
-    }
-    return message;
+    return {
+      address: isSet(object.address) ? String(object.address) : "",
+      idCollections: Array.isArray(object?.idCollections)
+        ? object.idCollections.map((e: any) => IDCollection.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: Owner): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     if (message.idCollections) {
-      obj.idCollections = message.idCollections.map((e) =>
-        e ? IDCollection.toJSON(e) : undefined
-      );
+      obj.idCollections = message.idCollections.map((e) => e ? IDCollection.toJSON(e) : undefined);
     } else {
       obj.idCollections = [];
     }
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Owner>): Owner {
-    const message = { ...baseOwner } as Owner;
-    message.idCollections = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.idCollections !== undefined && object.idCollections !== null) {
-      for (const e of object.idCollections) {
-        message.idCollections.push(IDCollection.fromPartial(e));
-      }
-    }
+  fromPartial<I extends Exact<DeepPartial<Owner>, I>>(object: I): Owner {
+    const message = createBaseOwner();
+    message.address = object.address ?? "";
+    message.idCollections = object.idCollections?.map((e) => IDCollection.fromPartial(e)) || [];
     return message;
   },
 };
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined
-  | Long;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);
@@ -868,4 +613,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

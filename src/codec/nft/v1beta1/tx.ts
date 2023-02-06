@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Metadata } from "../../nft/v1beta1/nft";
+import { ListedType, listedTypeFromJSON, listedTypeToJSON } from "./market_place";
+import { Metadata } from "./nft";
 
 export const protobufPackage = "nft.v1beta1";
 
@@ -16,7 +17,8 @@ export interface MsgCreateDenom {
   communityId: string;
 }
 
-export interface MsgCreateDenomResponse {}
+export interface MsgCreateDenomResponse {
+}
 
 export interface MsgMintNFT {
   id: string;
@@ -28,7 +30,8 @@ export interface MsgMintNFT {
   royalties: string;
 }
 
-export interface MsgMintNFTResponse {}
+export interface MsgMintNFTResponse {
+}
 
 export interface MsgUpdateNFT {
   id: string;
@@ -39,7 +42,8 @@ export interface MsgUpdateNFT {
   description: string;
 }
 
-export interface MsgUpdateNFTResponse {}
+export interface MsgUpdateNFTResponse {
+}
 
 export interface MsgTransferNFT {
   id: string;
@@ -48,24 +52,34 @@ export interface MsgTransferNFT {
   recipient: string;
 }
 
-export interface MsgTransferNFTResponse {}
+export interface MsgTransferNFTResponse {
+}
 
 export interface MsgSellNFT {
   id: string;
   denomId: string;
   price: string;
   seller: string;
+  listedType: ListedType;
+  currency: string;
+  fiatAmount: string;
 }
 
-export interface MsgSellNFTResponse {}
+export interface MsgSellNFTResponse {
+}
 
 export interface MsgBuyNFT {
   id: string;
   denomId: string;
   buyer: string;
+  listedType: ListedType;
+  currency: string;
+  fiatAmount: string;
+  orderRefId: string;
 }
 
-export interface MsgBuyNFTResponse {}
+export interface MsgBuyNFTResponse {
+}
 
 export interface MsgCreateCommunity {
   name: string;
@@ -84,24 +98,30 @@ export interface MsgJoinCommunity {
   address: string;
 }
 
-export interface MsgJoinCommunityResponse {}
+export interface MsgJoinCommunityResponse {
+}
 
-const baseMsgCreateDenom: object = {
-  id: "",
-  name: "",
-  symbol: "",
-  description: "",
-  previewUri: "",
-  creator: "",
-  depedentCollection: "",
-  communityId: "",
-};
+export interface MsgUpdateCommunity {
+}
+
+export interface MsgUpdateCommunityResponse {
+}
+
+function createBaseMsgCreateDenom(): MsgCreateDenom {
+  return {
+    id: "",
+    name: "",
+    symbol: "",
+    description: "",
+    previewUri: "",
+    creator: "",
+    depedentCollection: [],
+    communityId: "",
+  };
+}
 
 export const MsgCreateDenom = {
-  encode(
-    message: MsgCreateDenom,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateDenom, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -132,8 +152,7 @@ export const MsgCreateDenom = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateDenom {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateDenom } as MsgCreateDenom;
-    message.depedentCollection = [];
+    const message = createBaseMsgCreateDenom();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -170,52 +189,18 @@ export const MsgCreateDenom = {
   },
 
   fromJSON(object: any): MsgCreateDenom {
-    const message = { ...baseMsgCreateDenom } as MsgCreateDenom;
-    message.depedentCollection = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = String(object.symbol);
-    } else {
-      message.symbol = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = String(object.previewUri);
-    } else {
-      message.previewUri = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (
-      object.depedentCollection !== undefined &&
-      object.depedentCollection !== null
-    ) {
-      for (const e of object.depedentCollection) {
-        message.depedentCollection.push(String(e));
-      }
-    }
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+      symbol: isSet(object.symbol) ? String(object.symbol) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      previewUri: isSet(object.previewUri) ? String(object.previewUri) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      depedentCollection: Array.isArray(object?.depedentCollection)
+        ? object.depedentCollection.map((e: any) => String(e))
+        : [],
+      communityId: isSet(object.communityId) ? String(object.communityId) : "",
+    };
   },
 
   toJSON(message: MsgCreateDenom): unknown {
@@ -223,8 +208,7 @@ export const MsgCreateDenom = {
     message.id !== undefined && (obj.id = message.id);
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
     message.creator !== undefined && (obj.creator = message.creator);
     if (message.depedentCollection) {
@@ -232,78 +216,37 @@ export const MsgCreateDenom = {
     } else {
       obj.depedentCollection = [];
     }
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateDenom>): MsgCreateDenom {
-    const message = { ...baseMsgCreateDenom } as MsgCreateDenom;
-    message.depedentCollection = [];
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = object.symbol;
-    } else {
-      message.symbol = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = object.previewUri;
-    } else {
-      message.previewUri = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (
-      object.depedentCollection !== undefined &&
-      object.depedentCollection !== null
-    ) {
-      for (const e of object.depedentCollection) {
-        message.depedentCollection.push(e);
-      }
-    }
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgCreateDenom>, I>>(object: I): MsgCreateDenom {
+    const message = createBaseMsgCreateDenom();
+    message.id = object.id ?? "";
+    message.name = object.name ?? "";
+    message.symbol = object.symbol ?? "";
+    message.description = object.description ?? "";
+    message.previewUri = object.previewUri ?? "";
+    message.creator = object.creator ?? "";
+    message.depedentCollection = object.depedentCollection?.map((e) => e) || [];
+    message.communityId = object.communityId ?? "";
     return message;
   },
 };
 
-const baseMsgCreateDenomResponse: object = {};
+function createBaseMsgCreateDenomResponse(): MsgCreateDenomResponse {
+  return {};
+}
 
 export const MsgCreateDenomResponse = {
-  encode(
-    _: MsgCreateDenomResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgCreateDenomResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateDenomResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateDenomResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateDenomResponse } as MsgCreateDenomResponse;
+    const message = createBaseMsgCreateDenomResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -316,8 +259,7 @@ export const MsgCreateDenomResponse = {
   },
 
   fromJSON(_: any): MsgCreateDenomResponse {
-    const message = { ...baseMsgCreateDenomResponse } as MsgCreateDenomResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgCreateDenomResponse): unknown {
@@ -325,26 +267,18 @@ export const MsgCreateDenomResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgCreateDenomResponse>): MsgCreateDenomResponse {
-    const message = { ...baseMsgCreateDenomResponse } as MsgCreateDenomResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgCreateDenomResponse>, I>>(_: I): MsgCreateDenomResponse {
+    const message = createBaseMsgCreateDenomResponse();
     return message;
   },
 };
 
-const baseMsgMintNFT: object = {
-  id: "",
-  denomId: "",
-  data: "",
-  transferable: false,
-  creator: "",
-  royalties: "",
-};
+function createBaseMsgMintNFT(): MsgMintNFT {
+  return { id: "", denomId: "", metadata: undefined, data: "", transferable: false, creator: "", royalties: "" };
+}
 
 export const MsgMintNFT = {
-  encode(
-    message: MsgMintNFT,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgMintNFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -372,7 +306,7 @@ export const MsgMintNFT = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintNFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgMintNFT } as MsgMintNFT;
+    const message = createBaseMsgMintNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -406,116 +340,57 @@ export const MsgMintNFT = {
   },
 
   fromJSON(object: any): MsgMintNFT {
-    const message = { ...baseMsgMintNFT } as MsgMintNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      message.metadata = Metadata.fromJSON(object.metadata);
-    } else {
-      message.metadata = undefined;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = String(object.data);
-    } else {
-      message.data = "";
-    }
-    if (object.transferable !== undefined && object.transferable !== null) {
-      message.transferable = Boolean(object.transferable);
-    } else {
-      message.transferable = false;
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.royalties !== undefined && object.royalties !== null) {
-      message.royalties = String(object.royalties);
-    } else {
-      message.royalties = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+      data: isSet(object.data) ? String(object.data) : "",
+      transferable: isSet(object.transferable) ? Boolean(object.transferable) : false,
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      royalties: isSet(object.royalties) ? String(object.royalties) : "",
+    };
   },
 
   toJSON(message: MsgMintNFT): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
     message.denomId !== undefined && (obj.denomId = message.denomId);
-    message.metadata !== undefined &&
-      (obj.metadata = message.metadata
-        ? Metadata.toJSON(message.metadata)
-        : undefined);
+    message.metadata !== undefined && (obj.metadata = message.metadata ? Metadata.toJSON(message.metadata) : undefined);
     message.data !== undefined && (obj.data = message.data);
-    message.transferable !== undefined &&
-      (obj.transferable = message.transferable);
+    message.transferable !== undefined && (obj.transferable = message.transferable);
     message.creator !== undefined && (obj.creator = message.creator);
     message.royalties !== undefined && (obj.royalties = message.royalties);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgMintNFT>): MsgMintNFT {
-    const message = { ...baseMsgMintNFT } as MsgMintNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      message.metadata = Metadata.fromPartial(object.metadata);
-    } else {
-      message.metadata = undefined;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = object.data;
-    } else {
-      message.data = "";
-    }
-    if (object.transferable !== undefined && object.transferable !== null) {
-      message.transferable = object.transferable;
-    } else {
-      message.transferable = false;
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.royalties !== undefined && object.royalties !== null) {
-      message.royalties = object.royalties;
-    } else {
-      message.royalties = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgMintNFT>, I>>(object: I): MsgMintNFT {
+    const message = createBaseMsgMintNFT();
+    message.id = object.id ?? "";
+    message.denomId = object.denomId ?? "";
+    message.metadata = (object.metadata !== undefined && object.metadata !== null)
+      ? Metadata.fromPartial(object.metadata)
+      : undefined;
+    message.data = object.data ?? "";
+    message.transferable = object.transferable ?? false;
+    message.creator = object.creator ?? "";
+    message.royalties = object.royalties ?? "";
     return message;
   },
 };
 
-const baseMsgMintNFTResponse: object = {};
+function createBaseMsgMintNFTResponse(): MsgMintNFTResponse {
+  return {};
+}
 
 export const MsgMintNFTResponse = {
-  encode(
-    _: MsgMintNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgMintNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgMintNFTResponse } as MsgMintNFTResponse;
+    const message = createBaseMsgMintNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -528,8 +403,7 @@ export const MsgMintNFTResponse = {
   },
 
   fromJSON(_: any): MsgMintNFTResponse {
-    const message = { ...baseMsgMintNFTResponse } as MsgMintNFTResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgMintNFTResponse): unknown {
@@ -537,26 +411,18 @@ export const MsgMintNFTResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgMintNFTResponse>): MsgMintNFTResponse {
-    const message = { ...baseMsgMintNFTResponse } as MsgMintNFTResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgMintNFTResponse>, I>>(_: I): MsgMintNFTResponse {
+    const message = createBaseMsgMintNFTResponse();
     return message;
   },
 };
 
-const baseMsgUpdateNFT: object = {
-  id: "",
-  denomID: "",
-  royalties: "",
-  owner: "",
-  name: "",
-  description: "",
-};
+function createBaseMsgUpdateNFT(): MsgUpdateNFT {
+  return { id: "", denomID: "", royalties: "", owner: "", name: "", description: "" };
+}
 
 export const MsgUpdateNFT = {
-  encode(
-    message: MsgUpdateNFT,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgUpdateNFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -581,7 +447,7 @@ export const MsgUpdateNFT = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateNFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateNFT } as MsgUpdateNFT;
+    const message = createBaseMsgUpdateNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -612,38 +478,14 @@ export const MsgUpdateNFT = {
   },
 
   fromJSON(object: any): MsgUpdateNFT {
-    const message = { ...baseMsgUpdateNFT } as MsgUpdateNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.denomID !== undefined && object.denomID !== null) {
-      message.denomID = String(object.denomID);
-    } else {
-      message.denomID = "";
-    }
-    if (object.royalties !== undefined && object.royalties !== null) {
-      message.royalties = String(object.royalties);
-    } else {
-      message.royalties = "";
-    }
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = String(object.owner);
-    } else {
-      message.owner = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      denomID: isSet(object.denomID) ? String(object.denomID) : "",
+      royalties: isSet(object.royalties) ? String(object.royalties) : "",
+      owner: isSet(object.owner) ? String(object.owner) : "",
+      name: isSet(object.name) ? String(object.name) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+    };
   },
 
   toJSON(message: MsgUpdateNFT): unknown {
@@ -653,64 +495,35 @@ export const MsgUpdateNFT = {
     message.royalties !== undefined && (obj.royalties = message.royalties);
     message.owner !== undefined && (obj.owner = message.owner);
     message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgUpdateNFT>): MsgUpdateNFT {
-    const message = { ...baseMsgUpdateNFT } as MsgUpdateNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.denomID !== undefined && object.denomID !== null) {
-      message.denomID = object.denomID;
-    } else {
-      message.denomID = "";
-    }
-    if (object.royalties !== undefined && object.royalties !== null) {
-      message.royalties = object.royalties;
-    } else {
-      message.royalties = "";
-    }
-    if (object.owner !== undefined && object.owner !== null) {
-      message.owner = object.owner;
-    } else {
-      message.owner = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateNFT>, I>>(object: I): MsgUpdateNFT {
+    const message = createBaseMsgUpdateNFT();
+    message.id = object.id ?? "";
+    message.denomID = object.denomID ?? "";
+    message.royalties = object.royalties ?? "";
+    message.owner = object.owner ?? "";
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
     return message;
   },
 };
 
-const baseMsgUpdateNFTResponse: object = {};
+function createBaseMsgUpdateNFTResponse(): MsgUpdateNFTResponse {
+  return {};
+}
 
 export const MsgUpdateNFTResponse = {
-  encode(
-    _: MsgUpdateNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgUpdateNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdateNFTResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdateNFTResponse } as MsgUpdateNFTResponse;
+    const message = createBaseMsgUpdateNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -723,8 +536,7 @@ export const MsgUpdateNFTResponse = {
   },
 
   fromJSON(_: any): MsgUpdateNFTResponse {
-    const message = { ...baseMsgUpdateNFTResponse } as MsgUpdateNFTResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgUpdateNFTResponse): unknown {
@@ -732,24 +544,18 @@ export const MsgUpdateNFTResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgUpdateNFTResponse>): MsgUpdateNFTResponse {
-    const message = { ...baseMsgUpdateNFTResponse } as MsgUpdateNFTResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateNFTResponse>, I>>(_: I): MsgUpdateNFTResponse {
+    const message = createBaseMsgUpdateNFTResponse();
     return message;
   },
 };
 
-const baseMsgTransferNFT: object = {
-  id: "",
-  denomId: "",
-  sender: "",
-  recipient: "",
-};
+function createBaseMsgTransferNFT(): MsgTransferNFT {
+  return { id: "", denomId: "", sender: "", recipient: "" };
+}
 
 export const MsgTransferNFT = {
-  encode(
-    message: MsgTransferNFT,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgTransferNFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -768,7 +574,7 @@ export const MsgTransferNFT = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgTransferNFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgTransferNFT } as MsgTransferNFT;
+    const message = createBaseMsgTransferNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -793,28 +599,12 @@ export const MsgTransferNFT = {
   },
 
   fromJSON(object: any): MsgTransferNFT {
-    const message = { ...baseMsgTransferNFT } as MsgTransferNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = String(object.sender);
-    } else {
-      message.sender = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = String(object.recipient);
-    } else {
-      message.recipient = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      sender: isSet(object.sender) ? String(object.sender) : "",
+      recipient: isSet(object.recipient) ? String(object.recipient) : "",
+    };
   },
 
   toJSON(message: MsgTransferNFT): unknown {
@@ -826,49 +616,29 @@ export const MsgTransferNFT = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgTransferNFT>): MsgTransferNFT {
-    const message = { ...baseMsgTransferNFT } as MsgTransferNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = object.sender;
-    } else {
-      message.sender = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgTransferNFT>, I>>(object: I): MsgTransferNFT {
+    const message = createBaseMsgTransferNFT();
+    message.id = object.id ?? "";
+    message.denomId = object.denomId ?? "";
+    message.sender = object.sender ?? "";
+    message.recipient = object.recipient ?? "";
     return message;
   },
 };
 
-const baseMsgTransferNFTResponse: object = {};
+function createBaseMsgTransferNFTResponse(): MsgTransferNFTResponse {
+  return {};
+}
 
 export const MsgTransferNFTResponse = {
-  encode(
-    _: MsgTransferNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgTransferNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgTransferNFTResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgTransferNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgTransferNFTResponse } as MsgTransferNFTResponse;
+    const message = createBaseMsgTransferNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -881,8 +651,7 @@ export const MsgTransferNFTResponse = {
   },
 
   fromJSON(_: any): MsgTransferNFTResponse {
-    const message = { ...baseMsgTransferNFTResponse } as MsgTransferNFTResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgTransferNFTResponse): unknown {
@@ -890,19 +659,18 @@ export const MsgTransferNFTResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgTransferNFTResponse>): MsgTransferNFTResponse {
-    const message = { ...baseMsgTransferNFTResponse } as MsgTransferNFTResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgTransferNFTResponse>, I>>(_: I): MsgTransferNFTResponse {
+    const message = createBaseMsgTransferNFTResponse();
     return message;
   },
 };
 
-const baseMsgSellNFT: object = { id: "", denomId: "", price: "", seller: "" };
+function createBaseMsgSellNFT(): MsgSellNFT {
+  return { id: "", denomId: "", price: "", seller: "", listedType: 0, currency: "", fiatAmount: "" };
+}
 
 export const MsgSellNFT = {
-  encode(
-    message: MsgSellNFT,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgSellNFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -915,13 +683,22 @@ export const MsgSellNFT = {
     if (message.seller !== "") {
       writer.uint32(34).string(message.seller);
     }
+    if (message.listedType !== 0) {
+      writer.uint32(40).int32(message.listedType);
+    }
+    if (message.currency !== "") {
+      writer.uint32(50).string(message.currency);
+    }
+    if (message.fiatAmount !== "") {
+      writer.uint32(58).string(message.fiatAmount);
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSellNFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSellNFT } as MsgSellNFT;
+    const message = createBaseMsgSellNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -937,6 +714,15 @@ export const MsgSellNFT = {
         case 4:
           message.seller = reader.string();
           break;
+        case 5:
+          message.listedType = reader.int32() as any;
+          break;
+        case 6:
+          message.currency = reader.string();
+          break;
+        case 7:
+          message.fiatAmount = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -946,28 +732,15 @@ export const MsgSellNFT = {
   },
 
   fromJSON(object: any): MsgSellNFT {
-    const message = { ...baseMsgSellNFT } as MsgSellNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.seller !== undefined && object.seller !== null) {
-      message.seller = String(object.seller);
-    } else {
-      message.seller = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      price: isSet(object.price) ? String(object.price) : "",
+      seller: isSet(object.seller) ? String(object.seller) : "",
+      listedType: isSet(object.listedType) ? listedTypeFromJSON(object.listedType) : 0,
+      currency: isSet(object.currency) ? String(object.currency) : "",
+      fiatAmount: isSet(object.fiatAmount) ? String(object.fiatAmount) : "",
+    };
   },
 
   toJSON(message: MsgSellNFT): unknown {
@@ -976,49 +749,38 @@ export const MsgSellNFT = {
     message.denomId !== undefined && (obj.denomId = message.denomId);
     message.price !== undefined && (obj.price = message.price);
     message.seller !== undefined && (obj.seller = message.seller);
+    message.listedType !== undefined && (obj.listedType = listedTypeToJSON(message.listedType));
+    message.currency !== undefined && (obj.currency = message.currency);
+    message.fiatAmount !== undefined && (obj.fiatAmount = message.fiatAmount);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgSellNFT>): MsgSellNFT {
-    const message = { ...baseMsgSellNFT } as MsgSellNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.seller !== undefined && object.seller !== null) {
-      message.seller = object.seller;
-    } else {
-      message.seller = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgSellNFT>, I>>(object: I): MsgSellNFT {
+    const message = createBaseMsgSellNFT();
+    message.id = object.id ?? "";
+    message.denomId = object.denomId ?? "";
+    message.price = object.price ?? "";
+    message.seller = object.seller ?? "";
+    message.listedType = object.listedType ?? 0;
+    message.currency = object.currency ?? "";
+    message.fiatAmount = object.fiatAmount ?? "";
     return message;
   },
 };
 
-const baseMsgSellNFTResponse: object = {};
+function createBaseMsgSellNFTResponse(): MsgSellNFTResponse {
+  return {};
+}
 
 export const MsgSellNFTResponse = {
-  encode(
-    _: MsgSellNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgSellNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgSellNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSellNFTResponse } as MsgSellNFTResponse;
+    const message = createBaseMsgSellNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1031,8 +793,7 @@ export const MsgSellNFTResponse = {
   },
 
   fromJSON(_: any): MsgSellNFTResponse {
-    const message = { ...baseMsgSellNFTResponse } as MsgSellNFTResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgSellNFTResponse): unknown {
@@ -1040,19 +801,18 @@ export const MsgSellNFTResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgSellNFTResponse>): MsgSellNFTResponse {
-    const message = { ...baseMsgSellNFTResponse } as MsgSellNFTResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgSellNFTResponse>, I>>(_: I): MsgSellNFTResponse {
+    const message = createBaseMsgSellNFTResponse();
     return message;
   },
 };
 
-const baseMsgBuyNFT: object = { id: "", denomId: "", buyer: "" };
+function createBaseMsgBuyNFT(): MsgBuyNFT {
+  return { id: "", denomId: "", buyer: "", listedType: 0, currency: "", fiatAmount: "", orderRefId: "" };
+}
 
 export const MsgBuyNFT = {
-  encode(
-    message: MsgBuyNFT,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgBuyNFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
@@ -1062,13 +822,25 @@ export const MsgBuyNFT = {
     if (message.buyer !== "") {
       writer.uint32(26).string(message.buyer);
     }
+    if (message.listedType !== 0) {
+      writer.uint32(32).int32(message.listedType);
+    }
+    if (message.currency !== "") {
+      writer.uint32(42).string(message.currency);
+    }
+    if (message.fiatAmount !== "") {
+      writer.uint32(50).string(message.fiatAmount);
+    }
+    if (message.orderRefId !== "") {
+      writer.uint32(58).string(message.orderRefId);
+    }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBuyNFT {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBuyNFT } as MsgBuyNFT;
+    const message = createBaseMsgBuyNFT();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1081,6 +853,18 @@ export const MsgBuyNFT = {
         case 3:
           message.buyer = reader.string();
           break;
+        case 4:
+          message.listedType = reader.int32() as any;
+          break;
+        case 5:
+          message.currency = reader.string();
+          break;
+        case 6:
+          message.fiatAmount = reader.string();
+          break;
+        case 7:
+          message.orderRefId = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1090,23 +874,15 @@ export const MsgBuyNFT = {
   },
 
   fromJSON(object: any): MsgBuyNFT {
-    const message = { ...baseMsgBuyNFT } as MsgBuyNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = String(object.denomId);
-    } else {
-      message.denomId = "";
-    }
-    if (object.buyer !== undefined && object.buyer !== null) {
-      message.buyer = String(object.buyer);
-    } else {
-      message.buyer = "";
-    }
-    return message;
+    return {
+      id: isSet(object.id) ? String(object.id) : "",
+      denomId: isSet(object.denomId) ? String(object.denomId) : "",
+      buyer: isSet(object.buyer) ? String(object.buyer) : "",
+      listedType: isSet(object.listedType) ? listedTypeFromJSON(object.listedType) : 0,
+      currency: isSet(object.currency) ? String(object.currency) : "",
+      fiatAmount: isSet(object.fiatAmount) ? String(object.fiatAmount) : "",
+      orderRefId: isSet(object.orderRefId) ? String(object.orderRefId) : "",
+    };
   },
 
   toJSON(message: MsgBuyNFT): unknown {
@@ -1114,44 +890,39 @@ export const MsgBuyNFT = {
     message.id !== undefined && (obj.id = message.id);
     message.denomId !== undefined && (obj.denomId = message.denomId);
     message.buyer !== undefined && (obj.buyer = message.buyer);
+    message.listedType !== undefined && (obj.listedType = listedTypeToJSON(message.listedType));
+    message.currency !== undefined && (obj.currency = message.currency);
+    message.fiatAmount !== undefined && (obj.fiatAmount = message.fiatAmount);
+    message.orderRefId !== undefined && (obj.orderRefId = message.orderRefId);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgBuyNFT>): MsgBuyNFT {
-    const message = { ...baseMsgBuyNFT } as MsgBuyNFT;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.denomId !== undefined && object.denomId !== null) {
-      message.denomId = object.denomId;
-    } else {
-      message.denomId = "";
-    }
-    if (object.buyer !== undefined && object.buyer !== null) {
-      message.buyer = object.buyer;
-    } else {
-      message.buyer = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgBuyNFT>, I>>(object: I): MsgBuyNFT {
+    const message = createBaseMsgBuyNFT();
+    message.id = object.id ?? "";
+    message.denomId = object.denomId ?? "";
+    message.buyer = object.buyer ?? "";
+    message.listedType = object.listedType ?? 0;
+    message.currency = object.currency ?? "";
+    message.fiatAmount = object.fiatAmount ?? "";
+    message.orderRefId = object.orderRefId ?? "";
     return message;
   },
 };
 
-const baseMsgBuyNFTResponse: object = {};
+function createBaseMsgBuyNFTResponse(): MsgBuyNFTResponse {
+  return {};
+}
 
 export const MsgBuyNFTResponse = {
-  encode(
-    _: MsgBuyNFTResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgBuyNFTResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgBuyNFTResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgBuyNFTResponse } as MsgBuyNFTResponse;
+    const message = createBaseMsgBuyNFTResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1164,8 +935,7 @@ export const MsgBuyNFTResponse = {
   },
 
   fromJSON(_: any): MsgBuyNFTResponse {
-    const message = { ...baseMsgBuyNFTResponse } as MsgBuyNFTResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgBuyNFTResponse): unknown {
@@ -1173,25 +943,18 @@ export const MsgBuyNFTResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgBuyNFTResponse>): MsgBuyNFTResponse {
-    const message = { ...baseMsgBuyNFTResponse } as MsgBuyNFTResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgBuyNFTResponse>, I>>(_: I): MsgBuyNFTResponse {
+    const message = createBaseMsgBuyNFTResponse();
     return message;
   },
 };
 
-const baseMsgCreateCommunity: object = {
-  name: "",
-  description: "",
-  creator: "",
-  previewUri: "",
-  id: "",
-};
+function createBaseMsgCreateCommunity(): MsgCreateCommunity {
+  return { name: "", description: "", creator: "", previewUri: "", id: "" };
+}
 
 export const MsgCreateCommunity = {
-  encode(
-    message: MsgCreateCommunity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateCommunity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.name !== "") {
       writer.uint32(10).string(message.name);
     }
@@ -1213,7 +976,7 @@ export const MsgCreateCommunity = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateCommunity {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateCommunity } as MsgCreateCommunity;
+    const message = createBaseMsgCreateCommunity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1241,99 +1004,52 @@ export const MsgCreateCommunity = {
   },
 
   fromJSON(object: any): MsgCreateCommunity {
-    const message = { ...baseMsgCreateCommunity } as MsgCreateCommunity;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = String(object.previewUri);
-    } else {
-      message.previewUri = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    return message;
+    return {
+      name: isSet(object.name) ? String(object.name) : "",
+      description: isSet(object.description) ? String(object.description) : "",
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      previewUri: isSet(object.previewUri) ? String(object.previewUri) : "",
+      id: isSet(object.id) ? String(object.id) : "",
+    };
   },
 
   toJSON(message: MsgCreateCommunity): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
-    message.description !== undefined &&
-      (obj.description = message.description);
+    message.description !== undefined && (obj.description = message.description);
     message.creator !== undefined && (obj.creator = message.creator);
     message.previewUri !== undefined && (obj.previewUri = message.previewUri);
     message.id !== undefined && (obj.id = message.id);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateCommunity>): MsgCreateCommunity {
-    const message = { ...baseMsgCreateCommunity } as MsgCreateCommunity;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.previewUri !== undefined && object.previewUri !== null) {
-      message.previewUri = object.previewUri;
-    } else {
-      message.previewUri = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgCreateCommunity>, I>>(object: I): MsgCreateCommunity {
+    const message = createBaseMsgCreateCommunity();
+    message.name = object.name ?? "";
+    message.description = object.description ?? "";
+    message.creator = object.creator ?? "";
+    message.previewUri = object.previewUri ?? "";
+    message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseMsgCreateCommunityResponse: object = { id: "" };
+function createBaseMsgCreateCommunityResponse(): MsgCreateCommunityResponse {
+  return { id: "" };
+}
 
 export const MsgCreateCommunityResponse = {
-  encode(
-    message: MsgCreateCommunityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgCreateCommunityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== "") {
       writer.uint32(10).string(message.id);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreateCommunityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateCommunityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreateCommunityResponse,
-    } as MsgCreateCommunityResponse;
+    const message = createBaseMsgCreateCommunityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1349,15 +1065,7 @@ export const MsgCreateCommunityResponse = {
   },
 
   fromJSON(object: any): MsgCreateCommunityResponse {
-    const message = {
-      ...baseMsgCreateCommunityResponse,
-    } as MsgCreateCommunityResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    return message;
+    return { id: isSet(object.id) ? String(object.id) : "" };
   },
 
   toJSON(message: MsgCreateCommunityResponse): unknown {
@@ -1366,28 +1074,19 @@ export const MsgCreateCommunityResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreateCommunityResponse>
-  ): MsgCreateCommunityResponse {
-    const message = {
-      ...baseMsgCreateCommunityResponse,
-    } as MsgCreateCommunityResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgCreateCommunityResponse>, I>>(object: I): MsgCreateCommunityResponse {
+    const message = createBaseMsgCreateCommunityResponse();
+    message.id = object.id ?? "";
     return message;
   },
 };
 
-const baseMsgJoinCommunity: object = { communityId: "", address: "" };
+function createBaseMsgJoinCommunity(): MsgJoinCommunity {
+  return { communityId: "", address: "" };
+}
 
 export const MsgJoinCommunity = {
-  encode(
-    message: MsgJoinCommunity,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(message: MsgJoinCommunity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.communityId !== "") {
       writer.uint32(10).string(message.communityId);
     }
@@ -1400,7 +1099,7 @@ export const MsgJoinCommunity = {
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgJoinCommunity {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgJoinCommunity } as MsgJoinCommunity;
+    const message = createBaseMsgJoinCommunity();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1419,63 +1118,40 @@ export const MsgJoinCommunity = {
   },
 
   fromJSON(object: any): MsgJoinCommunity {
-    const message = { ...baseMsgJoinCommunity } as MsgJoinCommunity;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = String(object.communityId);
-    } else {
-      message.communityId = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    return message;
+    return {
+      communityId: isSet(object.communityId) ? String(object.communityId) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+    };
   },
 
   toJSON(message: MsgJoinCommunity): unknown {
     const obj: any = {};
-    message.communityId !== undefined &&
-      (obj.communityId = message.communityId);
+    message.communityId !== undefined && (obj.communityId = message.communityId);
     message.address !== undefined && (obj.address = message.address);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgJoinCommunity>): MsgJoinCommunity {
-    const message = { ...baseMsgJoinCommunity } as MsgJoinCommunity;
-    if (object.communityId !== undefined && object.communityId !== null) {
-      message.communityId = object.communityId;
-    } else {
-      message.communityId = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+  fromPartial<I extends Exact<DeepPartial<MsgJoinCommunity>, I>>(object: I): MsgJoinCommunity {
+    const message = createBaseMsgJoinCommunity();
+    message.communityId = object.communityId ?? "";
+    message.address = object.address ?? "";
     return message;
   },
 };
 
-const baseMsgJoinCommunityResponse: object = {};
+function createBaseMsgJoinCommunityResponse(): MsgJoinCommunityResponse {
+  return {};
+}
 
 export const MsgJoinCommunityResponse = {
-  encode(
-    _: MsgJoinCommunityResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+  encode(_: MsgJoinCommunityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgJoinCommunityResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgJoinCommunityResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgJoinCommunityResponse,
-    } as MsgJoinCommunityResponse;
+    const message = createBaseMsgJoinCommunityResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1488,10 +1164,7 @@ export const MsgJoinCommunityResponse = {
   },
 
   fromJSON(_: any): MsgJoinCommunityResponse {
-    const message = {
-      ...baseMsgJoinCommunityResponse,
-    } as MsgJoinCommunityResponse;
-    return message;
+    return {};
   },
 
   toJSON(_: MsgJoinCommunityResponse): unknown {
@@ -1499,12 +1172,86 @@ export const MsgJoinCommunityResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgJoinCommunityResponse>
-  ): MsgJoinCommunityResponse {
-    const message = {
-      ...baseMsgJoinCommunityResponse,
-    } as MsgJoinCommunityResponse;
+  fromPartial<I extends Exact<DeepPartial<MsgJoinCommunityResponse>, I>>(_: I): MsgJoinCommunityResponse {
+    const message = createBaseMsgJoinCommunityResponse();
+    return message;
+  },
+};
+
+function createBaseMsgUpdateCommunity(): MsgUpdateCommunity {
+  return {};
+}
+
+export const MsgUpdateCommunity = {
+  encode(_: MsgUpdateCommunity, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateCommunity {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateCommunity();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateCommunity {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateCommunity): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateCommunity>, I>>(_: I): MsgUpdateCommunity {
+    const message = createBaseMsgUpdateCommunity();
+    return message;
+  },
+};
+
+function createBaseMsgUpdateCommunityResponse(): MsgUpdateCommunityResponse {
+  return {};
+}
+
+export const MsgUpdateCommunityResponse = {
+  encode(_: MsgUpdateCommunityResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateCommunityResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateCommunityResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateCommunityResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateCommunityResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateCommunityResponse>, I>>(_: I): MsgUpdateCommunityResponse {
+    const message = createBaseMsgUpdateCommunityResponse();
     return message;
   },
 };
@@ -1516,9 +1263,8 @@ export interface Msg {
   TransferNFT(request: MsgTransferNFT): Promise<MsgTransferNFTResponse>;
   SellNFT(request: MsgSellNFT): Promise<MsgSellNFTResponse>;
   BuyNFT(request: MsgBuyNFT): Promise<MsgBuyNFTResponse>;
-  CreateCommunity(
-    request: MsgCreateCommunity
-  ): Promise<MsgCreateCommunityResponse>;
+  CreateCommunity(request: MsgCreateCommunity): Promise<MsgCreateCommunityResponse>;
+  /** rpc UpdateCommunity(MsgUpdateCommunity) returns (MsgUpdateCommunityResponse); */
   JoinCommunity(request: MsgJoinCommunity): Promise<MsgJoinCommunityResponse>;
 }
 
@@ -1538,102 +1284,73 @@ export class MsgClientImpl implements Msg {
   CreateDenom(request: MsgCreateDenom): Promise<MsgCreateDenomResponse> {
     const data = MsgCreateDenom.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "CreateDenom", data);
-    return promise.then((data) =>
-      MsgCreateDenomResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgCreateDenomResponse.decode(new _m0.Reader(data)));
   }
 
   MintNFT(request: MsgMintNFT): Promise<MsgMintNFTResponse> {
     const data = MsgMintNFT.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "MintNFT", data);
-    return promise.then((data) =>
-      MsgMintNFTResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgMintNFTResponse.decode(new _m0.Reader(data)));
   }
 
   UpdateNFT(request: MsgUpdateNFT): Promise<MsgUpdateNFTResponse> {
     const data = MsgUpdateNFT.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "UpdateNFT", data);
-    return promise.then((data) =>
-      MsgUpdateNFTResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgUpdateNFTResponse.decode(new _m0.Reader(data)));
   }
 
   TransferNFT(request: MsgTransferNFT): Promise<MsgTransferNFTResponse> {
     const data = MsgTransferNFT.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "TransferNFT", data);
-    return promise.then((data) =>
-      MsgTransferNFTResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgTransferNFTResponse.decode(new _m0.Reader(data)));
   }
 
   SellNFT(request: MsgSellNFT): Promise<MsgSellNFTResponse> {
     const data = MsgSellNFT.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "SellNFT", data);
-    return promise.then((data) =>
-      MsgSellNFTResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgSellNFTResponse.decode(new _m0.Reader(data)));
   }
 
   BuyNFT(request: MsgBuyNFT): Promise<MsgBuyNFTResponse> {
     const data = MsgBuyNFT.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "BuyNFT", data);
-    return promise.then((data) =>
-      MsgBuyNFTResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgBuyNFTResponse.decode(new _m0.Reader(data)));
   }
 
-  CreateCommunity(
-    request: MsgCreateCommunity
-  ): Promise<MsgCreateCommunityResponse> {
+  CreateCommunity(request: MsgCreateCommunity): Promise<MsgCreateCommunityResponse> {
     const data = MsgCreateCommunity.encode(request).finish();
-    const promise = this.rpc.request(
-      "nft.v1beta1.Msg",
-      "CreateCommunity",
-      data
-    );
-    return promise.then((data) =>
-      MsgCreateCommunityResponse.decode(new _m0.Reader(data))
-    );
+    const promise = this.rpc.request("nft.v1beta1.Msg", "CreateCommunity", data);
+    return promise.then((data) => MsgCreateCommunityResponse.decode(new _m0.Reader(data)));
   }
 
   JoinCommunity(request: MsgJoinCommunity): Promise<MsgJoinCommunityResponse> {
     const data = MsgJoinCommunity.encode(request).finish();
     const promise = this.rpc.request("nft.v1beta1.Msg", "JoinCommunity", data);
-    return promise.then((data) =>
-      MsgJoinCommunityResponse.decode(new _m0.Reader(data))
-    );
+    return promise.then((data) => MsgJoinCommunityResponse.decode(new _m0.Reader(data)));
   }
 }
 
 interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
+  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
 }
 
-type Builtin =
-  | Date
-  | Function
-  | Uint8Array
-  | string
-  | number
-  | boolean
-  | undefined
-  | Long;
-export type DeepPartial<T> = T extends Builtin
-  ? T
-  : T extends Array<infer U>
-  ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U>
-  ? ReadonlyArray<DeepPartial<U>>
-  : T extends {}
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
+type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+
+export type DeepPartial<T> = T extends Builtin ? T
+  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
+  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }

@@ -1,10 +1,12 @@
 ## test functionality
 ```js=
+
 import { AutonomyClient, autonomyRegistry } from './txs';
 import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing';
-import { StdFee, coin } from '@cosmjs/amino';
+import { StdFee } from '@cosmjs/amino';
 // import { Coin } from './codec/cosmos_proto/coin';
 // import Long from 'long';
+import { v4 as uuidv4 } from 'uuid';
 import { GasPrice } from '@cosmjs/stargate';
 const sender = {
   menmonic:
@@ -23,14 +25,14 @@ console.log(sender);
 const fee: StdFee = {
   amount: [
     {
-      denom: 'atn',
-      amount: '200000',
+      denom: 'uaut',
+      amount: '2000000',
     },
   ],
   gas: '200000',
 };
 (async () => {
-  const gasPrice = GasPrice.fromString('0.02ucmdx');
+  const gasPrice = GasPrice.fromString('0.02uaut');
   const gasLimits = {
     send: 200000,
   };
@@ -139,34 +141,45 @@ const fee: StdFee = {
   // console.log(resWithdraw);
 
 
-  // import { v4 as uuidv4 } from 'uuid';
+
 
    const nftPrefix = 'nft';
   const denomPrefix = 'nftdenom';
+  const communityPrefix ='community';
 
   const regex = /-/gi;
   let denom = denomPrefix + uuidv4().toString().replace(regex, '');
   console.log('denom', denom);
 
+  // CREATE COMMUNITY
+  let community = communityPrefix + uuidv4().toString().replace(regex, '');
+  console.log('community', community);
+
+  let resS = await autonomyClient.createcommunity(
+    addres.address,community,"Community","Community Descri", "preview_url", fee," memo test"
+  )
+  console.log("Community res", resS)
+
   // CREATE DENOM
-  // let res = await autonomyClient.createdenom(
-  //   addres.address,
-  //   denom, // is alphanumeric with
-  //   'TwitterName', // need to be unique
-  //   'TWTSymbol', // is alphabets b/w 3 to 12 length
-  //   'test description',
-  //   'https://testpreview_url.com',
-  //   fee,
-  //   'test memo',
-  // );
-  // console.log(res);
+  let res = await autonomyClient.createdenom(
+    addres.address,
+    denom, // is alphanumeric with
+    'TwitterName', // need to be unique
+    'TWTSymb', // is alphabets b/w 3 to 12 length
+    'test description',
+    'https://testpreview_url.com',
+    "community1ff2e572f31e4835b89b72e20cb92536",
+    fee,
+    'test memo',
+  );
+  console.log(res);
 
   // CREATE NFT
   let nft_id = nftPrefix + uuidv4().toString().replace(regex, '');
   console.log('nft_id', nft_id);
 
   let resNFT = await autonomyClient.mintnft(
-    'nftdenomf42a77c08cc3448b937076e9e85d9489',
+    'nftdenom62c3e6c10ebd4db1937dd2489287948c',
     nft_id,
     'nft_name_1',
     'nft_description',

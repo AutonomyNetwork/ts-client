@@ -119,6 +119,29 @@ import Long from 'long';
 
     let collectionByOwner = await queryClient.nfts.ownerCollection("autonomy1089z23a6pkkl5dulktklcjxe8mgprgpd3cuuu5")
     console.log(JSON.stringify(collectionByOwner));
+
+  // Query Communities By Owner
+    let communityByOwner = await queryClient.nfts.communitiesByOwner("autonomy1t0l9jljp3nq95a66e25dall7ag9x0jpy8z8jm7")
+    console.log("Owner communities",communityByOwner);
+
+    // Query Denoms By Owner
+    let denomsByOwner = await queryClient.nfts.denomsByOwner("autonomy1t0l9jljp3nq95a66e25dall7ag9x0jpy8z8jm7")
+    console.log(JSON.stringify(denomsByOwner));
+
+    // Query Marketplace by type 0 
+    // To get all nfts with fiat and crypto
+    let marketType0 = await queryClient.nfts.marketplaceType(0,Long.fromNumber(2),paginationKey)
+    console.log("Marketplace0",marketType0);
+
+     // Query Marketplace by type 1
+     // To get all nfts with fiat
+     let marketType1 = await queryClient.nfts.marketplaceType(1,Long.fromNumber(2),paginationKey)
+     console.log("marketplace1",marketType1);
+
+      // Query Marketplace by type 2 
+      // To get all nfts with crypto
+    let marketType2 = await queryClient.nfts.marketplaceType(2,Long.fromNumber(2),paginationKey)
+    console.log(JSON.stringify(marketType2));
 })();
 ```
 ### To transactions
