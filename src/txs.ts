@@ -38,6 +38,7 @@ import {
   MsgCreateCommunity,
 } from './codec/nft/v1beta1/tx';
 import { Coin } from './codec/cosmos_proto/coin';
+import { ListedType } from './codec/nft/v1beta1/market_place';
 // import { Any } from './codec/google/protobuf/any';
 
 export const autonomyRegistry: ReadonlyArray<[string, GeneratedType]> = [
@@ -204,6 +205,9 @@ export class AutonomyClient extends SigningStargateClient {
     denom_id: string,
     price: string,
     seller: string,
+    listedType: ListedType,
+    currency:string,
+    fiatAmount:string,
     fee: StdFee,
     memo: string,
   ): Promise<MsgSellNFTResponse> {
@@ -214,6 +218,9 @@ export class AutonomyClient extends SigningStargateClient {
         denomId: denom_id,
         price,
         seller,
+        listedType,
+        currency,
+        fiatAmount
       },
     };
 
@@ -224,6 +231,10 @@ export class AutonomyClient extends SigningStargateClient {
     nft_id: string,
     denom_id: string,
     buyer: string,
+    listedType:ListedType,
+    currency:string,
+    fiatAmount:string,
+    orderRefId:string,
     fee: StdFee,
     memo: string,
   ): Promise<MsgBuyNFTResponse> {
@@ -233,6 +244,10 @@ export class AutonomyClient extends SigningStargateClient {
         id: nft_id,
         denomId: denom_id,
         buyer,
+        listedType,
+        currency,
+        fiatAmount,
+        orderRefId,
       },
     };
 
