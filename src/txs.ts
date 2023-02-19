@@ -158,6 +158,7 @@ export class AutonomyClient extends SigningStargateClient {
     transfer: boolean,
     sender: string,
     royalties: string,
+    data:string,
     fee: StdFee,
     memo: string,
   ): Promise<MsgMintNFTResponse> {
@@ -172,6 +173,7 @@ export class AutonomyClient extends SigningStargateClient {
           mediaUri: nft_media_uri,
           previewUri: nft_preview_uri,
         },
+        data: data,
         transferable: transfer,
         creator: sender,
         royalties: royalties,

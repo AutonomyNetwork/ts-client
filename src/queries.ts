@@ -6,6 +6,7 @@ import {
   QueryGetTokenResponse,
 } from './codec/issuance/v1beta1/query';
 import { Token } from './codec/issuance/v1beta1/token';
+import { setupBankExtension, setupAuthExtension } from '@cosmjs/stargate';
 import {
   QueryClientImpl as QueryNFTClient,
   QueryOwnerNFTsResponse,
