@@ -54,6 +54,7 @@ export interface MarketPlace {
   currency: string;
   fiatAmount: string;
   orderRefId: string;
+  listed: boolean;
 }
 
 function createBaseMarketPlace(): MarketPlace {
@@ -68,6 +69,7 @@ function createBaseMarketPlace(): MarketPlace {
     currency: "",
     fiatAmount: "",
     orderRefId: "",
+    listed: false,
   };
 }
 
@@ -102,6 +104,9 @@ export const MarketPlace = {
     }
     if (message.orderRefId !== "") {
       writer.uint32(82).string(message.orderRefId);
+    }
+    if (message.listed === true) {
+      writer.uint32(88).bool(message.listed);
     }
     return writer;
   },
@@ -143,6 +148,9 @@ export const MarketPlace = {
         case 10:
           message.orderRefId = reader.string();
           break;
+        case 11:
+          message.listed = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -163,6 +171,7 @@ export const MarketPlace = {
       currency: isSet(object.currency) ? String(object.currency) : "",
       fiatAmount: isSet(object.fiatAmount) ? String(object.fiatAmount) : "",
       orderRefId: isSet(object.orderRefId) ? String(object.orderRefId) : "",
+      listed: isSet(object.listed) ? Boolean(object.listed) : false,
     };
   },
 
@@ -178,6 +187,7 @@ export const MarketPlace = {
     message.currency !== undefined && (obj.currency = message.currency);
     message.fiatAmount !== undefined && (obj.fiatAmount = message.fiatAmount);
     message.orderRefId !== undefined && (obj.orderRefId = message.orderRefId);
+    message.listed !== undefined && (obj.listed = message.listed);
     return obj;
   },
 
@@ -193,6 +203,7 @@ export const MarketPlace = {
     message.currency = object.currency ?? "";
     message.fiatAmount = object.fiatAmount ?? "";
     message.orderRefId = object.orderRefId ?? "";
+    message.listed = object.listed ?? false;
     return message;
   },
 };
